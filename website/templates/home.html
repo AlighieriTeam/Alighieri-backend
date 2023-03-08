@@ -1,0 +1,7 @@
+{% extends "base.html" %} {% block title %}Home{% endblock %} {% block content
+%}
+<a href="{{ url_for('views.join_game') }}">Join a game</a>
+    <br/>
+<a href="{{ url_for('views.new_game') }}">Create new game</a>
+
+{% endblock %}
