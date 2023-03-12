@@ -1,35 +1,23 @@
-body {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    height: 100%;
-    color: white;
+body{
     font-family: 'Ubuntu';
+    color: white;
 }
 
-.top-navbar{
+.navbar_custom{
     background: linear-gradient(rgba(78,19,175,1), rgba(56,0,163,1));
-    height: 90px;
-    padding: 10px;
+    padding: 0;
 }
 
-.top-navbar-logo{
-    float: left;
-    width: 110px;
-    height: 90px;
+.website_logo{
+    width: 90px;
+    height: 80px;
 }
 
-.top-navbar-logo > img{
-    width: 110px;
-    height: 110px;
+.website_text{
+    font-size: 60px;
+    opacity: 0.9;
+    //border: 1px red solid;
 }
-
-.top-navbar-name{
-    font-size: 80px;
-    float: left;
-    height: 90px;
-}
-
-.container{
-    padding: 20px;
+.website_text:hover{
+    opacity: 1;
 }
