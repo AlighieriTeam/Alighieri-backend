@@ -3,6 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!--Link to tab icon-->
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/logo_cat.png') }}">
     <!--Links to google fonts-->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,18 +14,26 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" crossorigin="anonymous"/>
     <!--Links to local styles-->
     <link rel="stylesheet" href="{{ url_for('static', filename='styles/base.css') }}" />
+    {% block links %} {% endblock %}
 
     <title>{% block title %} Base {% endblock %}</title>
   </head>
   <body style="background-image: url({{ url_for('static', filename='images/background_pacman_75p.png') }});">
-    <nav class="navbar navbar-expand-lg navbar-dark navbar_custom">
+    <nav class="navbar sticky-top navbar-expand-lg navbar-dark navbar_custom">
       <div class="container-fluid">
-          <a class="navbar-brand" href="#">
+          <a class="navbar-brand" href="">
             <span class="website_text">
                 <img src="{{ url_for('static', filename='images/logo_cat.png') }}" alt="" class="d-inline-block align-text-top website_logo">
                 <span style="color: #ffc582;">AI</span>ighieri
             </span>
           </a>
+            {% if request.url_rule.rule == '/' %}
+                <div class="collapse navbar-collapse justify-content-end">
+                  <div class="navbar-nav" style="text-align: right;">
+                    <a class="nav-link" href="{{ url_for('views.new_game') }}">Zaloguj się</a>
+                  </div>
+                </div>
+            {% endif %}
       </div>
     </nav>
 

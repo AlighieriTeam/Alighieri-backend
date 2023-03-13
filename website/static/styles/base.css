@@ -1,6 +1,8 @@
 body{
     font-family: 'Ubuntu';
     color: white;
+    background-attachment: fixed;
+    background-size: cover;
 }
 
 .navbar_custom{
@@ -9,8 +11,8 @@ body{
 }
 
 .website_logo{
-    width: 90px;
-    height: 80px;
+    width: 90px;    //20%
+    height: 80px;   //60%
 }
 
 .website_text{
