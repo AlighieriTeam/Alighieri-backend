@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %} Home {% endblock %}
+{% block content %}
+    <script>
+      $(document).ready(function() {
+        $('#join-pacman').click(function() {
+          $('#join-pacman').hide();
+          $('#text-field-pacman').show();
+        });
+      });
+    </script>
+    <script>
+      $(document).ready(function() {
+        $('#join-pong').click(function() {
+          $('#join-pong').hide();
+          $('#text-field-pong').show();
+        });
+      });
+    </script>
+    <div class="choose-game-rectangle" style="left: 15%;top: 20%;">
+        <div class="wrapper">
+            <img class ="choose-game-image" src="{{ url_for('static', filename='images/pacman.png') }}" alt="pacman">
+        </div>
+        <div class="choose-game-button-text-align">
+            <button class="choose-game-button" onclick="window.location.href='/new-game'" style="left:3%">Stworz pokoj</button>
+            <button id = "join-pacman" class="choose-game-button" style="left:53%">Dolacz</button>
+            <input class="choose-game-text-field"  type = "text" id="text-field-pacman" style="display: none;left:53%; ">
+
+        </div>
+   </div>
+   <div class="choose-game-rectangle" style="left: 55%;top: 20%;">
+       <img class ="choose-game-image" src="{{ url_for('static', filename='images/pong.png') }}"  alt="pong">
+       <div class="choose-game-button-text-align">
+            <button class="choose-game-button" onclick="window.location.href='/new-game'" style="left:3%">Stworz pokoj</button>
+            <button  id ="join-pong" class="choose-game-button" style="left:53%">Dolacz</button>
+            <input class="choose-game-text-field"  type = "text" id="text-field-pong" style="display: none;left:53%; ">
+       </div>
+   </div>
+
+{% endblock %}
