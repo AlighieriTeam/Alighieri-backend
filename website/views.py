@@ -12,8 +12,8 @@ def new_game():
 
     return render_template("new-game.html", games=games)
 
-@views.route('/join', methods=['GET', 'POST'])
-def join_game():
+@views.route('/choose-game', methods=['GET', 'POST'])
+def choose_game():
     if request.method =='POST':
         from . import active_games
         pin = request.form.get('pin')
@@ -21,8 +21,8 @@ def join_game():
         # if game does not exist
         if len(game_list) == 0:
             # TODO: throw error with flash
-            render_template("join.html")
+            render_template("choose-game.html")
 
         # TODO: redirect to game page
         pass
-    return render_template("join.html")
+    return render_template("choose-game.html")
