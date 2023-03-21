@@ -14,7 +14,6 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" crossorigin="anonymous"/>
     <!--Links to local styles-->
     <link rel="stylesheet" href="{{ url_for('static', filename='styles/base.css') }}" />
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles/choose-game.css') }}" />
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     {% block links %} {% endblock %}
 
@@ -29,10 +28,10 @@
                 <span style="color: #ffc582;">AI</span>ighieri
             </span>
           </a>
-            {% if request.url_rule.rule == '/' %}
+            {% if request.url_rule.rule == '/' or request.url_rule.rule == '/home' %}
                 <div class="collapse navbar-collapse justify-content-end">
                   <div class="navbar-nav" style="text-align: right;">
-                    <a class="nav-link" href="{{ url_for('views.new_game') }}">Zaloguj się</a>
+                    <a class="nav-link" href="#">Zaloguj się</a>
                   </div>
                 </div>
             {% endif %}

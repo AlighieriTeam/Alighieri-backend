@@ -1,4 +1,7 @@
 {% extends "base.html" %}
+{% block links %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/choose.css') }}" />
+{% endblock %}
 {% block title %} Home {% endblock %}
 {% block content %}
     <script>
@@ -22,7 +25,7 @@
             <img class ="choose-game-image" src="{{ url_for('static', filename='images/pacman.png') }}" alt="pacman">
         </div>
         <div class="choose-game-button-text-align">
-            <button class="choose-game-button" onclick="window.location.href='/new-game'" style="left:3%">Stworz pokoj</button>
+            <button class="choose-game-button" onclick="window.location.href='/room'" style="left:3%">Stworz pokoj</button>
             <button id = "join-pacman" class="choose-game-button" style="left:53%">Dolacz</button>
             <input class="choose-game-text-field"  type = "text" id="text-field-pacman" style="display: none;left:53%; ">
 
@@ -31,7 +34,7 @@
    <div class="choose-game-rectangle" style="left: 55%;top: 20%;">
        <img class ="choose-game-image" src="{{ url_for('static', filename='images/pong.png') }}"  alt="pong">
        <div class="choose-game-button-text-align">
-            <button class="choose-game-button" onclick="window.location.href='/new-game'" style="left:3%">Stworz pokoj</button>
+            <button class="choose-game-button" onclick="window.location.href='/room'" style="left:3%">Stworz pokoj</button>
             <button  id ="join-pong" class="choose-game-button" style="left:53%">Dolacz</button>
             <input class="choose-game-text-field"  type = "text" id="text-field-pong" style="display: none;left:53%; ">
        </div>
