@@ -1,6 +1,13 @@
-.t {
-    //background-color: black;
-    //border: 1px red solid;
+.debug_class{   // just enable bg color and border to show how div looks like
+    background-color: black;
+    border: 1px red solid;
+}
+
+.test_class{    // class to test element behaviour
+    background-color: #000 !important;
+}
+
+.col_div {
     padding: 20px;
 }
 
@@ -36,6 +43,11 @@ img{
 }
 .grid_div::-webkit-scrollbar{
     display: none;
+}
+
+.grid_long_div{
+    width: 95%;
+    max-height: 450px;
 }
 
 .long_div{
