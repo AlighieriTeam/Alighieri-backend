@@ -1,9 +1,11 @@
-.debug_class{   // just enable bg color and border to show how div looks like
+/* just enable bg color and border to show how div looks like */
+.debug_class{
     background-color: black;
     border: 1px red solid;
 }
 
-.test_class{    // class to test element behaviour
+/* class to test element behaviour */
+.test_class{
     background-color: #000 !important;
 }
 
