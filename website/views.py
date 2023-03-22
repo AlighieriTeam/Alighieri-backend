@@ -27,3 +27,8 @@ def choose():
         # TODO: redirect to game page
         pass
     return render_template("choose.html")
+
+@views.route('/game')
+def game():
+    from .game import players
+    return render_template("game.html", players=players)    # pass player list of object to subsite

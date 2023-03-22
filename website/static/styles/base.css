@@ -14,14 +14,14 @@ body::-webkit-scrollbar{
 }
 
 .website_logo{
-    width: 90px;    //20%
-    height: 80px;   //60%
+    width: 90px;    /* 20% */
+    height: 80px;   /* 60% */
 }
 
 .website_text{
     font-size: 60px;
     opacity: 0.9;
-    //border: 1px red solid;
+    /* border: 1px red solid; */
 }
 .website_text:hover{
     opacity: 1;

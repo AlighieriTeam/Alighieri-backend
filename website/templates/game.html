@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block links %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/home.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/game.css') }}" />
+    <script src="{{ url_for('static', filename='scripts/timer.js') }}"></script>
+{% endblock %}
+{% block title %} Game {% endblock %}
+{% block content %}
+
+<div class="container_game">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="game_view">
+
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6 col-xs-12">
+            <div class="grid_div center_div" style="margin-top: 25px;">
+                <!--TODO: implement real Player class, this is a simple example-->
+                {% for player in players %} <!--generate players-->
+                    <div id="player_{{ player.id }}" class="player_div player_gradient_{{ player.id }}">{{ player.name }}</div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="col-sm-6 col-xs-12">
+            <div class="grid_div center_div" style="margin-top: 25px;">
+                <div class="timer">
+                    <!--TODO: finish session, connection etc, when we create this feature-->
+                    <!--TODO: reset timer when we get back by browser arrow-->
+                    <span id="time">15:00</span>    <!--after 30s timer finish counting and redirect to the choose page (by JS)-->
+                </div>
+                <button type="button" class="btn btn-lg btn-block btn-success rounded-pill" onclick="window.location.href='/choose'">Zakończ grę</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
