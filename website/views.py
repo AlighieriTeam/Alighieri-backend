@@ -25,6 +25,10 @@ def join():
         from .game import players
 
         pin = request.form.get('pin')
+        from . import active_games as games
+        game = list(filter(lambda x: x.pin == pin, games))
+        if len(game) == 0:
+            return redirect(url_for('.choose'))
         return render_template("join.html", players=players, game_pin=pin)
 
     # if tried to enter /join directly - redirect to choose
