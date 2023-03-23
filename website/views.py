@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request
+from flask import Blueprint, render_template, request, redirect, url_for
 
 views = Blueprint('views', __name__)
 @views.route('/')
@@ -7,11 +7,22 @@ def home_page():
 
     return render_template("home.html")
 
-@views.route('/room')
+@views.route('/room', methods=['GET', 'POST'])
 def room():
-    from .game import games, Game
+    if request.method == 'POST':
 
-    return render_template("room.html", games=games)
+        pass
+    # if tried to enter /room directly - redirect to choose
+    return redirect(url_for('.choose'))
+
+
+@views.route('/join', methods=['GET', 'POST'])
+def join():
+    if request.method == 'POST':
+
+        pass
+    # if tried to enter /join directly - redirect to choose
+    return redirect(url_for('.choose'))
 
 @views.route('/choose', methods=['GET', 'POST'])
 def choose():
