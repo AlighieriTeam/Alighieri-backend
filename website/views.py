@@ -43,7 +43,7 @@ def choose():
         # if game does not exist
         if len(game_list) == 0:
             # TODO: throw error with flash
-            render_template("choose.html")
+            return render_template("choose.html")
 
         # TODO: redirect to game page
         pass
