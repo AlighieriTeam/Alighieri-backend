@@ -10,8 +10,11 @@ def home_page():
 @views.route('/room', methods=['GET', 'POST'])
 def room():
     if request.method == 'POST':
+        from .game import players
+        import random
+        pin = str(random.randint(1000, 9999))
+        return render_template("room.html", players=players, game_pin=pin)
 
-        pass
     # if tried to enter /room directly - redirect to choose
     return redirect(url_for('.choose'))
 
@@ -19,8 +22,11 @@ def room():
 @views.route('/join', methods=['GET', 'POST'])
 def join():
     if request.method == 'POST':
+        from .game import players
 
-        pass
+        pin = request.form.get('pin')
+        return render_template("join.html", players=players, game_pin=pin)
+
     # if tried to enter /join directly - redirect to choose
     return redirect(url_for('.choose'))
 
