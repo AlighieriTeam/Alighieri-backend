@@ -1,11 +1,26 @@
 {% extends "base.html" %}
-{% block title %} Home {% endblock %}
+{% block links %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/home.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/game.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/room.css') }}" />
+    <script src="{{ url_for('static', filename='scripts/timer.js') }}"></script>
+{% endblock %}
+{% block title %} Room {% endblock %}
 {% block content %}
-    <form method="POST">
-    <ul>
-        {% for game in games %}
-        <li> {{ game }}</li>
+<div class="container_game">
+    <div class="room-rectangle center_div">
+        <div class="room-pin-container">
+            <p class="room-pin">{{game_pin}}</p>
+            <span class="room-pin-subtext">Kod pokoju</span>
+        </div>
+        <!--TODO: implement real Player class, this is a simple example-->
+        {% for player in players %} <!--generate players-->
+            <div id="player_{{ player.id }}" class="player_div player_gradient_{{ player.id }}">{{ player.name }}</div>
         {% endfor %}
-    </ul>
-    </form>
+        <div style="text-align: center;">
+            <button class="cancel-game-button">Anuluj</button>
+            <button class="start-game-button">Rozpocznij gre</button>
+        </div>
+    </div>
+</div>
 {% endblock %}
