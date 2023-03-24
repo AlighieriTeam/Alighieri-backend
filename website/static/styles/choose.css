@@ -8,8 +8,14 @@
     position: absolute;
     width: 40%;
     height: 30%;
+    transition: transform .2s;
     object-fit: fill;
+    border: 2px solid #000;
     border-radius: 31px;
+}
+.choose-image:hover{
+    border-color: #ccc;
+    transform: scale(1.5);
 }
 .choose-button{
     position: absolute;
