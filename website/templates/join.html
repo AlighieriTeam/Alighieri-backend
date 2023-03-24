@@ -4,7 +4,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='styles/game.css') }}" />
     <link rel="stylesheet" href="{{ url_for('static', filename='styles/room.css') }}" />
 {% endblock %}
-{% block title %} Room {% endblock %}
+{% block title %} Home {% endblock %}
 {% block content %}
 <div class="container_game">
     <div class="room-rectangle center_div">
@@ -17,8 +17,7 @@
             <div id="player_{{ player.id }}" class="player_div player_gradient_{{ player.id }}">{{ player.name }}</div>
         {% endfor %}
         <div style="text-align: center;">
-            <button class="cancel-game-button" onclick="window.location.href='{{ url_for('views.choose') }}'">Anuluj</button>
-            <button class="start-game-button" onclick="window.location.href='{{ url_for('views.game') }}'">Rozpocznij gre</button>
+            <button class="cancel-game-button" onclick="window.location.href='{{ url_for('views.choose') }}'>Wyjdź</button>
         </div>
     </div>
 </div>

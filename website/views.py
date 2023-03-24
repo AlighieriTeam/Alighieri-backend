@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request
+from flask import Blueprint, render_template, request, redirect, url_for
 
 views = Blueprint('views', __name__)
 @views.route('/')
@@ -7,11 +7,39 @@ def home_page():
 
     return render_template("home.html")
 
-@views.route('/room')
+@views.route('/room', methods=['GET', 'POST'])
 def room():
-    from .game import games, Game
+    if request.method == 'POST':
+        from .game import players, Game
+        from . import active_games as games
+        import random
+        while True:
+            pin = str(random.randint(1000, 9999))
+            game = list(filter(lambda x: x.pin == pin, games))
+            if len(game) == 0:
+                game_type = request.form.get('game')
+                games.append(Game(pin, game_type))
+                break
+        return render_template("room.html", players=players, game_pin=pin)
 
-    return render_template("room.html", games=games)
+    # if tried to enter /room directly - redirect to choose
+    return redirect(url_for('.choose'))
+
+
+@views.route('/join', methods=['GET', 'POST'])
+def join():
+    if request.method == 'POST':
+        from .game import players
+
+        pin = request.form.get('pin')
+        from . import active_games as games
+        game = list(filter(lambda x: x.pin == pin, games))
+        if len(game) == 0:
+            return redirect(url_for('.choose'))
+        return render_template("join.html", players=players, game_pin=pin)
+
+    # if tried to enter /join directly - redirect to choose
+    return redirect(url_for('.choose'))
 
 @views.route('/choose', methods=['GET', 'POST'])
 def choose():
@@ -22,7 +50,7 @@ def choose():
         # if game does not exist
         if len(game_list) == 0:
             # TODO: throw error with flash
-            render_template("choose.html")
+            return render_template("choose.html")
 
         # TODO: redirect to game page
         pass
