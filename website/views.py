@@ -10,17 +10,19 @@ def home_page():
 @views.route('/room', methods=['GET', 'POST'])
 def room():
     if request.method == 'POST':
-        from .game import players
+        from .game import players, Game
+        from . import active_games as games
         import random
-        pin = str(random.randint(1000, 9999))
+        while True:
+            pin = str(random.randint(1000, 9999))
+            game = list(filter(lambda x: x.pin == pin, games))
+            if len(game) == 0:
+                game_type = request.form.get('game')
+                games.append(Game(pin, game_type))
+                break
         return render_template("room.html", players=players, game_pin=pin)
 
     # if tried to enter /room directly - redirect to choose
-
-    from .game import players
-    import random
-    pin = str(random.randint(1000, 9999))
-    return render_template("room.html", players=players, game_pin=pin)
     return redirect(url_for('.choose'))
 
 
