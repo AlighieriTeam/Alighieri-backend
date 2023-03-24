@@ -17,7 +17,7 @@
             <div id="player_{{ player.id }}" class="player_div player_gradient_{{ player.id }}">{{ player.name }}</div>
         {% endfor %}
         <div style="text-align: center;">
-            <button class="cancel-game-button">Wyjdź</button>
+            <button class="cancel-game-button" onclick="window.location.href='{{ url_for('views.choose') }}'>Wyjdź</button>
         </div>
     </div>
 </div>
