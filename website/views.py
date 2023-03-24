@@ -16,6 +16,11 @@ def room():
         return render_template("room.html", players=players, game_pin=pin)
 
     # if tried to enter /room directly - redirect to choose
+
+    from .game import players
+    import random
+    pin = str(random.randint(1000, 9999))
+    return render_template("room.html", players=players, game_pin=pin)
     return redirect(url_for('.choose'))
 
 

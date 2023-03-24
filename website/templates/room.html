@@ -17,8 +17,8 @@
             <div id="player_{{ player.id }}" class="player_div player_gradient_{{ player.id }}">{{ player.name }}</div>
         {% endfor %}
         <div style="text-align: center;">
-            <button class="cancel-game-button">Anuluj</button>
-            <button class="start-game-button">Rozpocznij gre</button>
+            <button class="cancel-game-button" onclick="window.location.href='{{ url_for('views.choose') }}'">Anuluj</button>
+            <button class="start-game-button" onclick="window.location.href='{{ url_for('views.game') }}'">Rozpocznij gre</button>
         </div>
     </div>
 </div>
