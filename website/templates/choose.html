@@ -4,20 +4,14 @@
 {% endblock %}
 {% block title %} Home {% endblock %}
 {% block content %}
-	<script>
-		function extractText() {
-			var input = document.getElementById("text-field");
-			var text = input.value;
-		}
-	</script>
     <div class="choose-rectangle" style="margin: center;top: 20%;width: 1000px;height: 400px;">
         <div class="choose-button-text-align">
             <h3 class="choose-text" style="top: 20%;left: 10%;">Dołącz do istniejącego pokoju</h3>
             <form action="/join" method="post">
-                <!--TODO: pass game pin by name & value parameter in button tag-->
-                <button class="choose-button" onclick="window.location.href='/join'"  style="left:70%">Dolacz</button>
+                <button type ="submit" class="choose-button"  style="left:70%">Dolacz</button>
+                <input class="choose-text-field" name="pin" type = "text" id="text-field" style="left:10%; ">
             </form>
-            <input class="choose-text-field"  type = "text" id="text-field" style="left:10%; ">
+
 
         </div>
    </div>
