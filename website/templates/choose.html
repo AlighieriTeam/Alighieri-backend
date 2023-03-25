@@ -14,30 +14,36 @@
         <div class="choose-button-text-align">
             <h3 class="choose-text" style="top: 20%;left: 10%;">Dołącz do istniejącego pokoju</h3>
             <form action="/join" method="post">
+                <!--TODO: pass game pin by name & value parameter in button tag-->
                 <button class="choose-button" onclick="window.location.href='/join'"  style="left:70%">Dolacz</button>
             </form>
             <input class="choose-text-field"  type = "text" id="text-field" style="left:10%; ">
 
         </div>
    </div>
+<!--TODO: this style must be changed, for automate generating divs, positioning by top, left etc. with percent has no sense-->
+<!--TODO: we also should try to avoid setting style "inline"-->
+<!--But for now it can be like this-->
    <div class="choose-rectangle" style="margin: center;top: 80%;width: 1000px;height: 800px;">
        <div class="choose-button-text-align">
             <h3 class="choose-text" style="top: 10%;left: 10%;">Stwórz nowy pokoju</h3>
        </div>
-       <form method="POST" action="\room">
-          <input type="hidden" name="image_pacman" value="{{ url_for('static', filename='images/pacman.png') }}">
-          <button type="submit" style="visibility: visible; height: 0; padding: 0; border: none;">
-                <img style="top: 20%;left: 7.5%;" class ="choose-image" src="{{ url_for('static', filename='images/pacman.png') }}"  alt="pacman">
+       <!--One form instead of n forms, we will recognize what game is by value parameter in button-->
+       <!--IMPORTANT request.form.get() method in views.py will search by "name" parameter and take value from "value" parameter in each button-->
+       <form method="POST" action="/room">
+          <button type="submit" name="game" value="pac-man" style="visibility: visible; height: 0; padding: 0; border: none;">
+              <img style="top: 20%;left: 7.5%;" class ="choose-image" src="{{ url_for('static', filename='images/pacman.png') }}"  alt="pacman">
+          </button>
+          <button type="submit" name="game" value="pong" style="visibility: visible; height: 0; padding: 0; border: none;">
+              <img style="top: 20%;left: 52.5%;" class ="choose-image" src="{{ url_for('static', filename='images/pong.png') }}"  alt="pong">
+          </button>
+          <button type="submit" name="game" value="pac-man" style="visibility: visible; height: 0; padding: 0; border: none;">
+              <img  style="top: 60%;left: 7.5%;" class ="choose-image" src="{{ url_for('static', filename='images/pacman.png') }}"  alt="pacman">
+          </button>
+          <button type="submit" name="game" value="pong" style="visibility: visible; height: 0; padding: 0; border: none;">
+              <img  style="top: 60%;left: 52.5%;" class ="choose-image" src="{{ url_for('static', filename='images/pong.png') }}"  alt="pong">
           </button>
        </form>
-       <form method="POST" action="\room">
-          <input type="hidden" name="image_pong" value="{{ url_for('static', filename='images/pong.png') }}">
-          <button type="submit" style="visibility: visible; height: 0; padding: 0; border: none;">
-                <img style="top: 20%;left: 52.5%;" class ="choose-image" src="{{ url_for('static', filename='images/pong.png') }}"  alt="pong">
-          </button>
-       </form>
-       <img  style="top: 60%;left: 7.5%;" class ="choose-image" src="{{ url_for('static', filename='images/pacman.png') }}"  alt="pacman">
-       <img  style="top: 60%;left: 52.5%;" class ="choose-image" src="{{ url_for('static', filename='images/pong.png') }}"  alt="pong">
    </div>
 
 {% endblock %}

@@ -15,8 +15,8 @@ def room():
         import random
         while True:
             pin = str(random.randint(1000, 9999))
-            game = list(filter(lambda x: x.pin == pin, games))
-            if len(game) == 0:
+            is_game = list(filter(lambda x: x.pin == pin, games))
+            if len(is_game) == 0:
                 game_type = request.form.get('game')
                 games.append(Game(pin, game_type))
                 break
