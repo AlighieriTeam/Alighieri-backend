@@ -24,12 +24,20 @@
        <div class="choose-button-text-align">
             <h3 class="choose-text" style="top: 10%;left: 10%;">Stwórz nowy pokoju</h3>
        </div>
-          <form action="/room" method="post">
-                <img onclick=""  style="top: 20%;left: 7.5%;" class ="choose-image" src="{{ url_for('static', filename='images/pong.png') }}"  alt="pong">
-                <img onclick="window.location.href='/room'"  style="top: 20%;left: 52.5%;" class ="choose-image" src="{{ url_for('static', filename='images/pacman.png') }}"  alt="pacman">
-                <img onclick="window.location.href='/room'"  style="top: 60%;left: 7.5%;" class ="choose-image" src="{{ url_for('static', filename='images/pong.png') }}"  alt="pong">
-                <img onclick="window.location.href='/room'"  style="top: 60%;left: 52.5%;" class ="choose-image" src="{{ url_for('static', filename='images/pong.png') }}"  alt="pong">
-          </form>
+       <form method="POST" action="\room">
+          <input type="hidden" name="image_pacman" value="{{ url_for('static', filename='images/pacman.png') }}">
+          <button type="submit" style="visibility: visible; height: 0; padding: 0; border: none;">
+                <img style="top: 20%;left: 7.5%;" class ="choose-image" src="{{ url_for('static', filename='images/pacman.png') }}"  alt="pacman">
+          </button>
+       </form>
+       <form method="POST" action="\room">
+          <input type="hidden" name="image_pong" value="{{ url_for('static', filename='images/pong.png') }}">
+          <button type="submit" style="visibility: visible; height: 0; padding: 0; border: none;">
+                <img style="top: 20%;left: 52.5%;" class ="choose-image" src="{{ url_for('static', filename='images/pong.png') }}"  alt="pong">
+          </button>
+       </form>
+       <img  style="top: 60%;left: 7.5%;" class ="choose-image" src="{{ url_for('static', filename='images/pacman.png') }}"  alt="pacman">
+       <img  style="top: 60%;left: 52.5%;" class ="choose-image" src="{{ url_for('static', filename='images/pong.png') }}"  alt="pong">
    </div>
 
 {% endblock %}
