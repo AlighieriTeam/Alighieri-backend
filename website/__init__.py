@@ -1,5 +1,5 @@
 from flask import Flask
-from room import Room
+from .room import Room
 
 active_games: list[Room] = []
 def create_app():
