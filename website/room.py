@@ -9,7 +9,7 @@ class Player:   # simple player class to show players in game page automatically
 
 players = [Player(1, "Jacek"), Player(2, "Placek"), Player(3, "Yan"), Player(4, "Covalaki")]
 
-class Game:
+class Room:
     def __init__(self, pin : str, game_type : str):
         assert 3 < len(str(pin)) < 10
         assert game_type in games

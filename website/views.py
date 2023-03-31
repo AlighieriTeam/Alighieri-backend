@@ -10,7 +10,7 @@ def home_page():
 @views.route('/room', methods=['GET', 'POST'])
 def room():
     if request.method == 'POST':
-        from .game import players, Game
+        from .room import players, Room
         from . import active_games as games
         import random
         while True:
@@ -18,7 +18,7 @@ def room():
             is_game = list(filter(lambda x: x.pin == pin, games))
             if len(is_game) == 0:
                 game_type = request.form.get('game')
-                games.append(Game(pin, game_type))
+                games.append(Room(pin, game_type))
                 break
         return render_template("room.html", players=players, game_pin=pin)
 
@@ -29,7 +29,7 @@ def room():
 @views.route('/join', methods=['GET', 'POST'])
 def join():
     if request.method == 'POST':
-        from .game import players
+        from .room import players
 
         pin = request.form.get('pin')
         from . import active_games as games
@@ -58,5 +58,5 @@ def choose():
 
 @views.route('/game')
 def game():
-    from .game import players
+    from .room import players
     return render_template("game.html", players=players)    # pass player list of object to subsite
