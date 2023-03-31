@@ -33,8 +33,8 @@ def join():
 
         pin = request.form.get('pin')
         from . import active_games as games
-        game = list(filter(lambda x: x.pin == pin, games))
-        if len(game) == 0:
+        is_game = list(filter(lambda x: x.pin == pin, games))
+        if len(is_game) == 0:
             return redirect(url_for('.choose'))
         return render_template("join.html", players=MOCK_PLAYERS, game_pin=pin)
 
