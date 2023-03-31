@@ -6,7 +6,6 @@ GAME_TYPES = {
     'pong': 2
 }
 
-GAME_TYPES = ['pac-man', 'pong']
 
 class Player:  # simple player class to show players in game page automatically
     def __init__(self, id, name):
@@ -24,3 +23,8 @@ class Room:
 
         self.pin = pin
         self.game_type = game_type
+        self.players: list[Player] = []
+
+    def add_player(self, player: Player):
+        if len(self.players) <= GAME_TYPES.get(self.game_type):
+            self.players.append(player)
