@@ -1,15 +1,24 @@
 
+
+# Each game type has assigned max number of players
+GAME_TYPES = {
+    'pac-man': 4,
+    'pong': 2
+}
+
 GAME_TYPES = ['pac-man', 'pong']
 
-class Player:   # simple player class to show players in game page automatically
+class Player:  # simple player class to show players in game page automatically
     def __init__(self, id, name):
         self.id = id
         self.name = name
 
-players = [Player(1, "Jacek"), Player(2, "Placek"), Player(3, "Yan"), Player(4, "Covalaki")]
+
+MOCK_PLAYERS = [Player(1, "Jacek"), Player(2, "Placek"), Player(3, "Yan"), Player(4, "Covalaki")]
+
 
 class Room:
-    def __init__(self, pin : str, game_type : str):
+    def __init__(self, pin: str, game_type: str):
         assert 3 < len(str(pin)) < 10
         assert game_type in GAME_TYPES
 
