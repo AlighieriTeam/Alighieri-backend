@@ -1,4 +1,4 @@
-
+from website.Player import Player
 
 # Each game type has assigned max number of players
 GAME_TYPES = {
@@ -6,15 +6,7 @@ GAME_TYPES = {
     'pong': 2
 }
 
-
-class Player:  # simple player class to show players in game page automatically
-    def __init__(self, id, name):
-        self.id = id
-        self.name = name
-
-
 MOCK_PLAYERS = [Player(1, "Jacek"), Player(2, "Placek"), Player(3, "Yan"), Player(4, "Covalaki")]
-
 
 class Room:
     def __init__(self, pin: str, game_type: str):
