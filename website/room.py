@@ -18,5 +18,5 @@ class Room:
         self.players: list[Player] = []
 
     def add_player(self, player: Player):
-        if len(self.players) <= GAME_TYPES.get(self.game_type):
+        if len(self.players) < GAME_TYPES.get(self.game_type):
             self.players.append(player)
