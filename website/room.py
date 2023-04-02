@@ -1,6 +1,6 @@
-
-
 # Each game type has assigned max number of players
+import random
+
 GAME_TYPES = {
     'pac-man': 4,
     'pong': 2
@@ -13,8 +13,21 @@ class Player:  # simple player class to show players in game page automatically
         self.name = name
 
 
+PLAYER_NICKNAMES = ['lion', 'tiger', 'leopard', 'cheetah', 'jaguar', 'panther', 'lynx', 'bobcat', 'ocelot',
+                              'serval', 'elephant','rhinoceros','hippopotamus','giraffe','zebra','hyena','wolf','coyote',
+                              'fox','bear','polar bear','grizzly bear','black bear','koala','kangaroo','wallaby','wombat',
+                              'platypus','crocodile','alligator','turtle','snake','python','cobra','anaconda','tortoise',
+                              'chameleon','iguana','lizard','gecko','frog','toad','newt','salamander','shark','whale',
+                              'dolphin','seal','otter','penguin','seagull']
+
 MOCK_PLAYERS = [Player(1, "Jacek"), Player(2, "Placek"), Player(3, "Yan"), Player(4, "Covalaki")]
 
+def generate_nicks(number_of_players):
+    nicknameset = {random.randint(0, len(PLAYER_NICKNAMES)) for _ in range(number_of_players)}
+    playernicks = []
+    for i in range(0,number_of_players):
+        playernicks.append(Player(i+1,PLAYER_NICKNAMES.__getitem__(nicknameset.pop())))
+    return playernicks
 
 class Room:
     def __init__(self, pin: str, game_type: str):
