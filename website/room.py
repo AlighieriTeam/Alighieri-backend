@@ -23,10 +23,10 @@ PLAYER_NICKNAMES = ['lion', 'tiger', 'leopard', 'cheetah', 'jaguar', 'panther', 
 MOCK_PLAYERS = [Player(1, "Jacek"), Player(2, "Placek"), Player(3, "Yan"), Player(4, "Covalaki")]
 
 def generate_nicks(number_of_players):
-    nicknameset = {random.randint(0, len(PLAYER_NICKNAMES)) for _ in range(number_of_players)}
+    nicknameset = random.sample(range(0,len(PLAYER_NICKNAMES)),number_of_players)
     playernicks = []
     for i in range(0,number_of_players):
-        playernicks.append(Player(i+1,PLAYER_NICKNAMES.__getitem__(nicknameset.pop())))
+        playernicks.append(Player(i+1,PLAYER_NICKNAMES[nicknameset.pop()]))
     return playernicks
 
 class Room:
