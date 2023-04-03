@@ -7,9 +7,8 @@ from pygame.locals import *
 
 
 class GameObject:
-    def __init__(self, in_surface, x, y, in_size: int, in_color=(255, 0, 0), is_circle: bool = False):
-        self._renderer: GameRenderer = in_surface
-        self._surface = in_surface._screen
+    def __init__(self, in_renderer, x, y, in_size: int, in_color=(255, 0, 0), is_circle: bool = False):
+        self._renderer: GameRenderer = in_renderer
         self._color = in_color
         self.board_position = translate_screen_to_board([x, y])
         self.screen_position = [x, y]
@@ -18,21 +17,20 @@ class GameObject:
 
     def draw(self):
         if self._circle:
-            pygame.draw.circle(self._surface, self._color,
-                               self.screen_position, self._size)
+            pygame.draw.circle(self._renderer._screen, self._color, self.screen_position, self._size)
         else:
-            pygame.draw.rect(self._surface, self._color,
+            pygame.draw.rect(self._renderer._screen, self._color,
                              pygame.Rect(self.screen_position[0], self.screen_position[1], self._size, self._size), border_radius=3)
 
     def tick(self):
         pass
 
     def set_position(self, in_position):
-        temp = board[self.board_position[0], self.board_position[1]]
-        board[self.board_position[0], self.board_position[1]] = MapElements.PATH.value
+        temp = self._renderer._board[self.board_position[0], self.board_position[1]]
+        self._renderer._board[self.board_position[0], self.board_position[1]] = MapElements.PATH.value
         self.board_position = in_position
         self.screen_position = translate_board_to_screen(in_position)
-        board[self.board_position[0], self.board_position[1]] = temp
+        self._renderer._board[self.board_position[0], self.board_position[1]] = temp
 
 
 class Wall(GameObject):
@@ -70,11 +68,11 @@ class MovableGameObject(GameObject):
 
     def check_direction(self, direction):
         new_position = [a + b for a, b in zip(self.board_position, direction.value)]
-        if new_position[0] < 0 or new_position[0] > board.shape[0]:
+        if new_position[0] < 0 or new_position[0] > self._renderer._board.shape[0]:
             return False
-        if new_position[1] < 1 or new_position[1] > board.shape[1]:
+        if new_position[1] < 1 or new_position[1] > self._renderer._board.shape[1]:
             return False
-        return board[new_position[0], new_position[1]] != MapElements.WALL.value
+        return self._renderer._board[new_position[0], new_position[1]] != MapElements.WALL.value
 
     def get_possible_directions(self):
         possible_directions = []
@@ -99,7 +97,6 @@ class Ghost(MovableGameObject):
 class Hero(MovableGameObject):
     def __init__(self, in_surface, x, y, in_size: int):
         super().__init__(in_surface, x, y, in_size, (255, 255, 0), False)
-        self._renderer = in_surface
         self._score = 0
         self._score_display = pygame.font.Font(None, 32)
 
@@ -115,70 +112,115 @@ class Hero(MovableGameObject):
 
     # TODO nie usuwa ciastek? dalej się pojawiają
     def eat_cookie(self):
-        print(self.board_position)
-        if board[self.board_position[0], self.board_position[1]] == MapElements.COOKIE.value:
+        if self._renderer._board[self.board_position[0], self.board_position[1]] == MapElements.COOKIE.value:
             self._score += 1
-            board[self.board_position[0], self.board_position[1]] = MapElements.PATH.value
-            self._renderer.delete_object(self.board_position)
+            self._renderer._board[self.board_position[0], self.board_position[1]] = MapElements.PATH.value
+            self._renderer.delete_cookie(self.board_position)
 
 
 class GameRenderer:
-    def __init__(self, width: int, height: int):
+    def __init__(self, name, unified_size):
         pygame.init()
         pygame.font.init()
-        self._width = width
-        self._height = height
-        self._screen = pygame.display.set_mode((width, height))
-        pygame.display.set_caption('Pacman')
+        self._game_objects = {}
+        self._board = self.import_map(name)
+        shape = self._board.shape
+        self._width = shape[1] * unified_size
+        self._height = shape[0] * unified_size
+        self._screen = pygame.display.set_mode((self._width, self._height))
+        pygame.display.set_caption(name)
         self._finished = False
-        self._game_objects = []
-        self._ghosts = []
-        self._hero: Hero = None
+
+    # TODO coś się rozjechało
+    def import_map(self, name):
+        file = open('map-' + name + '.txt')
+        start = file.tell()
+        width = len(file.readline())
+        board = np.zeros((1, width-1))
+        file.seek(start)
+
+        map_elements = [element.value for element in list(MapElements)]
+        walls = []
+        cookies = []
+        ghosts = []
+        heroes = []
+
+        for y, line in enumerate(file):
+            board_line = []
+            for x, mark in enumerate(line):
+                if mark in map_elements:
+                    translated = translate_board_to_screen((x, y))
+                    match mark:
+                        case MapElements.WALL.value:
+                            wall = Wall(self, translated[0], translated[1], unified_size)
+                            walls.append(wall)
+                        case MapElements.PATH.value:
+                            cookie = Cookie(self, translated[0] + unified_size // 2, translated[1] + unified_size // 2)
+                            cookies.append(cookie)
+                            mark = MapElements.COOKIE.value
+                        case MapElements.GHOST.value:
+                            ghost = Ghost(self, translated[0], translated[1], unified_size)
+                            ghosts.append(ghost)
+                        case MapElements.HERO.value:
+                            hero = Hero(self, unified_size, unified_size, unified_size)
+                            heroes.append(hero)
+                        case _:
+                            pass
+                    board_line.append(mark)
+            board = np.append(board, [board_line], axis=0)
+        board = np.delete(board, 0, axis=0)
+        self._game_objects = {
+            'walls': walls,
+            'cookies': cookies,
+            'ghosts': ghosts,
+            'heroes': heroes
+        }
+        return board
 
     def tick(self):
         while not self._finished:
             self._screen.fill((0, 0, 0))
-            for game_object in self._game_objects:
-                game_object.tick()
-                game_object.draw()
-
+            for key, values in self._game_objects.items():
+                if isinstance(values, list):
+                    for value in values:
+                        value.tick()
+                        value.draw()
+                else:
+                    values.tick()
+                    values.draw()
             pygame.display.flip()
             self._handle_events()
         print("Game over")
 
-    def add_game_object(self, obj: GameObject):
-        self._game_objects.append(obj)
-
-    def delete_object(self, position):
-        self._game_objects = [obj for obj in self._game_objects if obj.board_position != position or isinstance(obj, MovableGameObject)]
-
-    def add_ghost(self, obj: Ghost):
-        self._game_objects.append(obj)
-        self._ghosts.append(obj)
-
-    def add_hero(self, in_hero):
-        self.add_game_object(in_hero)
-        self._hero = in_hero
+    # TODO def _check_for_collision(self):
 
     def _handle_events(self):
-        while True :
-            event = pygame.event.wait()
+        while True:
+            event = pygame.event.wait(1000)
+            if event.type == pygame.NOEVENT:
+                return
             if event.type == pygame.QUIT:
                 self._done = True
             elif event.type == KEYUP:
                 if event.key == K_UP:
-                    self._hero.set_direction(Direction.UP)
+                    self._game_objects['heroes'][0].set_direction(Direction.UP)
                     return
                 elif event.key == K_LEFT:
-                    self._hero.set_direction(Direction.LEFT)
+                    self._game_objects['heroes'][0].set_direction(Direction.LEFT)
                     return
                 elif event.key == K_DOWN:
-                    self._hero.set_direction(Direction.DOWN)
+                    self._game_objects['heroes'][0].set_direction(Direction.DOWN)
                     return
                 elif event.key == K_RIGHT:
-                    self._hero.set_direction(Direction.RIGHT)
+                    self._game_objects['heroes'][0].set_direction(Direction.RIGHT)
                     return
             pygame.event.clear()
+
+    # TODO dalej nie dziala
+    def delete_cookie(self, board_position):
+        cookies = self._game_objects['cookies']
+        cookies = [c for c in cookies if c.board_position != board_position]
+        self._game_objects['cookies'] = cookies
 
 
 class MapElements(Enum):
@@ -188,20 +230,6 @@ class MapElements(Enum):
     GHOST = '^'
     HERO = '*'
     COOKIE = '.'
-
-
-def import_map(name, width):
-    board = np.zeros((1, width))
-    with open('map-' + name + '.txt') as file:
-        map_elements = [element.value for element in list(MapElements)]
-        for line in file:
-            board_line = []
-            for mark in line:
-                if mark in map_elements:
-                    board_line.append(mark)
-            board = np.append(board, [board_line], axis=0)
-    board = np.delete(board, 0, axis=0)
-    return board
 
 
 def translate_screen_to_board(in_coords, in_size=32):
@@ -214,27 +242,5 @@ def translate_board_to_screen(in_coords, in_size=32):
 
 if __name__ == "__main__":
     unified_size = 32
-    board = import_map('pacman', 10)
-    size = board.shape
-    game_renderer = GameRenderer(size[0] * unified_size, size[1] * unified_size)
-
-    for x, row in enumerate(board):
-        for y, mark in enumerate(row):
-            translated = translate_board_to_screen((x, y))
-            match mark:
-                case MapElements.WALL.value:
-                    wall = Wall(game_renderer, translated[0], translated[1], unified_size)
-                    game_renderer.add_game_object(wall)
-                case MapElements.PATH.value:
-                    cookie = Cookie(game_renderer, translated[0] + unified_size // 2, translated[1] + unified_size // 2)
-                    game_renderer.add_game_object(cookie)
-                    board[x, y] = MapElements.COOKIE.value
-                case MapElements.GHOST.value:
-                    ghost = Ghost(game_renderer, translated[0], translated[1], unified_size)
-                    game_renderer.add_ghost(ghost)
-                case MapElements.HERO.value:
-                    pacman = Hero(game_renderer, unified_size, unified_size, unified_size)
-                    game_renderer.add_hero(pacman)
-                case _:
-                    pass
+    game_renderer = GameRenderer('pacman', unified_size)
     game_renderer.tick()
