@@ -110,12 +110,8 @@ class Hero(MovableGameObject):
         score_text = self._score_display.render(f'{self._score}', True, (255, 255, 255))
         self._renderer._screen.blit(score_text, (10, 10))
 
-    # TODO nie usuwa ciastek? dalej się pojawiają
     def eat_cookie(self):
-        if self._renderer._board[self.board_position[0], self.board_position[1]] == MapElements.COOKIE.value:
-            self._score += 1
-            self._renderer._board[self.board_position[0], self.board_position[1]] = MapElements.PATH.value
-            self._renderer.delete_cookie(self.board_position)
+        self._score += self._renderer.delete_cookie(self.board_position)
 
 
 class GameRenderer:
@@ -131,7 +127,6 @@ class GameRenderer:
         pygame.display.set_caption(name)
         self._finished = False
 
-    # TODO coś się rozjechało
     def import_map(self, name):
         file = open('map-' + name + '.txt')
         start = file.tell()
@@ -216,11 +211,16 @@ class GameRenderer:
                     return
             pygame.event.clear()
 
-    # TODO dalej nie dziala
+    # TODO zrobić to ładniej (żeby nie sprawdzało za każdym razem)
     def delete_cookie(self, board_position):
         cookies = self._game_objects['cookies']
         cookies = [c for c in cookies if c.board_position != board_position]
+        if len(cookies) != len(self._game_objects['cookies']):
+            score = 1
+        else:
+            score = 0
         self._game_objects['cookies'] = cookies
+        return score
 
 
 class MapElements(Enum):
