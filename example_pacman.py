@@ -103,7 +103,6 @@ class Hero(MovableGameObject):
     def tick(self):
         self.move()
         self.eat_cookie()
-        # TODO: zgiń jeżeli duch
 
     def draw(self):
         super().draw()
@@ -174,20 +173,23 @@ class GameRenderer:
 
     def tick(self):
         while not self._finished:
-            self._screen.fill((0, 0, 0))
-            for key, values in self._game_objects.items():
-                if isinstance(values, list):
-                    for value in values:
-                        value.tick()
-                        value.draw()
-                else:
-                    values.tick()
-                    values.draw()
-            pygame.display.flip()
+            self._render_all_objects()
             self._handle_events()
+            self.check_collisions()
+            self.is_over()
         print("Game over")
 
-    # TODO def _check_for_collision(self):
+    def _render_all_objects(self):
+        self._screen.fill((0, 0, 0))
+        for key, values in self._game_objects.items():
+            if isinstance(values, list):
+                for value in values:
+                    value.tick()
+                    value.draw()
+            else:
+                values.tick()
+                values.draw()
+        pygame.display.flip()
 
     def _handle_events(self):
         while True:
@@ -213,14 +215,20 @@ class GameRenderer:
 
     # TODO zrobić to ładniej (żeby nie sprawdzało za każdym razem)
     def delete_cookie(self, board_position):
-        cookies = self._game_objects['cookies']
-        cookies = [c for c in cookies if c.board_position != board_position]
+        cookies = [c for c in self._game_objects['cookies'] if c.board_position != board_position]
         if len(cookies) != len(self._game_objects['cookies']):
-            score = 1
-        else:
-            score = 0
-        self._game_objects['cookies'] = cookies
-        return score
+            self._game_objects['cookies'] = cookies
+            return 1
+        return 0
+
+    def check_collisions(self):
+        ghosts_positions = [g.board_position for g in self._game_objects['ghosts']]
+        heroes = [h for h in self._game_objects['heroes'] if h.board_position not in ghosts_positions]
+        self._game_objects['heroes'] = heroes
+
+    def is_over(self):
+        if not self._game_objects['heroes'] or not self._game_objects['cookies']:
+            self._finished = True
 
 
 class MapElements(Enum):
