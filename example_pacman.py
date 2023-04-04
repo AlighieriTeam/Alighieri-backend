@@ -125,8 +125,8 @@ class GameRenderer:
         self._game_objects = {}
         self._board = self.import_map(name)
         shape = self._board.shape
-        self._width = shape[1] * unified_size
-        self._height = shape[0] * unified_size
+        self._width = shape[0] * unified_size
+        self._height = shape[1] * unified_size
         self._screen = pygame.display.set_mode((self._width, self._height))
         pygame.display.set_caption(name)
         self._finished = False
@@ -145,9 +145,9 @@ class GameRenderer:
         ghosts = []
         heroes = []
 
-        for y, line in enumerate(file):
+        for x, line in enumerate(file):
             board_line = []
-            for x, mark in enumerate(line):
+            for y, mark in enumerate(line):
                 if mark in map_elements:
                     translated = translate_board_to_screen((x, y))
                     match mark:
