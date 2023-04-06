@@ -1,5 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for
 
+from . import find_game
+
 views = Blueprint('views', __name__)
 @views.route('/')
 @views.route('/home')
@@ -11,15 +13,18 @@ def home_page():
 def room():
     if request.method == 'POST':
         from .room import generate_nicks, Room, GAME_TYPES
-        from . import rooms as games
+        from . import rooms
         import random
         while True:
             pin = str(random.randint(1000, 9999))
-            is_game = list(filter(lambda x: x.pin == pin, games))
-            if len(is_game) == 0:
-                game_type = request.form.get('game')
-                games.append(Room(pin, game_type))
+            curr_game = find_game(pin)
+            if curr_game is None:
                 break
+
+        game_type = request.form.get('game')
+        curr_game = Room(pin, game_type)
+        rooms[pin] = curr_game
+
         return render_template("room.html", players=generate_nicks(GAME_TYPES[game_type]), game_pin=pin)
 
     # if tried to enter /room directly - redirect to choose
@@ -33,8 +38,8 @@ def join():
 
         pin = request.form.get('pin')
         from . import rooms as games
-        is_game = list(filter(lambda x: x.pin == pin, games))
-        if len(is_game) == 0:
+        curr_game = find_game(pin)
+        if curr_game is None:
             return redirect(url_for('.choose'))
         return render_template("join.html", players=MOCK_PLAYERS, game_pin=pin)
 
