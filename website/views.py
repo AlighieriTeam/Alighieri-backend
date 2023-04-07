@@ -12,7 +12,7 @@ def home_page():
 @views.route('/room', methods=['GET', 'POST'])
 def room():
     if request.method == 'POST':
-        from .room import generate_nicks, Room, GAME_TYPES
+        from .room import Room
         from . import rooms
         import random
         while True:
@@ -23,8 +23,12 @@ def room():
 
         game_type = request.form.get('game')
         curr_game = Room(game_type)
+        player = curr_game.add_player()
+
         rooms[pin] = curr_game
-        curr_game.players = generate_nicks(GAME_TYPES[game_type])
+
+        session['room'] = pin
+        session['id'] = player.id
 
         return render_template("room.html", players=curr_game.players, game_pin=pin)
 
@@ -35,14 +39,21 @@ def room():
 @views.route('/join', methods=['GET', 'POST'])
 def join():
     if request.method == 'POST':
-        from .room import MOCK_PLAYERS
+        from . import rooms
 
         pin = request.form.get('pin')
-        from . import rooms as games
         curr_game = find_game(pin)
         if curr_game is None:
             return redirect(url_for('.choose'))
-        return render_template("join.html", players=MOCK_PLAYERS, game_pin=pin)
+
+        player = curr_game.add_player()
+
+        rooms[pin] = curr_game
+
+        session['room'] = pin
+        session['id'] = player.id
+
+        return render_template("join.html", players=curr_game.players, game_pin=pin)
 
     # if tried to enter /join directly - redirect to choose
     return redirect(url_for('.choose'))
