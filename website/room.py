@@ -1,5 +1,6 @@
 # Each game type has assigned max number of players
 import random
+import json
 
 GAME_TYPES = {
     'pac-man': 4,
@@ -12,6 +13,9 @@ class Player:  # simple player class to show players in game page automatically
         self.id = id
         self.name = name
 
+    def to_json(self):
+        return json.dumps(self, default=lambda o: o.__dict__,
+                          sort_keys=True, indent=4)
 
 PLAYER_NICKNAMES = ['lion', 'tiger', 'leopard', 'cheetah', 'jaguar', 'panther', 'lynx', 'bobcat', 'ocelot',
                     'serval', 'elephant', 'rhinoceros', 'hippopotamus', 'giraffe', 'zebra', 'hyena', 'wolf', 'coyote',

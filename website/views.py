@@ -28,7 +28,7 @@ def room():
         rooms[pin] = curr_game
 
         session['room'] = pin
-        session['id'] = player.id
+        session['player'] = player.to_json()
 
         return render_template("room.html", players=curr_game.players, game_pin=pin)
 
