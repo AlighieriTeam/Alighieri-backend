@@ -22,10 +22,11 @@ def room():
                 break
 
         game_type = request.form.get('game')
-        curr_game = Room(pin, game_type)
+        curr_game = Room(game_type)
         rooms[pin] = curr_game
+        curr_game.players = generate_nicks(GAME_TYPES[game_type])
 
-        return render_template("room.html", players=generate_nicks(GAME_TYPES[game_type]), game_pin=pin)
+        return render_template("room.html", players=curr_game.players, game_pin=pin)
 
     # if tried to enter /room directly - redirect to choose
     return redirect(url_for('.choose'))

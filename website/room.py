@@ -30,11 +30,9 @@ def generate_nicks(number_of_players):
     return playernicks
 
 class Room:
-    def __init__(self, pin: str, game_type: str):
-        assert 3 < len(str(pin)) < 10
+    def __init__(self, game_type: str):
         assert game_type in GAME_TYPES
 
-        self.pin = pin
         self.game_type = game_type
         self.players: list[Player] = []
 
