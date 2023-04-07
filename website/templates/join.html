@@ -21,18 +21,18 @@
         </div>
     </div>
 </div>
-    <script type="text/javascript">
+<script type="text/javascript">
     const socketio = io();
     const messages = document.getElementById("messages");
 
-    const addPlayer = (id, name) => {
-        console.log(id);
-        console.log(name);
+    const addPlayer = (player) => {
+        console.log(player.id);
+        console.log(player.name);
     };
 
-    socketio.on("connection", (id) => {
+    socketio.on("connection", (player) => {
         console.log("something connected");
-        addPlayer(id.id, id.name);
+        addPlayer(player);
     });
-    </script>
+</script>
 {% endblock %}
