@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for
+from flask import Blueprint, render_template, request, redirect, url_for, session
 
 from . import find_game
 
@@ -47,19 +47,9 @@ def join():
     # if tried to enter /join directly - redirect to choose
     return redirect(url_for('.choose'))
 
-@views.route('/choose', methods=['GET', 'POST'])
+@views.route('/choose')
 def choose():
-    if request.method =='POST':
-        from . import rooms
-        pin = request.form.get('pin')
-        game_list = list(filter(lambda x: x.pin == pin, rooms))
-        # if game does not exist
-        if len(game_list) == 0:
-            # TODO: throw error with flash
-            return render_template("choose.html")
-
-        # TODO: redirect to game page
-        pass
+    session.clear()
     return render_template("choose.html")
 
 @views.route('/game')
