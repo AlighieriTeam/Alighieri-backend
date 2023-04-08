@@ -46,8 +46,11 @@ def create_app():
             leave_room(room)
             return
 
+        curr_game = find_game(room)  # room === pin in session
+        curr_game.del_player(int(player["id"]))
+
         leave_room(room)
-        # TODO: delete player from game object
+
         emit("disconnection", player, to=room)
         print(f"{player['name']} left room {room}")
 
