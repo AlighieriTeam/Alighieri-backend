@@ -23,7 +23,7 @@ def room():
 
         game_type = request.form.get('game')
         curr_game = Room(game_type)
-        player = curr_game.add_player()
+        player = curr_game.add_player(is_owner=True)
 
         rooms[pin] = curr_game
 
@@ -68,6 +68,8 @@ def join():
 @views.route('/choose')
 def choose():
     #session.clear()    # flashing does not work when session is cleared
+    msg = request.args.get('msg')
+    if msg: flash(msg, 'alert-info')
     return render_template("choose.html")
 
 @views.route('/game')

@@ -12,7 +12,6 @@
             <p class="room-pin">{{game_pin}}</p>
             <span class="room-pin-subtext">Kod pokoju</span>
         </div>
-        <!--TODO: implement real Player class, this is a simple example-->
             <div id="player-list">
 
             </div>
@@ -21,6 +20,8 @@
         </div>
     </div>
 </div>
+<!--TODO: move common elements of this script to file-->
+<!--TODO: add comments to explain how it works or make drawio-->
 <script type="text/javascript">
     const socketio = io();
 
@@ -60,6 +61,10 @@
         playerList.innerHTML = "";
         playerMap.delete(player["id"]);
         refreshPlayerList();
+    });
+
+    socketio.on('redirect', function(destination) {
+        window.location.href = destination;
     });
 </script>
 {% for player in players %}
