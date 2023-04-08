@@ -36,4 +36,19 @@ def create_app():
         emit("connection", player, to=room)
         print(f"{player['name']} joined room {room}")
 
+    @socketio.on("disconnect")
+    def disconnect():
+        room = session.get("room")
+        player = json.loads(session.get("player"))
+        if not room or not player:
+            return
+        if room not in rooms:
+            leave_room(room)
+            return
+
+        leave_room(room)
+        # TODO: delete player from game object
+        emit("disconnection", player, to=room)
+        print(f"{player['name']} left room {room}")
+
     return app, socketio

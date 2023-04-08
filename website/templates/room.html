@@ -37,6 +37,11 @@
         playerList.innerHTML = content;
     }
 
+    function leave(){
+        socketio.emit('disconnection');
+        window.location.href='{{ url_for('views.choose') }}';
+    }
+
     const addPlayer = (player) => {
         if (!playerMap.has(player.id) || playerMap.get(player.id) === "") {
             playerMap.set(player.id, player.name);
@@ -47,8 +52,16 @@
     };
 
     socketio.on("connection", (player) => {
-        console.log("something connected");
+        console.log("[JS] something connected " + player["name"]);
         addPlayer(player);
+    });
+
+    socketio.on('disconnection', (player) => {
+        console.log('[JS] user disconnected ' + player["name"]);
+        const playerList = document.getElementById("player-list");
+        playerList.innerHTML = "";
+        playerMap.delete(player["id"]);
+        refreshPlayerList();
     });
 </script>
 {% for player in players %}
