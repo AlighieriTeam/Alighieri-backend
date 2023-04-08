@@ -13,9 +13,9 @@
             <span class="room-pin-subtext">Kod pokoju</span>
         </div>
         <!--TODO: implement real Player class, this is a simple example-->
-        {% for player in players %} <!--generate players-->
-            <div id="player_{{ player.id }}" class="player_div player_gradient_{{ player.id }}">{{ player.name }}</div>
-        {% endfor %}
+            <div id="player-list">
+
+            </div>
         <div style="text-align: center;">
             <button class="cancel-game-button" onclick="window.location.href='{{ url_for('views.choose') }}'">Wyjdź</button>
         </div>
@@ -23,9 +23,23 @@
 </div>
 <script type="text/javascript">
     const socketio = io();
-    const messages = document.getElementById("messages");
+
+    const playerMap = new Map();
+
+    function refreshPlayerList() {
+        const playerList = document.getElementById("player-list");
+        let content = "";
+        for (const [id, name] of playerMap.entries()) {
+            content += `<div id="player_${id}" class="player_div player_gradient_${id}">${name}</div>`
+        }
+        playerList.innerHTML = content;
+    }
 
     const addPlayer = (player) => {
+        if (!playerMap.has(player.id) || playerMap.get(player.id) === "") {
+            playerMap.set(player.id, player.name);
+        }
+        refreshPlayerList();
         console.log(player.id);
         console.log(player.name);
     };
@@ -35,4 +49,9 @@
         addPlayer(player);
     });
 </script>
+{% for player in players %}
+    <script>
+        addPlayer(JSON.parse({{ player | tojson }}));
+    </script>
+{% endfor %}
 {% endblock %}

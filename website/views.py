@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for, session
+from flask import Blueprint, render_template, request, redirect, url_for, session, json
 
 from . import find_game
 
@@ -30,7 +30,9 @@ def room():
         session['room'] = pin
         session['player'] = player.to_json()
 
-        return render_template("room.html", players=curr_game.players, game_pin=pin)
+        players = [p.to_json() for p in curr_game.players]
+
+        return render_template("room.html", players=players, game_pin=pin)
 
     # if tried to enter /room directly - redirect to choose
     return redirect(url_for('.choose'))
@@ -53,7 +55,9 @@ def join():
         session['room'] = pin
         session['player'] = player.to_json()
 
-        return render_template("join.html", players=curr_game.players, game_pin=pin)
+        players = [p.to_json() for p in curr_game.players]
+
+        return render_template("join.html", players=players, game_pin=pin)
 
     # if tried to enter /join directly - redirect to choose
     return redirect(url_for('.choose'))
