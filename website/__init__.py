@@ -36,6 +36,7 @@ def create_app():
         emit("connection", player, to=room)
         print(f"{player['name']} joined room {room}")
 
+    # TODO: disconnect all players if owner left
     @socketio.on("disconnect")
     def disconnect():
         room = session.get("room")
