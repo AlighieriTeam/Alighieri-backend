@@ -63,6 +63,8 @@
         playerMap.delete(player["id"]);
         refreshPlayerList();
     });
+
+    socketio.emit('connected');
 </script>
 {% for player in players %}
     <script>

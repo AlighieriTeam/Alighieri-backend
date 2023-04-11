@@ -25,8 +25,8 @@ def create_app():
 
     app.register_blueprint(views, url_prefix='/')
 
-    @socketio.on("connect")
-    def connect():
+    @socketio.on("connected")
+    def connected():
         room = session.get("room")
         player = json.loads(session.get("player"))
         if not room or not player:

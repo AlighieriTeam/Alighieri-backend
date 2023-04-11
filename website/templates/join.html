@@ -66,6 +66,8 @@
     socketio.on('redirect', function(destination) {
         window.location.href = destination;
     });
+
+    socketio.emit('connected');
 </script>
 {% for player in players %}
     <script>
