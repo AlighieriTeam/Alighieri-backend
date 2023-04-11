@@ -5,6 +5,7 @@ import pygame
 from enum import Enum
 from pygame.locals import *
 
+UNIFIED_SIZE = 32
 
 class GameObject:
     def __init__(self, in_renderer, x, y, in_size: int, in_color=(255, 0, 0), is_circle: bool = False):
@@ -17,7 +18,7 @@ class GameObject:
 
     def draw(self):
         if self._circle:
-            pygame.draw.circle(self._renderer._screen, self._color, self.screen_position, self._size)
+            pygame.draw.circle(self._renderer._screen, self._color, (self.screen_position[0] + UNIFIED_SIZE/2, self.screen_position[1] + UNIFIED_SIZE/2), self._size)
         else:
             pygame.draw.rect(self._renderer._screen, self._color,
                              pygame.Rect(self.screen_position[0], self.screen_position[1], self._size, self._size), border_radius=3)
@@ -40,7 +41,7 @@ class Wall(GameObject):
 
 class Cookie(GameObject):
     def __init__(self, in_surface, x, y):
-        super().__init__(in_surface, x, y, 4, (255, 255, 0), True)
+        super().__init__(in_surface, x, y, 4, (255, 255, 0))
 
 
 class Direction(Enum):
@@ -52,7 +53,7 @@ class Direction(Enum):
 
 
 class MovableGameObject(GameObject):
-    def __init__(self, in_surface, x, y, in_size: int, in_color=(255, 0, 0), is_circle: bool = False):
+    def __init__(self, in_surface, x, y, in_size: int, in_color=(255, 0, 0), is_circle: bool = True):
         super().__init__(in_surface, x, y, in_size, in_color, is_circle)
         self.current_direction = Direction.STOP
         self.last_direction = Direction.STOP
@@ -72,7 +73,8 @@ class MovableGameObject(GameObject):
             return False
         if new_position[1] < 1 or new_position[1] > self._renderer._board.shape[1]:
             return False
-        return self._renderer._board[new_position[0], new_position[1]] != MapElements.WALL.value
+        check = self._renderer._board[new_position[0], new_position[1]]
+        return check != MapElements.WALL.value and check != MapElements.BLOCK.value
 
     def get_possible_directions(self):
         possible_directions = []
@@ -84,7 +86,7 @@ class MovableGameObject(GameObject):
 
 class Ghost(MovableGameObject):
     def __init__(self, in_surface, x, y, in_size: int, in_color=(255, 0, 0)):
-        super().__init__(in_surface, x, y, in_size, in_color, False)
+        super().__init__(in_surface, x, y, in_size, in_color)
 
     def tick(self):
         if bool(random.getrandbits(1)):
@@ -96,32 +98,29 @@ class Ghost(MovableGameObject):
 
 class Hero(MovableGameObject):
     def __init__(self, in_surface, x, y, in_size: int):
-        super().__init__(in_surface, x, y, in_size, (255, 255, 0), False)
+        super().__init__(in_surface, x, y, in_size, (255, 255, 0))
         self._score = 0
         self._score_display = pygame.font.Font(None, 32)
 
     def tick(self):
         self.move()
-        self.eat_cookie()
 
     def draw(self):
         super().draw()
         score_text = self._score_display.render(f'{self._score}', True, (255, 255, 255))
         self._renderer._screen.blit(score_text, (10, 10))
 
-    def eat_cookie(self):
-        self._score += self._renderer.delete_cookie(self.board_position)
 
 
 class GameRenderer:
-    def __init__(self, name, unified_size):
+    def __init__(self, name):
         pygame.init()
         pygame.font.init()
         self._game_objects = {}
         self._board = self.import_map(name)
         shape = self._board.shape
-        self._width = shape[0] * unified_size
-        self._height = shape[1] * unified_size
+        self._width = shape[0] * UNIFIED_SIZE
+        self._height = shape[1] * UNIFIED_SIZE
         self._screen = pygame.display.set_mode((self._width, self._height))
         pygame.display.set_caption(name)
         self._finished = False
@@ -146,18 +145,17 @@ class GameRenderer:
                     translated = translate_board_to_screen((x, y))
                     match mark:
                         case MapElements.WALL.value:
-                            wall = Wall(self, translated[0], translated[1], unified_size)
+                            wall = Wall(self, translated[0], translated[1], UNIFIED_SIZE)
                             walls.append(wall)
                         case MapElements.PATH.value:
-                            cookie = Cookie(self, translated[0] + unified_size // 2, translated[1] + unified_size // 2)
+                            cookie = Cookie(self, translated[0] + UNIFIED_SIZE // 2, translated[1] + UNIFIED_SIZE // 2)
                             cookies.append(cookie)
                             mark = MapElements.COOKIE.value
                         case MapElements.GHOST.value:
-                            ghost = Ghost(self, translated[0], translated[1], unified_size)
+                            ghost = Ghost(self, translated[0] + UNIFIED_SIZE // 2, translated[1] + UNIFIED_SIZE // 2, UNIFIED_SIZE // 3)
                             ghosts.append(ghost)
                         case MapElements.HERO.value:
-                            hero = Hero(self, unified_size, unified_size, unified_size)
-                            heroes.append(hero)
+                            heroes.append(self.new_hero())
                         case _:
                             pass
                     board_line.append(mark)
@@ -170,6 +168,9 @@ class GameRenderer:
             'heroes': heroes
         }
         return board
+
+    def new_hero(self):
+        return Hero(self, UNIFIED_SIZE, UNIFIED_SIZE, UNIFIED_SIZE//3)
 
     def tick(self):
         while not self._finished:
@@ -240,15 +241,14 @@ class MapElements(Enum):
     COOKIE = '.'
 
 
-def translate_screen_to_board(in_coords, in_size=32):
-    return [int(in_coords[0] // in_size), int(in_coords[1] // in_size)]
+def translate_screen_to_board(in_coords):
+    return [int(in_coords[0] // UNIFIED_SIZE), int(in_coords[1] // UNIFIED_SIZE)]
 
 
-def translate_board_to_screen(in_coords, in_size=32):
-    return [in_coords[0] * in_size, in_coords[1] * in_size]
+def translate_board_to_screen(in_coords):
+    return [in_coords[0] * UNIFIED_SIZE, in_coords[1] * UNIFIED_SIZE]
 
 
 if __name__ == "__main__":
-    unified_size = 32
-    game_renderer = GameRenderer('pacman', unified_size)
+    game_renderer = GameRenderer('pacman')
     game_renderer.tick()
