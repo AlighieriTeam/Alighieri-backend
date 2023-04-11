@@ -9,9 +9,10 @@ GAME_TYPES = {
 
 
 class Player:  # simple player class to show players in game page automatically
-    def __init__(self, id, name):
+    def __init__(self, id, name, is_owner=False):
         self.id = id
         self.name = name
+        self.is_owner = is_owner
 
     def to_json(self):
         return json.dumps(self, default=lambda o: o.__dict__,
@@ -39,9 +40,18 @@ class Room:
         self.players: list[Player] = []
         self.names = generate_nicks(GAME_TYPES[game_type])
 
-    def add_player(self):
-        player_id = len(self.players)
-        player = Player(player_id + 1, self.names[player_id])
-        if len(self.players) <= GAME_TYPES.get(self.game_type):
-            self.players.append(player)
+    def add_player(self, is_owner=False) -> Player | None:
+        if len(self.players) >= GAME_TYPES.get(self.game_type):  # check at first, don't make unnecessary operation
+            return None
+        occupied_ids = set(player.id for player in self.players)  # get all occupied ids in Room
+        avail_ids = set(i for i in range(GAME_TYPES.get(self.game_type)))  # get all available ids based on game type
+        player_id = list(avail_ids - occupied_ids)[0]  # get first free id
+        player = Player(player_id, self.names[player_id], is_owner=is_owner)
+        self.players.append(player)
         return player
+
+    def del_player(self, id: int):
+        for player in self.players:
+            if player.id == id:
+                self.players.remove(player)
+                break

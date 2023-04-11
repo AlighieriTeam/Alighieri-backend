@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for, session, json
+from flask import Blueprint, render_template, request, redirect, url_for, session, json, flash
 
 from . import find_game
 
@@ -23,7 +23,7 @@ def room():
 
         game_type = request.form.get('game')
         curr_game = Room(game_type)
-        player = curr_game.add_player()
+        player = curr_game.add_player(is_owner=True)
 
         rooms[pin] = curr_game
 
@@ -37,7 +37,6 @@ def room():
     # if tried to enter /room directly - redirect to choose
     return redirect(url_for('.choose'))
 
-
 @views.route('/join', methods=['GET', 'POST'])
 def join():
     if request.method == 'POST':
@@ -46,9 +45,13 @@ def join():
         pin = request.form.get('pin')
         curr_game = find_game(pin)
         if curr_game is None:
+            flash('Room with given id does not exist', 'alert-danger')  # second parameter must be existing class in BootStrap !
             return redirect(url_for('.choose'))
 
         player = curr_game.add_player()
+        if not player:
+            flash('Room is full', 'alert-info')
+            return redirect(url_for('.choose'))
 
         rooms[pin] = curr_game
 
@@ -64,7 +67,9 @@ def join():
 
 @views.route('/choose')
 def choose():
-    session.clear()
+    #session.clear()    # flashing does not work when session is cleared
+    msg = request.args.get('msg')
+    if msg: flash(msg, 'alert-info')
     return render_template("choose.html")
 
 @views.route('/game')
