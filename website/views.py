@@ -42,10 +42,15 @@ def join():
     if request.method == 'POST':
         from . import rooms
 
+
         pin = request.form.get('pin')
         curr_game = find_game(pin)
         if curr_game is None:
             flash('Room with given id does not exist', 'alert-danger')  # second parameter must be existing class in BootStrap !
+            return redirect(url_for('.choose'))
+
+        if curr_game.started:
+            flash('Game already started', 'alert-danger')  # second parameter must be existing class in BootStrap !
             return redirect(url_for('.choose'))
 
         player = curr_game.add_player()

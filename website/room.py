@@ -39,6 +39,7 @@ class Room:
         self.game_type = game_type
         self.players: list[Player] = []
         self.names = generate_nicks(GAME_TYPES[game_type])
+        self.started = False
 
     def add_player(self, is_owner=False) -> Player | None:
         if len(self.players) >= GAME_TYPES.get(self.game_type):  # check at first, don't make unnecessary operation
