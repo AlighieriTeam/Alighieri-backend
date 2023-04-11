@@ -44,7 +44,7 @@ def create_app():
     def disconnect():
         room = session.get("room")
         player = json.loads(session.get("player"))
-        if not room or not player or (rooms.get(room) and not rooms.get(room).started):
+        if not room or not player:
             return
         if room not in rooms:
             leave_room(room)
