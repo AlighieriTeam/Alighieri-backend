@@ -56,3 +56,6 @@ class Room:
             if player.id == id:
                 self.players.remove(player)
                 break
+
+    def get_player_dict_list(self):
+        return [vars(p) for p in self.players]

@@ -36,6 +36,10 @@ def create_app():
             return
 
         join_room(room)
+        curr_game = find_game(room)
+        if player not in curr_game.get_player_dict_list():
+            player = curr_game.add_player()
+            player = vars(player)
 
         emit("connection", player, to=room)
         print(f"{player['name']} joined room {room}")
