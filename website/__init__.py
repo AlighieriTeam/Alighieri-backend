@@ -1,7 +1,7 @@
 import json
 from typing import Optional
 
-from flask import Flask, session
+from flask import Flask, session, url_for
 from flask_socketio import join_room, leave_room, send, SocketIO, emit
 from .room import Room
 
@@ -66,5 +66,19 @@ def create_app():
             del_room(room)
         else: emit("disconnection", player, to=room)
         print(f"{player['name']} left room {room}")
+
+    @socketio.on('start_game')
+    def start_game():
+        room = session.get("room")
+        player = json.loads(session.get("player"))
+        if not room or not player or not player['is_owner']:
+            return
+        if room not in rooms:
+            leave_room(room)
+            return
+        curr_game = find_game(room)
+        curr_game.started = True
+        socketio.emit('redirect', url_for('views.game'), to=room)
+
 
     return app, socketio
