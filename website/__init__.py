@@ -55,7 +55,8 @@ def create_app():
             return
 
         curr_game = find_game(room)  # room === pin in session
-        curr_game.del_player(int(player["id"]))
+        if not curr_game.started:
+            curr_game.del_player(int(player["id"]))
 
         leave_room(room)
 
