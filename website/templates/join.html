@@ -12,13 +12,66 @@
             <p class="room-pin">{{game_pin}}</p>
             <span class="room-pin-subtext">Kod pokoju</span>
         </div>
-        <!--TODO: implement real Player class, this is a simple example-->
-        {% for player in players %} <!--generate players-->
-            <div id="player_{{ player.id }}" class="player_div player_gradient_{{ player.id }}">{{ player.name }}</div>
-        {% endfor %}
+            <div id="player-list">
+
+            </div>
         <div style="text-align: center;">
-            <button class="cancel-game-button" onclick="window.location.href='{{ url_for('views.choose') }}'">Wyjdź</button>
+            <button class="cancel-game-button" onclick="leave()">Wyjdź</button>
         </div>
     </div>
 </div>
+<!--TODO: move common elements of this script to file-->
+<!--TODO: add comments to explain how it works or make drawio-->
+<script type="text/javascript">
+    const socketio = io();
+
+    const playerMap = new Map();
+
+    function refreshPlayerList() {
+        const playerList = document.getElementById("player-list");
+        let content = "";
+        for (const [id, name] of playerMap.entries()) {
+            content += `<div id="player_${id}" class="player_div player_gradient_${id}">${name}</div>`
+        }
+        playerList.innerHTML = content;
+    }
+
+    function leave(){
+        socketio.emit('disconnection');
+        window.location.href='{{ url_for('views.choose') }}';
+    }
+
+    const addPlayer = (player) => {
+        if (!playerMap.has(player.id) || playerMap.get(player.id) === "") {
+            playerMap.set(player.id, player.name);
+        }
+        refreshPlayerList();
+        console.log(player.id);
+        console.log(player.name);
+    };
+
+    socketio.on("connection", (player) => {
+        console.log("[JS] something connected " + player["name"]);
+        addPlayer(player);
+    });
+
+    socketio.on('disconnection', (player) => {
+        console.log('[JS] user disconnected ' + player["name"]);
+        const playerList = document.getElementById("player-list");
+        playerList.innerHTML = "";
+        playerMap.delete(player["id"]);
+        refreshPlayerList();
+    });
+
+    socketio.on('redirect', function(destination) {
+        window.location.href = destination;
+    });
+
+    socketio.emit('connected');
+</script>
+{% for player in players %}
+    <script>
+        addPlayer(JSON.parse({{ player | tojson }}));
+    </script>
+{% endfor %}
 {% endblock %}
