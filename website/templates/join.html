@@ -31,13 +31,17 @@
         const playerList = document.getElementById("player-list");
         let content = "";
         for (const [id, name] of playerMap.entries()) {
-            content += `<div id="player_${id}" class="player_div player_gradient_${id}">${name}</div>`
+            content += `
+                <div id="player_${id}" class="player_div player_gradient_${id}">
+                    <div class="ls-player-name">${name}</div>
+                    <div class="ls-player-del"></div>
+                </div>
+            `
         }
         playerList.innerHTML = content;
     }
 
     function leave(){
-        socketio.emit('disconnection');
         window.location.href='{{ url_for('views.choose') }}';
     }
 
@@ -66,6 +70,24 @@
     socketio.on('redirect', function(destination) {
         window.location.href = destination;
     });
+
+    var actual_player_id = {{ actual_player_id }}
+
+    socketio.on('kick', function(json) {
+        if(json["id"] == actual_player_id){
+            window.location.href = json["dest"];
+        }
+        else{
+            delPlayer(json["id"])
+        }
+    });
+
+    function delPlayer(player_id){
+        const playerList = document.getElementById("player-list");
+        playerList.innerHTML = "";
+        playerMap.delete(player_id);
+        refreshPlayerList();
+    }
 
     socketio.emit('connected');
 </script>

@@ -69,7 +69,7 @@ def join():
 
         players = [p.to_json() for p in curr_game.players]
 
-        return render_template("join.html", players=players, game_pin=pin)
+        return render_template("join.html", players=players, actual_player_id=player.id, game_pin=pin)
 
     # if tried to enter /join directly - redirect to choose
     return redirect(url_for('.choose'))

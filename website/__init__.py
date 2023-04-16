@@ -74,7 +74,6 @@ def create_app():
             leave_room(room)
             return
 
-        join_room(room)
         curr_game = find_game(room)
 
         player = curr_game.add_player(name=bot_data['name'], is_bot=True)
@@ -83,5 +82,24 @@ def create_app():
 
         emit("connection", player, to=room)
         print(f"{player['name']} joined room {room}")
+
+    @socketio.on("del_player")
+    def del_player(player):
+        room = session.get("room")
+        if room not in rooms:
+            leave_room(room)
+            return
+
+        curr_game = find_game(room)  # room === pin in session
+        curr_game.del_player(int(player["id"]))
+
+        # TODO: handle with this, dont have siła today for this
+        # if uncomment we disconnect owner when delete bot
+        # if commented we not disconnect player when kick player
+        #leave_room(room)    # if to specify if it is a player or a bot
+
+        destination = 'choose?msg=You ware kicked by owner of the room'  # it is necessary to show info alert for another players
+        emit('kick', {"dest": destination, "id": player["id"]}, to=room)
+        print(f"{player['name']} was kicked from {room}")
 
     return app, socketio

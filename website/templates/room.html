@@ -24,10 +24,11 @@
                 <button class="btn btn-lg btn-secondary dropdown-toggle btn-success rounded-pill ls-dropdown-btn" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Dodaj bota
                 </button>
+                <!--TODO: style dropdown list-->
                 <div class="dropdown-menu ls-dropdown-menu" aria-labelledby="dropdownMenuButton">
                     {% for b_key, b_val in bots.items() %}
                         <!--For now only b_key is used (b_key == bot name), we have to consider what data bots need to work-->
-                        <span class="dropdown-item" onclick="send_bot('{{ b_key }}', '{{ b_val }}')">{{ b_key }}</span>
+                        <span class="dropdown-item" onclick="sendBot('{{ b_key }}', '{{ b_val }}')">{{ b_key }}</span>
                     {% endfor %}
                 </div>
             </div>
@@ -35,13 +36,23 @@
         </div>
     </div>
 </div>
-
+<!--TODO: refactor this a little-->
+<!--TODO: start writing drawio to this-->
 <script type="text/javascript">
     const socketio = io();
 
-    function send_bot(b_key, b_val){    // b_val unused
+    function sendBot(b_key, b_val){    // b_val unused
         socketio.emit('add_bot', {name: b_key});
         console.log("bot sent: " + b_key);
+    }
+
+    function delPlayer(player_id, player_name){
+        console.log("player was kicked: " + player_id + " " + player_name);
+        const playerList = document.getElementById("player-list");
+        playerList.innerHTML = "";
+        playerMap.delete(player_id);
+        refreshPlayerList();
+        socketio.emit('del_player', {id: player_id, name: player_name});
     }
 
     const playerMap = new Map();
@@ -50,13 +61,30 @@
         const playerList = document.getElementById("player-list");
         let content = "";
         for (const [id, name] of playerMap.entries()) {
-            content += `<div id="player_${id}" class="player_div player_gradient_${id}">${name}</div>`
+            if(id != 0){
+                content += `
+                    <div id="player_${id}" class="player_div player_gradient_${id}">
+                        <div class="ls-player-name">${name}</div>
+                        <div class="ls-player-del">
+                          <i class="bi bi-x-circle"></i>
+                          <i class="bi bi-x-circle-fill" onclick="delPlayer(${id}, '${name}')"></i>
+                        </div>
+                    </div>
+                `
+            }
+            else{
+                content += `
+                    <div id="player_${id}" class="player_div player_gradient_${id}">
+                        <div class="ls-player-name">${name}</div>
+                        <div class="ls-player-del"></div>
+                    </div>
+                `
+            }
         }
         playerList.innerHTML = content;
     }
 
     function leave(){
-        socketio.emit('disconnection');
         window.location.href='{{ url_for('views.choose') }}';
     }
 
