@@ -7,14 +7,12 @@ from .room import Room, Player
 
 rooms = {}
 
-
 def find_game(pin: str) -> Optional[Room]:
     return rooms.get(pin)
 
 def del_room(pin: str) -> None:
     if pin in rooms.keys():
         del rooms[pin]
-
 
 def create_app():
     app = Flask(__name__)
@@ -77,6 +75,7 @@ def create_app():
         curr_game = find_game(room)
 
         player = curr_game.add_player(name=bot_data['name'], is_bot=True)
+        # TODO: try to inform owner that room is full, somehow by flash, disable add bot button, js alert?
         if player is None: return
         player = vars(player)
 
@@ -92,11 +91,6 @@ def create_app():
 
         curr_game = find_game(room)  # room === pin in session
         curr_game.del_player(int(player["id"]))
-
-        # TODO: handle with this, dont have siła today for this
-        # if uncomment we disconnect owner when delete bot
-        # if commented we not disconnect player when kick player
-        #leave_room(room)    # if to specify if it is a player or a bot
 
         destination = 'choose?msg=You ware kicked by owner of the room'  # it is necessary to show info alert for another players
         emit('kick', {"dest": destination, "id": player["id"]}, to=room)

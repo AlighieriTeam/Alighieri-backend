@@ -74,6 +74,8 @@
     var actual_player_id = {{ actual_player_id }}
 
     socketio.on('kick', function(json) {
+        //console.log("json id: " + json["id"]);
+        //console.log("curr id: " + actual_player_id);
         if(json["id"] == actual_player_id){
             window.location.href = json["dest"];
         }

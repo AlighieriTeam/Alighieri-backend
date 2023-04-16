@@ -76,9 +76,13 @@ def join():
 
 @views.route('/choose')
 def choose():
-    #session.clear()    # flashing does not work when session is cleared
     msg = request.args.get('msg')
     if msg: flash(msg, 'alert-info')
+    # cannot clear session (flashing not work), but can clear room associated wth session to keep no duplicating player during refresh
+    # Solutions
+    # 1. left it like it is, clearing only room associated with session and keep flasking working
+    # 2. clear whole session and flashing not work, so we will need to write our own popups with info for players
+    session['room'] = None
     return render_template("choose.html")
 
 @views.route('/game')

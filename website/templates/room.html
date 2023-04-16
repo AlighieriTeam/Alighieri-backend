@@ -24,11 +24,11 @@
                 <button class="btn btn-lg btn-secondary dropdown-toggle btn-success rounded-pill ls-dropdown-btn" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Dodaj bota
                 </button>
-                <!--TODO: style dropdown list-->
+                <!--TODO: style dropdown list, add pointer on hover-->
                 <div class="dropdown-menu ls-dropdown-menu" aria-labelledby="dropdownMenuButton">
                     {% for b_key, b_val in bots.items() %}
                         <!--For now only b_key is used (b_key == bot name), we have to consider what data bots need to work-->
-                        <span class="dropdown-item" onclick="sendBot('{{ b_key }}', '{{ b_val }}')">{{ b_key }}</span>
+                        <span class="dropdown-item" onclick="addBot('{{ b_key }}', '{{ b_val }}')">{{ b_key }}</span>
                     {% endfor %}
                 </div>
             </div>
@@ -41,7 +41,7 @@
 <script type="text/javascript">
     const socketio = io();
 
-    function sendBot(b_key, b_val){    // b_val unused
+    function addBot(b_key, b_val){    // b_val unused
         socketio.emit('add_bot', {name: b_key});
         console.log("bot sent: " + b_key);
     }
