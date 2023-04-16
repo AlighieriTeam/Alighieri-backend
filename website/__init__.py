@@ -3,7 +3,7 @@ from typing import Optional
 
 from flask import Flask, session
 from flask_socketio import join_room, leave_room, send, SocketIO, emit
-from .room import Room
+from .room import Room, Player
 
 rooms = {}
 
@@ -66,5 +66,22 @@ def create_app():
             del_room(room)
         else: emit("disconnection", player, to=room)
         print(f"{player['name']} left room {room}")
+
+    @socketio.on("add_bot")
+    def add_bot(bot_data):
+        room = session.get("room")
+        if room not in rooms:
+            leave_room(room)
+            return
+
+        join_room(room)
+        curr_game = find_game(room)
+
+        player = curr_game.add_player(name=bot_data['name'], is_bot=True)
+        if player is None: return
+        player = vars(player)
+
+        emit("connection", player, to=room)
+        print(f"{player['name']} joined room {room}")
 
     return app, socketio

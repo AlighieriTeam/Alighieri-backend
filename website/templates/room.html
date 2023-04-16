@@ -19,12 +19,30 @@
         <div style="text-align: center;">
             <button class="cancel-game-button" onclick="window.location.href='{{ url_for('views.choose') }}'">Anuluj</button>
             <button class="start-game-button" onclick="window.location.href='{{ url_for('views.game') }}'">Rozpocznij gre</button>
+
+            <div class="dropdown ls-dropdown-div">
+                <button class="btn btn-lg btn-secondary dropdown-toggle btn-success rounded-pill ls-dropdown-btn" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Dodaj bota
+                </button>
+                <div class="dropdown-menu ls-dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    {% for b_key, b_val in bots.items() %}
+                        <!--For now only b_key is used (b_key == bot name), we have to consider what data bots need to work-->
+                        <span class="dropdown-item" onclick="send_bot('{{ b_key }}', '{{ b_val }}')">{{ b_key }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+
         </div>
     </div>
 </div>
 
 <script type="text/javascript">
     const socketio = io();
+
+    function send_bot(b_key, b_val){    // b_val unused
+        socketio.emit('add_bot', {name: b_key});
+        console.log("bot sent: " + b_key);
+    }
 
     const playerMap = new Map();
 
