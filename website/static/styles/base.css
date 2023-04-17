@@ -1,0 +1,28 @@
+body{
+    font-family: 'Ubuntu';
+    color: white;
+    background-attachment: fixed;
+    background-size: cover;
+}
+body::-webkit-scrollbar{
+    display: none;
+}
+
+.navbar_custom{
+    background: linear-gradient(rgba(78,19,175,1), rgba(56,0,163,1));
+    padding: 0;
+}
+
+.website_logo{
+    width: 90px;    /* 20% */
+    height: 80px;   /* 60% */
+}
+
+.website_text{
+    font-size: 60px;
+    opacity: 0.9;
+    /* border: 1px red solid; */
+}
+.website_text:hover{
+    opacity: 1;
+}

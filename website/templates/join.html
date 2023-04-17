@@ -1,8 +1,101 @@
-{% extends "base.html" %} {% block title %}Home{% endblock %} {% block content
-%}
-<form method="POST">
-    <input name="pin", id="pin">
-    <input type="submit" value="Join">
-</form>
+{% extends "base.html" %}
+{% block links %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/home.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/game.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/room.css') }}" />
+{% endblock %}
+{% block title %} Home {% endblock %}
+{% block content %}
+<div class="container_game">
+    <div class="room-rectangle center_div">
+        <div class="room-pin-container">
+            <p class="room-pin">{{game_pin}}</p>
+            <span class="room-pin-subtext">Kod pokoju</span>
+        </div>
+            <div id="player-list">
 
+            </div>
+        <div style="text-align: center;">
+            <button class="cancel-game-button" onclick="leave()">Wyjdź</button>
+        </div>
+    </div>
+</div>
+<!--TODO: move common elements of this script to file-->
+<!--TODO: add comments to explain how it works or make drawio-->
+<script type="text/javascript">
+    const socketio = io();
+
+    const playerMap = new Map();
+
+    function refreshPlayerList() {
+        const playerList = document.getElementById("player-list");
+        let content = "";
+        for (const [id, name] of playerMap.entries()) {
+            content += `
+                <div id="player_${id}" class="player_div player_gradient_${id}">
+                    <div class="ls-player-name">${name}</div>
+                    <div class="ls-player-del"></div>
+                </div>
+            `
+        }
+        playerList.innerHTML = content;
+    }
+
+    function leave(){
+        window.location.href='{{ url_for('views.choose') }}';
+    }
+
+    const addPlayer = (player) => {
+        if (!playerMap.has(player.id) || playerMap.get(player.id) === "") {
+            playerMap.set(player.id, player.name);
+        }
+        refreshPlayerList();
+        console.log(player.id);
+        console.log(player.name);
+    };
+
+    socketio.on("connection", (player) => {
+        console.log("[JS] something connected " + player["name"]);
+        addPlayer(player);
+    });
+
+    socketio.on('disconnection', (player) => {
+        console.log('[JS] user disconnected ' + player["name"]);
+        const playerList = document.getElementById("player-list");
+        playerList.innerHTML = "";
+        playerMap.delete(player["id"]);
+        refreshPlayerList();
+    });
+
+    socketio.on('redirect', function(destination) {
+        window.location.href = destination;
+    });
+
+    var actual_player_id = {{ actual_player_id }}
+
+    socketio.on('kick', function(json) {
+        //console.log("json id: " + json["id"]);
+        //console.log("curr id: " + actual_player_id);
+        if(json["id"] == actual_player_id){
+            window.location.href = json["dest"];
+        }
+        else{
+            delPlayer(json["id"])
+        }
+    });
+
+    function delPlayer(player_id){
+        const playerList = document.getElementById("player-list");
+        playerList.innerHTML = "";
+        playerMap.delete(player_id);
+        refreshPlayerList();
+    }
+
+    socketio.emit('connected');
+</script>
+{% for player in players %}
+    <script>
+        addPlayer(JSON.parse({{ player | tojson }}));
+    </script>
+{% endfor %}
 {% endblock %}

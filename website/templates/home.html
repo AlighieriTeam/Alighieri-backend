@@ -1,7 +1,67 @@
-{% extends "base.html" %} {% block title %}Home{% endblock %} {% block content
-%}
-<a href="{{ url_for('views.join_game') }}">Join a game</a>
-    <br/>
-<a href="{{ url_for('views.new_game') }}">Create new game</a>
+{% extends "base.html" %}
+{% block links %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/home.css') }}" />
+{% endblock %}
+{% block title %} Home {% endblock %}
+{% block content %}
+
+    <div class="container_home">
+        <div class="row">
+            <div class="col-sm-6 col-xs-12 col_div">
+                <div class="grid_div center_div fill">
+                    <img src="{{ url_for('static', filename='images/question_mark_mario.webp') }}" alt="">    <!--https://www.insidehook.com/article/internet/gen-z-question-marks-->
+                </div>
+            </div>
+            <div class="col-sm-6 col-xs-12 col_div">
+                <div class="grid_div center_div">
+                    <h1>Czym jest Alighieri ?</h1>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus pharetra scelerisque mauris, ut feugiat quam porttitor et. Mauris et orci dolor. Maecenas accumsan, turpis eget imperdiet bibendum, purus dolor accumsan orci, consequat ultrices ex nibh eu sem. Nulla velit massa, cursus sit amet facilisis aliquam, porttitor et velit</p>
+                    <p>Duis tristique lacus in porttitor molestie. Pellentesque pellentesque lacus vitae metus lacinia, porta elementum mi bibendum. Nullam malesuada rutrum ex, vehicula pulvinar neque ultrices elementum. Vivamus pulvinar urna molestie tortor molestie efficitur.</p>
+                    <p>Integer bibendum enim eget tempor iaculis. Phasellus at ornare tellus. Nam eu efficitur orci. Donec tincidunt sit amet elit sit amet ullamcorper. Nullam congue in mi vel pretium. Etiam dolor lacus, iaculis nec leo eget, congue auctor erat.</p>
+                </div>
+            </div>
+        </div>
+        <!--TODO create grid with games based on somekind jsonfile (easy way to add new things)-->
+        <div class="row">
+            <div class="col col_div">
+                <div class="grid_div center_div grid_long_div">
+                    <h3 style="text-align: center;">Dostępne gry</h3>
+                    <div class="row">
+                        <div class="col-sm-4 col-xs-12 col_div">
+                            <div class="grid_div center_div fill">
+                                <img src="{{ url_for('static', filename='images/pacman.png') }}" alt="">
+                            </div>
+                        </div>
+                        <div class="col-sm-4 col-xs-12 col_div">
+                            <div class="grid_div center_div fill">
+                                <img src="{{ url_for('static', filename='images/pong.png') }}" alt="">
+                            </div>
+                        </div>
+                        <div class="col-sm-4 col-xs-12 col_div">
+                            <div class="grid_div center_div fill">
+                                <img src="{{ url_for('static', filename='images/pacman.png') }}" alt="">
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-lg btn-block btn-success rounded-pill" onclick="window.location.href='/choose'">Przejdź do gier</button>
+                </div>
+            </div>
+         </div>
+        <div class="row">
+            <div class="col-sm-6 col-xs-12 col_div">
+                <div class="grid_div center_div">
+                    <h1>O nas</h1>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus pharetra scelerisque mauris, ut feugiat quam porttitor et. Mauris et orci dolor. Maecenas accumsan, turpis eget imperdiet bibendum, purus dolor accumsan orci, consequat ultrices ex nibh eu sem. Nulla velit massa, cursus sit amet facilisis aliquam, porttitor et velit</p>
+                    <p>Duis tristique lacus in porttitor molestie. Pellentesque pellentesque lacus vitae metus lacinia, porta elementum mi bibendum. Nullam malesuada rutrum ex, vehicula pulvinar neque ultrices elementum. Vivamus pulvinar urna molestie tortor molestie efficitur.</p>
+                    <p>Integer bibendum enim eget tempor iaculis. Phasellus at ornare tellus. Nam eu efficitur orci. Donec tincidunt sit amet elit sit amet ullamcorper. Nullam congue in mi vel pretium. Etiam dolor lacus, iaculis nec leo eget, congue auctor erat.</p>
+                </div>
+            </div>
+            <div class="col-sm-6 col-xs-12 col_div">
+                <div class="grid_div center_div fill">
+                    <img src="{{ url_for('static', filename='images/among_us.jpg') }}" alt="">    <!--https://www.radiotimes.com/technology/gaming/among-us-vr-release-date/-->
+                </div>
+            </div>
+        </div>
+    </div>
 
 {% endblock %}

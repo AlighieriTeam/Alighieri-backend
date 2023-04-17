@@ -1,0 +1,64 @@
+.room-rectangle{
+    position: absolute;
+    width: 560px;
+    height: min-content;
+    background: rgba(78, 19, 175, 0.85);
+    border-radius: 30px;
+    padding: 2em;
+}
+
+.room-pin {
+    font-size: 4em;
+    font-weight: bold;
+    color: #9ade23;
+}
+
+.room-pin-subtext {
+    font-size: 1.3em;
+    color: white;
+}
+
+.room-pin-container {
+    text-align: center;
+}
+
+.start-game-button{
+    width: 200px;
+    height: 90px;
+    font-size: 1.4em;
+    align-items: center;
+    display: inline-block;
+    color: #fff;
+    background: linear-gradient(180deg, #70A90D 0%, #488800 100%);
+    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+    margin: 0 auto;
+    border-radius: 30px;
+    border: none;
+}
+
+.cancel-game-button {
+    width: 200px;
+    height: 90px;
+    font-size: 1.4em;
+    align-items: center;
+    display: inline-block;
+    color: #fff;
+    background: linear-gradient(180deg, #3800a3 0%, #4e13af 100%);
+    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+    margin: 0.5em auto 0;
+    border-radius: 30px;
+    border: none;
+}
+
+.ls-dropdown-div{
+    margin-top: 20px;
+    width: 100%;
+}
+
+.ls-dropdown-btn{
+    width: 80%;
+}
+
+.ls-dropdown-menu{
+    width: 80%;
+}
