@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session, json, flash
 
-from . import find_game
+from . import find_game, cfg
 
 views = Blueprint('views', __name__)
 @views.route('/')
@@ -32,7 +32,7 @@ def room():
 
         players = [p.to_json() for p in curr_game.players]
 
-        return render_template("room.html", players=players, game_pin=pin)
+        return render_template("room.html", players=players, bots=cfg.avail_bots, game_pin=pin)
 
     # if tried to enter /room directly - redirect to choose
     return redirect(url_for('.choose'))
@@ -69,16 +69,20 @@ def join():
 
         players = [p.to_json() for p in curr_game.players]
 
-        return render_template("join.html", players=players, game_pin=pin)
+        return render_template("join.html", players=players, actual_player_id=player.id, game_pin=pin)
 
     # if tried to enter /join directly - redirect to choose
     return redirect(url_for('.choose'))
 
 @views.route('/choose')
 def choose():
-    #session.clear()    # flashing does not work when session is cleared
     msg = request.args.get('msg')
     if msg: flash(msg, 'alert-info')
+    # cannot clear session (flashing not work), but can clear room associated wth session to keep no duplicating player during refresh
+    # Solutions
+    # 1. left it like it is, clearing only room associated with session and keep flasking working
+    # 2. clear whole session and flashing not work, so we will need to write our own popups with info for players
+    session['room'] = None
     return render_template("choose.html")
 
 @views.route('/game')

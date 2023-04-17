@@ -3,10 +3,9 @@ from typing import Optional
 
 from flask import Flask, session
 from flask_socketio import join_room, leave_room, send, SocketIO, emit
-from .room import Room
+from .room import Room, Player
 
 rooms = {}
-
 
 def find_game(pin: str) -> Optional[Room]:
     return rooms.get(pin)
@@ -14,7 +13,6 @@ def find_game(pin: str) -> Optional[Room]:
 def del_room(pin: str) -> None:
     if pin in rooms.keys():
         del rooms[pin]
-
 
 def create_app():
     app = Flask(__name__)
@@ -66,5 +64,36 @@ def create_app():
             del_room(room)
         else: emit("disconnection", player, to=room)
         print(f"{player['name']} left room {room}")
+
+    @socketio.on("add_bot")
+    def add_bot(bot_data):
+        room = session.get("room")
+        if room not in rooms:
+            leave_room(room)
+            return
+
+        curr_game = find_game(room)
+
+        player = curr_game.add_player(name=bot_data['name'], is_bot=True)
+        # TODO: try to inform owner that room is full, somehow by flash, disable add bot button, js alert?
+        if player is None: return
+        player = vars(player)
+
+        emit("connection", player, to=room)
+        print(f"{player['name']} joined room {room}")
+
+    @socketio.on("del_player")
+    def del_player(player):
+        room = session.get("room")
+        if room not in rooms:
+            leave_room(room)
+            return
+
+        curr_game = find_game(room)  # room === pin in session
+        curr_game.del_player(int(player["id"]))
+
+        destination = 'choose?msg=You ware kicked by owner of the room'  # it is necessary to show info alert for another players
+        emit('kick', {"dest": destination, "id": player["id"]}, to=room)
+        print(f"{player['name']} was kicked from {room}")
 
     return app, socketio

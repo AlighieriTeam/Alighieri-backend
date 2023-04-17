@@ -50,3 +50,15 @@
     border: none;
 }
 
+.ls-dropdown-div{
+    margin-top: 20px;
+    width: 100%;
+}
+
+.ls-dropdown-btn{
+    width: 80%;
+}
+
+.ls-dropdown-menu{
+    width: 80%;
+}
