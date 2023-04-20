@@ -53,18 +53,20 @@ def create_app():
             return
 
         curr_game = find_game(room)  # room === pin in session
-        if not curr_game.started:
-            curr_game.del_player(int(player["id"]))
-            leave_room(room)
-            return
 
         # temporary 2nd condition for presentation
-        if player['is_owner'] and not curr_game.started:
-            # emitting that dest enable passing reason why redirecting (it will be visible by click on browser link)
-            destination = 'choose?msg=Owner of the room has left'   # it is necessary to show info alert for another players
-            emit('redirect', destination, to=room)
-            del_room(room)
-        else: emit("disconnection", player, to=room)
+        if not curr_game.started:
+            if player['is_owner']:
+                # emitting that dest enable passing reason why redirecting (it will be visible by click on browser link)
+                destination = 'choose?msg=Owner of the room has left'  # it is necessary to show info alert for another players
+                emit('redirect', destination, to=room)
+                del_room(room)
+            else:
+                curr_game.del_player(int(player["id"]))
+                leave_room(room)
+                emit("disconnection", player, to=room)
+                return
+
         print(f"{player['name']} left room {room}")
 
     @socketio.on('start_game')
