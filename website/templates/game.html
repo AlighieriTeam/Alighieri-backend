@@ -9,11 +9,10 @@
 
 <div class="container_game">
     <div class="row">
-        <div class="col-sm-12">
-            <div class="game_view">
-
-            </div>
-        </div>
+            <canvas id ="canvas" class="game_view">
+               <!--TODO: Make this universal to choosed game-->
+                <script type="text/javascript"  src ="{{ url_for('static', filename='scripts/pacman.js') }}" defer></script>
+            </canvas>
     </div>
     <div class="row">
         <div class="col-sm-6 col-xs-12">
@@ -31,7 +30,7 @@
                     <!--TODO: reset timer when we get back by browser arrow-->
                     <span id="time">15:00</span>    <!--after 30s timer finish counting and redirect to the choose page (by JS)-->
                 </div>
-                <button type="button" class="btn btn-lg btn-block btn-success rounded-pill" onclick="window.location.href='/choose'">Zakończ grę</button>
+                <button type="button" class="btn btn-lg btn-block btn-success rounded-pill" onclick="window.location.href='/choose'">End game</button>
             </div>
         </div>
     </div>
