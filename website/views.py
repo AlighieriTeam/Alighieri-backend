@@ -87,5 +87,17 @@ def choose():
 
 @views.route('/game')
 def game():
-    from .room import MOCK_PLAYERS
-    return render_template("game.html", players=MOCK_PLAYERS)    # pass player list of object to subsite
+    room = session.get('room')
+    player = json.loads(session.get("player"))
+    curr_game = find_game(room)
+    if not room or not player:
+        flash('You aren\'t assigned to this room', 'alert-danger')
+        return redirect(url_for('.choose'))
+    if not curr_game:
+        flash('Room with given id does not exist', 'alert-danger')
+        return redirect(url_for('.choose'))
+    if not curr_game.started:
+        flash('Game has not started yet', 'alert-danger')
+        return redirect(url_for('.choose'))
+
+    return render_template('game.html', players=curr_game.players)
