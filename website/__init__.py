@@ -55,8 +55,8 @@ def create_app():
         curr_game = find_game(room)  # room === pin in session
         if not curr_game.started:
             curr_game.del_player(int(player["id"]))
-
-        leave_room(room)
+            leave_room(room)
+            return
 
         if player['is_owner']:
             # emitting that dest enable passing reason why redirecting (it will be visible by click on browser link)
