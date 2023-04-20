@@ -1,9 +1,12 @@
 :root {
     --main-dark: #362754;
+    --main-dark-hover: #241A38;
     --main: #473370;
     --main-light: #9F8FCC;
     --accent-yep: #23E7C9;
+    --accent-yep-hover: #16CAAF;
     --accent-nope: #E26D5A;
+    --accent-nope-hover: #dd5540;
 }
 
 

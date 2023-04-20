@@ -36,6 +36,10 @@
     border: none;
 }
 
+.start-game-button:hover{
+    background: var(--accent-yep-hover);
+}
+
 .cancel-game-button {
     width: 200px;
     height: 60px;
@@ -48,6 +52,10 @@
     margin: 0.5em 1em auto 0;
     border-radius: 30px;
     border: none;
+}
+
+.cancel-game-button:hover{
+    background: var(--accent-nope-hover);
 }
 
 .ls-dropdown-div{
@@ -64,7 +72,14 @@
 }
 
 .ls-extended-button{
-    background: var(--main-dark);
-    color: white;
-    border: none;
+    background-color: var(--main-dark) !important;
+    color: white !important;
+    border-color: var(--main-dark) !important;
+}
+
+.ls-extended-button:hover, .ls-extended-button:focus,
+.ls-extended-button:active, .ls-extended-button:visited{
+    background-color: var(--main-dark-hover) !important;
+    color: white !important;
+    border-color: var(--main-dark-hover) !important;
 }

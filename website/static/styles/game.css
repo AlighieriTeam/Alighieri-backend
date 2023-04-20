@@ -47,3 +47,16 @@
 .ls-player-del:hover .bi-x-circle-fill {
     display: inline;
 }
+
+.ls-close-button{
+    background-color: var(--accent-yep) !important;
+    color: var(--main-dark)  !important;
+    border-color: var(--accent-yep) !important;
+}
+
+.ls-close-button:hover, .ls-close-button:focus,
+.ls-close-button:active, .ls-close-button:visited{
+    background-color: var(--accent-yep-hover) !important;
+    color: var(--main-dark) !important;
+    border-color: var(--accent-yep-hover) !important;
+}
