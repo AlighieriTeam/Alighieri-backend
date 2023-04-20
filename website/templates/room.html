@@ -10,19 +10,18 @@
     <div class="room-rectangle center_div">
         <div class="room-pin-container">
             <p class="room-pin">{{game_pin}}</p>
-            <span class="room-pin-subtext">Kod pokoju</span>
+            <span class="room-pin-subtext">Room code</span>
         </div>
         <!--TODO: implement real Player class, this is a simple example-->
         <div id="player-list">
 
         </div>
         <div style="text-align: center;">
-            <button class="cancel-game-button" onclick="window.location.href='{{ url_for('views.choose') }}'">Anuluj</button>
-            <button class="start-game-button" onclick="startGame();">Rozpocznij gre</button>
-
+            <button class="cancel-game-button" onclick="window.location.href='{{ url_for('views.choose') }}'">Cancel</button>
+            <button class="start-game-button" onclick="window.location.href='{{ url_for('views.game') }}'">Start game</button>
             <div class="dropdown ls-dropdown-div">
                 <button class="btn btn-lg btn-secondary dropdown-toggle btn-success rounded-pill ls-dropdown-btn" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Dodaj bota
+                    Add bot
                 </button>
                 <!--TODO: style dropdown list, add pointer on hover-->
                 <div class="dropdown-menu ls-dropdown-menu" aria-labelledby="dropdownMenuButton">
