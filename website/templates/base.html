@@ -25,13 +25,13 @@
 
     <title>{% block title %} Base {% endblock %}</title>
   </head>
-  <body style="background-image: url({{ url_for('static', filename='images/background_pacman_75p.png') }});">
+  <body style="background-image: url({{ url_for('static', filename='images/background.png') }});">
     <nav class="navbar sticky-top navbar-expand-lg navbar-dark navbar_custom">
       <div class="container-fluid">
           <a class="navbar-brand" href="/">
             <span class="website_text">
                 <img src="{{ url_for('static', filename='images/logo_cat.png') }}" alt="" class="d-inline-block align-text-top website_logo">
-                <span style="color: #ffc582;">AI</span>ighieri
+                <span style="color: var(--accent-nope);">AI</span>ighieri
             </span>
           </a>
             {% if request.url_rule.rule == '/' or request.url_rule.rule == '/home' %}
