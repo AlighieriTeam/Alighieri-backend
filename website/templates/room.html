@@ -19,7 +19,6 @@
         <div style="text-align: center;">
             <button class="cancel-game-button" onclick="window.location.href='{{ url_for('views.choose') }}'">Cancel</button>
             <button class="start-game-button" onclick="window.location.href='{{ url_for('views.game') }}'">Start game</button>
-
             <div class="dropdown ls-dropdown-div">
                 <button class="btn btn-lg btn-secondary dropdown-toggle btn-success rounded-pill ls-dropdown-btn" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Add bot
@@ -32,7 +31,6 @@
                     {% endfor %}
                 </div>
             </div>
-
         </div>
     </div>
 </div>
@@ -96,6 +94,9 @@
         console.log(player.id);
         console.log(player.name);
     };
+    function startGame() {
+        socketio.emit('start_game');
+    }
 
     socketio.on("connection", (player) => {
         console.log("[JS] something connected " + player["name"]);
@@ -108,6 +109,10 @@
         playerList.innerHTML = "";
         playerMap.delete(player["id"]);
         refreshPlayerList();
+    });
+
+    socketio.on('redirect', function(destination) {
+        window.location.href = destination;
     });
 
     socketio.emit('connected');
