@@ -58,7 +58,8 @@ def create_app():
             leave_room(room)
             return
 
-        if player['is_owner']:
+        # temporary 2nd condition for presentation
+        if player['is_owner'] and not curr_game.started:
             # emitting that dest enable passing reason why redirecting (it will be visible by click on browser link)
             destination = 'choose?msg=Owner of the room has left'   # it is necessary to show info alert for another players
             emit('redirect', destination, to=room)
