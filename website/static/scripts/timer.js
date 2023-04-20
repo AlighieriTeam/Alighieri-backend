@@ -17,7 +17,7 @@ function startTimer(duration, display) {
 }
 
 window.onload = function () {
-    var minutes = 30,
+    var minutes = 900,
         display = document.querySelector('#time');
     startTimer(minutes, display);
 };

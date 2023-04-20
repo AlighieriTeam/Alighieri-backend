@@ -2,7 +2,7 @@
     position: absolute;
     width: 560px;
     height: min-content;
-    background: rgba(78, 19, 175, 0.85);
+    background: var(--main);
     border-radius: 30px;
     padding: 2em;
 }
@@ -10,7 +10,7 @@
 .room-pin {
     font-size: 4em;
     font-weight: bold;
-    color: #9ade23;
+    color: var(--accent-yep)
 }
 
 .room-pin-subtext {
@@ -24,30 +24,38 @@
 
 .start-game-button{
     width: 200px;
-    height: 90px;
+    height: 60px;
     font-size: 1.4em;
     align-items: center;
     display: inline-block;
-    color: #fff;
-    background: linear-gradient(180deg, #70A90D 0%, #488800 100%);
+    color: var(--main-dark);
+    background: var(--accent-yep);
     box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
     margin: 0 auto;
     border-radius: 30px;
     border: none;
 }
 
+.start-game-button:hover{
+    background: var(--accent-yep-hover);
+}
+
 .cancel-game-button {
     width: 200px;
-    height: 90px;
+    height: 60px;
     font-size: 1.4em;
     align-items: center;
     display: inline-block;
-    color: #fff;
-    background: linear-gradient(180deg, #3800a3 0%, #4e13af 100%);
+    color: var(--main-dark);
+    background: var(--accent-nope);
     box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
-    margin: 0.5em auto 0;
+    margin: 0.5em 1em auto 0;
     border-radius: 30px;
     border: none;
+}
+
+.cancel-game-button:hover{
+    background: var(--accent-nope-hover);
 }
 
 .ls-dropdown-div{
@@ -61,4 +69,17 @@
 
 .ls-dropdown-menu{
     width: 80%;
+}
+
+.ls-extended-button{
+    background-color: var(--main-dark) !important;
+    color: white !important;
+    border-color: var(--main-dark) !important;
+}
+
+.ls-extended-button:hover, .ls-extended-button:focus,
+.ls-extended-button:active, .ls-extended-button:visited{
+    background-color: var(--main-dark-hover) !important;
+    color: white !important;
+    border-color: var(--main-dark-hover) !important;
 }

@@ -1,7 +1,7 @@
 
 .choose-rectangle{
     position: absolute;
-    background: rgba(78, 19, 175, 0.85);
+    background: var(--main);
     border-radius: 30px;
 }
 .choose-image{
@@ -10,11 +10,10 @@
     height: 30%;
     transition: transform .2s;
     object-fit: fill;
-    border: 2px solid #000;
     border-radius: 31px;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 }
 .choose-image:hover{
-    border-color: #ccc;
     transform: scale(1.1);
     cursor: pointer;
 }
@@ -30,11 +29,18 @@
     display: flex;
     align-items: center;
     display: inline-block;
-    color: #FFFFFF;
-    background: linear-gradient(180deg, #70A90D 0%, #488800 100%);
+    border: none;
+    color: var(--main-dark);
+    background: var(--accent-yep);
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
     border-radius: 30px;
 }
+
+.choose-button:hover{
+    border: none;
+    background: var(--accent-yep-hover);
+}
+
 .choose-button-text-align{
     text-align: center;
 }
@@ -51,13 +57,13 @@
 .choose-text{
     position: absolute;
     width: 80%;
-    heidht:25%;
+    height:25%;
     font-style: normal;
     font-weight: 400;
     font-size: 50px;
     line-height: 39px;
     align-items: center;
-    color: #FFFFFF;
+    color: white;
     border-radius: 30px;
 }
 
@@ -73,8 +79,9 @@
     display: flex;
     align-items: center;
     text-align: center;
-    color: #000000;
-    background: #9C6EEA;
+    color: var(--main-dark);
+    background: var(--main-light);
+    border: none;
 }
 
 

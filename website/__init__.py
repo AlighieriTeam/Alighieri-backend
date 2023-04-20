@@ -1,7 +1,7 @@
 import json
 from typing import Optional
 
-from flask import Flask, session
+from flask import Flask, session, url_for
 from flask_socketio import join_room, leave_room, send, SocketIO, emit
 from .room import Room, Player
 
@@ -53,17 +53,34 @@ def create_app():
             return
 
         curr_game = find_game(room)  # room === pin in session
-        curr_game.del_player(int(player["id"]))
 
-        leave_room(room)
+        # temporary 2nd condition for presentation
+        if not curr_game.started:
+            if player['is_owner']:
+                # emitting that dest enable passing reason why redirecting (it will be visible by click on browser link)
+                destination = 'choose?msg=Owner of the room has left'  # it is necessary to show info alert for another players
+                emit('redirect', destination, to=room)
+                del_room(room)
+            else:
+                curr_game.del_player(int(player["id"]))
+                leave_room(room)
+                emit("disconnection", player, to=room)
+                return
 
-        if player['is_owner']:
-            # emitting that dest enable passing reason why redirecting (it will be visible by click on browser link)
-            destination = 'choose?msg=Owner of the room has left'   # it is necessary to show info alert for another players
-            emit('redirect', destination, to=room)
-            del_room(room)
-        else: emit("disconnection", player, to=room)
         print(f"{player['name']} left room {room}")
+
+    @socketio.on('start_game')
+    def start_game():
+        room = session.get("room")
+        player = json.loads(session.get("player"))
+        if not room or not player or not player['is_owner']:
+            return
+        if room not in rooms:
+            leave_room(room)
+            return
+        curr_game = find_game(room)
+        curr_game.started = True
+        socketio.emit('redirect', url_for('views.game'), to=room)
 
     @socketio.on("add_bot")
     def add_bot(bot_data):

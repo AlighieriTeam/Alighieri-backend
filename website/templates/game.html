@@ -9,18 +9,20 @@
 
 <div class="container_game">
     <div class="row">
-        <div class="col-sm-12">
-            <div class="game_view">
-
-            </div>
-        </div>
+            <canvas id ="canvas" class="game_view">
+               <!--TODO: Make this universal to choosed game-->
+                <script type="text/javascript"  src ="{{ url_for('static', filename='scripts/pacman.js') }}" defer></script>
+            </canvas>
     </div>
     <div class="row">
         <div class="col-sm-6 col-xs-12">
             <div class="grid_div center_div" style="margin-top: 25px;">
                 <!--TODO: implement real Player class, this is a simple example-->
                 {% for player in players %} <!--generate players-->
-                    <div id="player_{{ player.id }}" class="player_div player_gradient_{{ player.id }}">{{ player.name }}</div>
+                    <div id="player_{{ player.id }}" class="player_div player_gradient_{{ player.id }}">
+                        <div class="ls-player-name">{{ player.name }}</div>
+                    <div class="ls-player-del"></div>
+                </div>
                 {% endfor %}
             </div>
         </div>
@@ -31,7 +33,8 @@
                     <!--TODO: reset timer when we get back by browser arrow-->
                     <span id="time">15:00</span>    <!--after 30s timer finish counting and redirect to the choose page (by JS)-->
                 </div>
-                <button type="button" class="btn btn-lg btn-block btn-success rounded-pill" onclick="window.location.href='/choose'">Zakończ grę</button>
+
+                <button type="button" class="shadow-none btn btn-lg btn-block btn-success rounded-pill ls-close-button" onclick="window.location.href='/choose'">End game</button>
             </div>
         </div>
     </div>

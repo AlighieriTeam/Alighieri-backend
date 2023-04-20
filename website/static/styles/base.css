@@ -1,3 +1,15 @@
+:root {
+    --main-dark: #362754;
+    --main-dark-hover: #241A38;
+    --main: #473370;
+    --main-light: #9F8FCC;
+    --accent-yep: #23E7C9;
+    --accent-yep-hover: #16CAAF;
+    --accent-nope: #E26D5A;
+    --accent-nope-hover: #dd5540;
+}
+
+
 body{
     font-family: 'Ubuntu';
     color: white;
@@ -9,7 +21,7 @@ body::-webkit-scrollbar{
 }
 
 .navbar_custom{
-    background: linear-gradient(rgba(78,19,175,1), rgba(56,0,163,1));
+    background: linear-gradient(var(--main-dark), var(--main));
     padding: 0;
 }
 
