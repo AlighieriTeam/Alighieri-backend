@@ -3,7 +3,6 @@ import random
 import numpy as np
 import pygame
 from enum import Enum
-import bot
 
 UNIFIED_SIZE = 32
 
@@ -74,6 +73,7 @@ class MovableGameObject(GameObject):
         if new_position[1] < 1 or new_position[1] > self._renderer._board.shape[1]:
             return False
         check = self._renderer._board[new_position[0], new_position[1]]
+        # TODO should agents move through themselves?
         return check != MapElements.WALL.value and check != MapElements.BLOCK.value
 
     def get_possible_directions(self):
@@ -129,7 +129,6 @@ class GameRenderer:
         self._width = shape[0] * UNIFIED_SIZE
         self._height = shape[1] * UNIFIED_SIZE
         self._screen = pygame.display.set_mode((self._width, self._height))
-        #self._score_display = pygame.font.Font(None, 32)
         pygame.display.set_caption(name)
         self._finished = False
 
@@ -191,6 +190,7 @@ class GameRenderer:
 
     def _update_scores(self):
         for i, hero in enumerate(self._game_objects['heroes']):
+            # TODO displaying under screen
             print(hero._score)
 
     def _render_all_objects(self):
