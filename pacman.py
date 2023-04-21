@@ -14,8 +14,8 @@ class Pacman(Base.Hero):
 
 
 class PacmanRenderer(Base.GameRenderer):
-    def new_hero(self):
-        return Pacman(self, Base.UNIFIED_SIZE, Base.UNIFIED_SIZE, Base.UNIFIED_SIZE//3)
+    def new_hero(self, x, y):
+        return Pacman(self, x, y, Base.UNIFIED_SIZE//3)
 
 
 if __name__ == "__main__":
