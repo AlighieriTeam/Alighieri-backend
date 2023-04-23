@@ -10,14 +10,14 @@ class Pacman(Base.Hero):
         self.eat_cookie()
 
     def eat_cookie(self):
-        self._score += self._renderer.delete_cookie(self.board_position)
+        self._score += self._controller.delete_cookie(self.board_position)
 
 
-class PacmanRenderer(Base.GameRenderer):
+class PacmanController(Base.GameController):
     def new_hero(self, x, y):
         return Pacman(self, x, y, Base.UNIFIED_SIZE//3)
 
 
 if __name__ == "__main__":
-    game_renderer = PacmanRenderer('pacman')
+    game_renderer = PacmanController('pacman')
     game_renderer.tick()
