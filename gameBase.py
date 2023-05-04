@@ -3,6 +3,8 @@ import random
 import numpy as np
 from enum import Enum
 
+import app
+
 UNIFIED_SIZE = 32
 
 
@@ -18,9 +20,11 @@ class GameObject:
     def draw(self):
         if self._circle:
             # TODO drawCircle
+            app.draw_circle(100, 100, 'yellow', 20)
             pass
         else:
             # TODO drawRectangle
+            app.draw_rectangle(10, 10, 'blue', 40, 40)
             pass
 
     def tick(self):
@@ -187,10 +191,12 @@ class GameController:
     def _update_scores(self):
         for i, hero in enumerate(self._game_objects['heroes']):
             # TODO displaying under screen
+            app.draw_text(300, 300, "Hello")
             print(hero._score)
 
     def _render_all_objects(self):
         # TODO clearAll
+        app.clear_all()
         for key, values in self._game_objects.items():
             if isinstance(values, list):
                 for value in values:
