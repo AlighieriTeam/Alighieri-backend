@@ -128,8 +128,9 @@ def create_app():
         print("called")
         room = session.get("room")
         curr_game = find_game(room)
+        join_room(room)
         print(room)
-        emit("test_js", curr_game.players, to=room)
+        emit("test_js", "", to=room)
 
 
     return app, socketio
