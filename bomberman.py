@@ -27,11 +27,12 @@ class Bomber(Base.Hero):
 
     def tick(self):
         super().tick()
+
     def plant_bomb(self):
         pass
 
 
 if __name__ == "__main__":
     unified_size = 32
-    game_renderer = Base.GameRenderer('bomberman', unified_size)
+    game_renderer = Base.GameController('bomberman')
     game_renderer.tick()

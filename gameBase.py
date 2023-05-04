@@ -1,15 +1,14 @@
 import random
 
 import numpy as np
-import pygame
 from enum import Enum
-from pygame.locals import *
 
 UNIFIED_SIZE = 32
 
+
 class GameObject:
     def __init__(self, in_renderer, x, y, in_size: int, in_color=(255, 0, 0), is_circle: bool = False):
-        self._renderer: GameRenderer = in_renderer
+        self._controller: GameController = in_renderer
         self._color = in_color
         self.board_position = translate_screen_to_board([x, y])
         self.screen_position = [x, y]
@@ -18,20 +17,21 @@ class GameObject:
 
     def draw(self):
         if self._circle:
-            pygame.draw.circle(self._renderer._screen, self._color, (self.screen_position[0] + UNIFIED_SIZE/2, self.screen_position[1] + UNIFIED_SIZE/2), self._size)
+            # TODO drawCircle
+            pass
         else:
-            pygame.draw.rect(self._renderer._screen, self._color,
-                             pygame.Rect(self.screen_position[0], self.screen_position[1], self._size, self._size), border_radius=3)
+            # TODO drawRectangle
+            pass
 
     def tick(self):
         pass
 
     def set_position(self, in_position):
-        temp = self._renderer._board[self.board_position[0], self.board_position[1]]
-        self._renderer._board[self.board_position[0], self.board_position[1]] = MapElements.PATH.value
+        temp = self._controller._board[self.board_position[0], self.board_position[1]]
+        self._controller._board[self.board_position[0], self.board_position[1]] = MapElements.PATH.value
         self.board_position = in_position
         self.screen_position = translate_board_to_screen(in_position)
-        self._renderer._board[self.board_position[0], self.board_position[1]] = temp
+        self._controller._board[self.board_position[0], self.board_position[1]] = temp
 
 
 class Wall(GameObject):
@@ -62,18 +62,18 @@ class MovableGameObject(GameObject):
         self.last_direction = self.current_direction
         self.current_direction = new_direction
 
-    # TODO: co jeżeli bot chce wejść w ścianę?
     def move(self):
         if self.check_direction(self.current_direction):
             self.set_position([a + b for a, b in zip(self.board_position, self.current_direction.value)])
 
     def check_direction(self, direction):
         new_position = [a + b for a, b in zip(self.board_position, direction.value)]
-        if new_position[0] < 0 or new_position[0] > self._renderer._board.shape[0]:
+        if new_position[0] < 0 or new_position[0] > self._controller._board.shape[0]:
             return False
-        if new_position[1] < 1 or new_position[1] > self._renderer._board.shape[1]:
+        if new_position[1] < 1 or new_position[1] > self._controller._board.shape[1]:
             return False
-        check = self._renderer._board[new_position[0], new_position[1]]
+        check = self._controller._board[new_position[0], new_position[1]]
+        # TODO should agents move through themselves?
         return check != MapElements.WALL.value and check != MapElements.BLOCK.value
 
     def get_possible_directions(self):
@@ -100,29 +100,32 @@ class Hero(MovableGameObject):
     def __init__(self, in_surface, x, y, in_size: int):
         super().__init__(in_surface, x, y, in_size, (255, 255, 0))
         self._score = 0
-        self._score_display = pygame.font.Font(None, 32)
+        self.bot = Bot()
 
     def tick(self):
+        self.set_direction(self.bot.get_action(GameState(self.get_possible_directions())))
         self.move()
 
-    def draw(self):
-        super().draw()
-        score_text = self._score_display.render(f'{self._score}', True, (255, 255, 255))
-        self._renderer._screen.blit(score_text, (10, 10))
+
+class GameState:
+    def __init__(self, possibilities):
+        self.possibilities = possibilities
 
 
+class Bot:
+    def get_action(self, gameState: GameState):
+        if gameState.possibilities:
+            return random.choice(gameState.possibilities)
+        return Direction.STOP
 
-class GameRenderer:
+
+class GameController:
     def __init__(self, name):
-        pygame.init()
-        pygame.font.init()
         self._game_objects = {}
         self._board = self.import_map(name)
         shape = self._board.shape
         self._width = shape[0] * UNIFIED_SIZE
         self._height = shape[1] * UNIFIED_SIZE
-        self._screen = pygame.display.set_mode((self._width, self._height))
-        pygame.display.set_caption(name)
         self._finished = False
 
     def import_map(self, name):
@@ -155,7 +158,7 @@ class GameRenderer:
                             ghost = Ghost(self, translated[0] + UNIFIED_SIZE // 2, translated[1] + UNIFIED_SIZE // 2, UNIFIED_SIZE // 3)
                             ghosts.append(ghost)
                         case MapElements.HERO.value:
-                            heroes.append(self.new_hero())
+                            heroes.append(self.new_hero(translated[0] + UNIFIED_SIZE // 2, translated[1] + UNIFIED_SIZE // 2))
                         case _:
                             pass
                     board_line.append(mark)
@@ -169,19 +172,25 @@ class GameRenderer:
         }
         return board
 
-    def new_hero(self):
-        return Hero(self, UNIFIED_SIZE, UNIFIED_SIZE, UNIFIED_SIZE//3)
+    def new_hero(self, x, y):
+        return Hero(self, x, y, UNIFIED_SIZE//3)
 
     def tick(self):
         while not self._finished:
             self._render_all_objects()
+            self._update_scores()
             self._handle_events()
             self.check_collisions()
             self.is_over()
         print("Game over")
 
+    def _update_scores(self):
+        for i, hero in enumerate(self._game_objects['heroes']):
+            # TODO displaying under screen
+            print(hero._score)
+
     def _render_all_objects(self):
-        self._screen.fill((0, 0, 0))
+        # TODO clearAll
         for key, values in self._game_objects.items():
             if isinstance(values, list):
                 for value in values:
@@ -190,31 +199,10 @@ class GameRenderer:
             else:
                 values.tick()
                 values.draw()
-        pygame.display.flip()
 
     def _handle_events(self):
-        while True:
-            event = pygame.event.wait(1000)
-            if event.type == pygame.NOEVENT:
-                return
-            if event.type == pygame.QUIT:
-                self._done = True
-            elif event.type == KEYUP:
-                if event.key == K_UP:
-                    self._game_objects['heroes'][0].set_direction(Direction.UP)
-                    return
-                elif event.key == K_LEFT:
-                    self._game_objects['heroes'][0].set_direction(Direction.LEFT)
-                    return
-                elif event.key == K_DOWN:
-                    self._game_objects['heroes'][0].set_direction(Direction.DOWN)
-                    return
-                elif event.key == K_RIGHT:
-                    self._game_objects['heroes'][0].set_direction(Direction.RIGHT)
-                    return
-            pygame.event.clear()
+        pass
 
-    # TODO zrobić to ładniej (żeby nie sprawdzało za każdym razem)
     def delete_cookie(self, board_position):
         cookies = [c for c in self._game_objects['cookies'] if c.board_position != board_position]
         if len(cookies) != len(self._game_objects['cookies']):
@@ -250,5 +238,5 @@ def translate_board_to_screen(in_coords):
 
 
 if __name__ == "__main__":
-    game_renderer = GameRenderer('pacman')
-    game_renderer.tick()
+    game_controller = GameController('pacman')
+    game_controller.tick()
