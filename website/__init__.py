@@ -31,6 +31,7 @@ def create_app():
             return
         if room not in rooms:
             leave_room(room)
+            print("1")
             return
 
         join_room(room)
@@ -48,14 +49,18 @@ def create_app():
         player = json.loads(session.get("player"))
         if not room or not player:
             return
+        print("->>>>", room)
+        print("->>>>", rooms)
         if room not in rooms:
             leave_room(room)
+            print("2")
             return
 
         curr_game = find_game(room)  # room === pin in session
 
         # temporary 2nd condition for presentation
         if not curr_game.started:
+            print("here")
             if player['is_owner']:
                 # emitting that dest enable passing reason why redirecting (it will be visible by click on browser link)
                 destination = 'choose?msg=Owner of the room has left'  # it is necessary to show info alert for another players
@@ -64,6 +69,7 @@ def create_app():
             else:
                 curr_game.del_player(int(player["id"]))
                 leave_room(room)
+                print("3")
                 emit("disconnection", player, to=room)
                 return
 
@@ -77,6 +83,7 @@ def create_app():
             return
         if room not in rooms:
             leave_room(room)
+            print("4")
             return
         curr_game = find_game(room)
         curr_game.started = True
@@ -87,6 +94,7 @@ def create_app():
         room = session.get("room")
         if room not in rooms:
             leave_room(room)
+            print("5")
             return
 
         curr_game = find_game(room)
@@ -104,6 +112,7 @@ def create_app():
         room = session.get("room")
         if room not in rooms:
             leave_room(room)
+            print("6")
             return
 
         curr_game = find_game(room)  # room === pin in session
@@ -112,5 +121,15 @@ def create_app():
         destination = 'choose?msg=You ware kicked by owner of the room'  # it is necessary to show info alert for another players
         emit('kick', {"dest": destination, "id": player["id"]}, to=room)
         print(f"{player['name']} was kicked from {room}")
+
+
+    @socketio.on("test")
+    def test():
+        print("called")
+        room = session.get("room")
+        curr_game = find_game(room)
+        print(room)
+        emit("test_js", curr_game.players, to=room)
+
 
     return app, socketio

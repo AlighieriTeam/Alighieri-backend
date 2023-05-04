@@ -9,9 +9,9 @@
 
 <div class="container_game">
     <div class="row">
-            <canvas id ="canvas" class="game_view">
+            <canvas id ="screen" class="game_view">
                <!--TODO: Make this universal to choosed game-->
-                <script type="text/javascript"  src ="{{ url_for('static', filename='scripts/pacman.js') }}" defer></script>
+                <script type="text/javascript"  src ="{{ url_for('static', filename='scripts/game-rendering.js') }}" defer></script>
             </canvas>
     </div>
     <div class="row">
@@ -24,6 +24,7 @@
                     <div class="ls-player-del"></div>
                 </div>
                 {% endfor %}
+                <button type=" button" class="shadow-none btn btn-lg btn-block btn-success rounded-pill enter-button" onclick="call_me()">Go to games</button>
             </div>
         </div>
         <div class="col-sm-6 col-xs-12">
@@ -39,5 +40,24 @@
         </div>
     </div>
 </div>
+
+<script type="text/javascript">
+    const socketio = io();
+
+    socketio.on('test_js', (player) => {
+        document.getElementById("time").innerHTML = "";
+        console.log("sth2");
+    });
+
+    socketio.emit('test');
+
+    function call_me(){
+        socketio.emit('test_js');
+        console.log("sth");
+    }
+
+
+
+</script>
 
 {% endblock %}
