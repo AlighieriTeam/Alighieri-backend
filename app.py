@@ -3,8 +3,11 @@ from flask import session
 from flask_socketio import emit, join_room
 
 from website import create_app
+import main
 
 app, socketio = create_app()
+main.APP = app
+main.SOCKETIO = socketio
 
 @socketio.on("rejoin")
 def rejoin():

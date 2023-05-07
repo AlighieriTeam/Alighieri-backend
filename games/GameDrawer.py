@@ -1,8 +1,10 @@
 from flask_socketio import emit, join_room, SocketIO
 
+import main
+
 class GameDrawer(object):
+    socketio = main.SOCKETIO
     def __init__(self, session):
-        self.__socketio = SocketIO(message_queue='redis://127.0.0.1:5000')
         self.__session = session
         self.__room = self.__session.get("room")
 
@@ -17,7 +19,7 @@ class GameDrawer(object):
             "height": height
         }
         print(data)
-        self.__socketio.emit("drawRectangle", data, to=self.__room)
+        main.SOCKETIO.emit("drawRectangle", data, to=self.__room)
 
     def draw_circle(self, x: int, y: int, color: str, radius: int):
         print("draw_circle called with arguments: {} {} {} {}".format(x, y, color, radius))
@@ -29,7 +31,7 @@ class GameDrawer(object):
             "radius": radius
         }
         print(data)
-        self.__socketio.emit("drawCircle", data, to=self.__room)
+        main.SOCKETIO.emit("drawCircle", data, to=self.__room)
 
     def draw_text(self, x: int, y: int, text: str):
         print("draw_text called with arguments: {} {} {} ".format(x, y, text))
@@ -40,9 +42,9 @@ class GameDrawer(object):
             "text": text
         }
         print(data)
-        self.__socketio.emit("drawText", data, to=self.__room)
+        main.SOCKETIO.emit("drawText", data, to=self.__room)
 
     def clear_all(self):
         print("clear_all called")
         #join_room(self.__room)
-        self.__socketio.emit("clearAll", to=self.__room)
+        main.SOCKETIO.emit("clearAll", to=self.__room)
