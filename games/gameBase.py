@@ -21,12 +21,16 @@ class GameObject:
     def draw(self):
         if self._circle:
             # TODO drawCircle
-            self._game_drawer.draw_circle(self._position[0] + STANDARD_SIZE / 2, self._position[1] + STANDARD_SIZE / 2, self._color, self._size / 2)
-            pass
+            self._game_drawer.draw_circle(self._position[0] + STANDARD_SIZE / 2, self._position[1] + STANDARD_SIZE / 2,
+                                          self._color, self._size / 2)
         else:
             # TODO drawRectangle
-            self._game_drawer.draw_rectangle(self._position[0] + STANDARD_SIZE / 2, self._position[1] + STANDARD_SIZE / 2, self._color, self._size, self._size)
-            pass
+            self._game_drawer.draw_rectangle(self._position[0] + STANDARD_SIZE / 2, self._position[1] + STANDARD_SIZE / 2,
+                                             self._color, self._size, self._size)
+
+    def undraw(self):
+        self._game_drawer.draw_rectangle(self._position[0] + STANDARD_SIZE / 2, self._position[1] + STANDARD_SIZE / 2,
+                                         'black', STANDARD_SIZE, STANDARD_SIZE)
 
     def tick(self):
         pass
@@ -196,15 +200,30 @@ class GameController:
 
     def _render_all_objects(self):
         # TODO clearAll
-        self._game_drawer.clear_all()
         for key, values in self._game_objects.items():
             if isinstance(values, list):
                 for value in values:
+                    value.undraw()
                     value.tick()
                     value.draw()
             else:
+                values.undraw()
                 values.tick()
                 values.draw()
+
+    '''def _render_objects(self):
+            for value in self._game_objects['walls']:
+                value.draw()
+            for value in self._game_objects['cookies']:
+                value.draw()
+            for value in self._game_objects['ghosts']:
+                value.undraw()
+                value.tick()
+                value.draw()
+            for value in self._game_objects['heroes']:
+                value.undraw()
+                value.tick()
+                value.draw()'''
 
     def _handle_events(self):
         pass
