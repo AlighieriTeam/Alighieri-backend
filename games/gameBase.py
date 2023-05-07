@@ -1,50 +1,51 @@
 import random
+import time
 
 import numpy as np
 from enum import Enum
 
-UNIFIED_SIZE = 32
+STANDARD_SIZE = 1
+NORMAL_SIZE = 0.9
+SMALL_SIZE = 0.4
+
 
 class GameObject:
-    def __init__(self, in_renderer, x, y, in_size: int, in_color=(255, 0, 0), is_circle: bool = False, game_drawer=None):
+    def __init__(self, in_renderer, x, y, in_size, in_color=(255, 0, 0), is_circle: bool = False, game_drawer=None):
         self._game_drawer = game_drawer
         self._controller: GameController = in_renderer
         self._color = in_color
-        self.board_position = translate_screen_to_board([x, y])
-        self.screen_position = [x, y]
+        self._position = [x, y]
         self._size = in_size
         self._circle = is_circle
-
 
     def draw(self):
         if self._circle:
             # TODO drawCircle
-            self._game_drawer.draw_circle(self.screen_position[0], self.screen_position[1], 'yellow', self._size)
+            self._game_drawer.draw_circle(self._position[0] + STANDARD_SIZE / 2, self._position[1] + STANDARD_SIZE / 2, self._color, self._size / 2)
             pass
         else:
             # TODO drawRectangle
-            self._game_drawer.draw_rectangle(self.screen_position[0], self.screen_position[1], 'blue', self._size, self._size)
+            self._game_drawer.draw_rectangle(self._position[0] + STANDARD_SIZE / 2, self._position[1] + STANDARD_SIZE / 2, self._color, self._size, self._size)
             pass
 
     def tick(self):
         pass
 
     def set_position(self, in_position):
-        temp = self._controller._board[self.board_position[0], self.board_position[1]]
-        self._controller._board[self.board_position[0], self.board_position[1]] = MapElements.PATH.value
-        self.board_position = in_position
-        self.screen_position = translate_board_to_screen(in_position)
-        self._controller._board[self.board_position[0], self.board_position[1]] = temp
+        temp = self._controller._board[self._position[0], self._position[1]]
+        self._controller._board[self._position[0], self._position[1]] = MapElements.PATH.value
+        self._position = in_position
+        self._controller._board[self._position[0], self._position[1]] = temp
 
 
 class Wall(GameObject):
-    def __init__(self, in_surface, x, y, in_size: int, in_color=(0, 0, 255), game_drawer=None):
+    def __init__(self, in_surface, x, y, in_size, in_color='blue', game_drawer=None):
         super().__init__(in_surface, x, y, in_size, in_color, game_drawer=game_drawer)
 
 
 class Cookie(GameObject):
     def __init__(self, in_surface, x, y, game_drawer=None):
-        super().__init__(in_surface, x, y, 4, (255, 255, 0), game_drawer=game_drawer)
+        super().__init__(in_surface, x, y, SMALL_SIZE, 'white', game_drawer=game_drawer)
 
 
 class Direction(Enum):
@@ -56,7 +57,7 @@ class Direction(Enum):
 
 
 class MovableGameObject(GameObject):
-    def __init__(self, in_surface, x, y, in_size: int, in_color=(255, 0, 0), is_circle: bool = True, game_drawer=None):
+    def __init__(self, in_surface, x, y, in_size, in_color='red', is_circle: bool = True, game_drawer=None):
         super().__init__(in_surface, x, y, in_size, in_color, is_circle, game_drawer=game_drawer)
         self.current_direction = Direction.STOP
         self.last_direction = Direction.STOP
@@ -67,10 +68,10 @@ class MovableGameObject(GameObject):
 
     def move(self):
         if self.check_direction(self.current_direction):
-            self.set_position([a + b for a, b in zip(self.board_position, self.current_direction.value)])
+            self.set_position([a + b for a, b in zip(self._position, self.current_direction.value)])
 
     def check_direction(self, direction):
-        new_position = [a + b for a, b in zip(self.board_position, direction.value)]
+        new_position = [a + b for a, b in zip(self._position, direction.value)]
         if new_position[0] < 0 or new_position[0] > self._controller._board.shape[0]:
             return False
         if new_position[1] < 1 or new_position[1] > self._controller._board.shape[1]:
@@ -88,7 +89,7 @@ class MovableGameObject(GameObject):
 
 
 class Ghost(MovableGameObject):
-    def __init__(self, in_surface, x, y, in_size: int, in_color=(255, 0, 0), game_drawer=None):
+    def __init__(self, in_surface, x, y, in_size, in_color='red', game_drawer=None):
         super().__init__(in_surface, x, y, in_size, in_color, game_drawer=game_drawer)
 
     def tick(self):
@@ -100,8 +101,8 @@ class Ghost(MovableGameObject):
 
 
 class Hero(MovableGameObject):
-    def __init__(self, in_surface, x, y, in_size: int, game_drawer=None):
-        super().__init__(in_surface, x, y, in_size, (255, 255, 0), game_drawer=game_drawer)
+    def __init__(self, in_surface, x, y, in_size, game_drawer=None):
+        super().__init__(in_surface, x, y, in_size, 'yellow', game_drawer=game_drawer)
         self._score = 0
         self.bot = Bot()
 
@@ -127,9 +128,6 @@ class GameController:
         self._game_drawer = game_drawer
         self._game_objects = {}
         self._board = self.import_map(name)
-        shape = self._board.shape
-        self._width = shape[0] * UNIFIED_SIZE
-        self._height = shape[1] * UNIFIED_SIZE
         self._finished = False
 
 
@@ -150,20 +148,19 @@ class GameController:
             board_line = []
             for y, mark in enumerate(line):
                 if mark in map_elements:
-                    translated = translate_board_to_screen((x, y))
                     match mark:
                         case MapElements.WALL.value:
-                            wall = Wall(self, translated[0], translated[1], UNIFIED_SIZE, game_drawer=self._game_drawer)
+                            wall = Wall(self, x, y, NORMAL_SIZE, game_drawer=self._game_drawer)
                             walls.append(wall)
                         case MapElements.PATH.value:
-                            cookie = Cookie(self, translated[0] + UNIFIED_SIZE // 2, translated[1] + UNIFIED_SIZE // 2, game_drawer=self._game_drawer)
+                            cookie = Cookie(self, x, y, game_drawer=self._game_drawer)
                             cookies.append(cookie)
                             mark = MapElements.COOKIE.value
                         case MapElements.GHOST.value:
-                            ghost = Ghost(self, translated[0] + UNIFIED_SIZE // 2, translated[1] + UNIFIED_SIZE // 2, UNIFIED_SIZE // 3, game_drawer=self._game_drawer)
+                            ghost = Ghost(self, x, y, NORMAL_SIZE, game_drawer=self._game_drawer)
                             ghosts.append(ghost)
                         case MapElements.HERO.value:
-                            heroes.append(self.new_hero(translated[0] + UNIFIED_SIZE // 2, translated[1] + UNIFIED_SIZE // 2))
+                            heroes.append(self.new_hero(x, y))
                         case _:
                             pass
                     board_line.append(mark)
@@ -178,15 +175,17 @@ class GameController:
         return board
 
     def new_hero(self, x, y):
-        return Hero(self, x, y, UNIFIED_SIZE//3)
+        return Hero(self, x, y, NORMAL_SIZE)
 
     def tick(self):
+        self._game_drawer.clear_all()
         while not self._finished:
             self._render_all_objects()
             self._update_scores()
             self._handle_events()
             self.check_collisions()
             self.is_over()
+            time.sleep(0.5)   # TODO only for developing
         print("Game over")
 
     def _update_scores(self):
@@ -211,15 +210,15 @@ class GameController:
         pass
 
     def delete_cookie(self, board_position):
-        cookies = [c for c in self._game_objects['cookies'] if c.board_position != board_position]
+        cookies = [c for c in self._game_objects['cookies'] if c._position != board_position]
         if len(cookies) != len(self._game_objects['cookies']):
             self._game_objects['cookies'] = cookies
             return 1
         return 0
 
     def check_collisions(self):
-        ghosts_positions = [g.board_position for g in self._game_objects['ghosts']]
-        heroes = [h for h in self._game_objects['heroes'] if h.board_position not in ghosts_positions]
+        ghosts_positions = [g._position for g in self._game_objects['ghosts']]
+        heroes = [h for h in self._game_objects['heroes'] if h._position not in ghosts_positions]
         self._game_objects['heroes'] = heroes
 
     def is_over(self):
@@ -234,14 +233,6 @@ class MapElements(Enum):
     GHOST = '^'
     HERO = '*'
     COOKIE = '.'
-
-
-def translate_screen_to_board(in_coords):
-    return [int(in_coords[0] // UNIFIED_SIZE), int(in_coords[1] // UNIFIED_SIZE)]
-
-
-def translate_board_to_screen(in_coords):
-    return [in_coords[0] * UNIFIED_SIZE, in_coords[1] * UNIFIED_SIZE]
 
 
 if __name__ == "__main__":

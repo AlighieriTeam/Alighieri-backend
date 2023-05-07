@@ -10,12 +10,12 @@ class Pacman(Base.Hero):
         self.eat_cookie()
 
     def eat_cookie(self):
-        self._score += self._controller.delete_cookie(self.board_position)
+        self._score += self._controller.delete_cookie(self._position)
 
 
 class PacmanController(Base.GameController):
     def new_hero(self, x, y):
-        return Pacman(self, x, y, Base.UNIFIED_SIZE//3, game_drawer=self._game_drawer)
+        return Pacman(self, x, y, Base.NORMAL_SIZE, game_drawer=self._game_drawer)
 
 
 if __name__ == "__main__":
