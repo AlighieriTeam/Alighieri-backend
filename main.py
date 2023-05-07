@@ -1,0 +1,2 @@
+APP = None
+SOCKETIO = None

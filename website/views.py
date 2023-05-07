@@ -1,5 +1,10 @@
+import threading
+
 from flask import Blueprint, render_template, request, redirect, url_for, session, json, flash
 
+import main
+from games.GameDrawer import GameDrawer
+from games.pacman import PacmanController
 from . import find_game, cfg
 
 views = Blueprint('views', __name__)
@@ -99,5 +104,17 @@ def game():
     if not curr_game.started:
         flash('Game has not started yet', 'alert-danger')
         return redirect(url_for('.choose'))
+
+    print(player)
+
+    if player['is_owner']:
+        print("can start pacman")
+        def start_game():
+            with main.APP.test_request_context():
+                game_drawer = GameDrawer(session=session)
+                game_controller = PacmanController('pacman', game_drawer)
+                game_controller.tick()
+        game_thread = threading.Thread(target=start_game)
+        game_thread.start()
 
     return render_template('game.html', players=curr_game.players)

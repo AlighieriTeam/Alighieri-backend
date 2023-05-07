@@ -9,9 +9,8 @@
 
 <div class="container_game">
     <div class="row">
-            <canvas id ="canvas" class="game_view">
-               <!--TODO: Make this universal to choosed game-->
-                <script type="text/javascript"  src ="{{ url_for('static', filename='scripts/pacman.js') }}" defer></script>
+            <canvas id ="screen" class="game_view">
+                <!--TODO: Make this universal to choosed game-->
             </canvas>
     </div>
     <div class="row">
@@ -35,9 +34,12 @@
                 </div>
 
                 <button type="button" class="shadow-none btn btn-lg btn-block btn-success rounded-pill ls-close-button" onclick="window.location.href='/choose'">End game</button>
+                <button type="button" class="shadow-none btn btn-lg btn-block btn-success rounded-pill enter-button" onclick="test_me()">test</button>
             </div>
         </div>
     </div>
 </div>
+
+<script type="text/javascript"  src ="{{ url_for('static', filename='scripts/game-rendering.js') }}" defer></script>
 
 {% endblock %}
