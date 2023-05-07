@@ -197,7 +197,7 @@ class GameController:
 
     def _render_all_objects(self):
         # TODO clearAll
-        #self._game_drawer.clear_all()
+        self._game_drawer.clear_all()
         for key, values in self._game_objects.items():
             if isinstance(values, list):
                 for value in values:
