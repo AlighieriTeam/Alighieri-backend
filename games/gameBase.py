@@ -3,13 +3,11 @@ import random
 import numpy as np
 from enum import Enum
 
-import app
-
 UNIFIED_SIZE = 32
 
-
 class GameObject:
-    def __init__(self, in_renderer, x, y, in_size: int, in_color=(255, 0, 0), is_circle: bool = False):
+    def __init__(self, in_renderer, x, y, in_size: int, in_color=(255, 0, 0), is_circle: bool = False, game_drawer=None):
+        self._game_drawer = game_drawer
         self._controller: GameController = in_renderer
         self._color = in_color
         self.board_position = translate_screen_to_board([x, y])
@@ -17,14 +15,15 @@ class GameObject:
         self._size = in_size
         self._circle = is_circle
 
+
     def draw(self):
         if self._circle:
             # TODO drawCircle
-            app.draw_circle(100, 100, 'yellow', 20)
+            self._game_drawer.draw_circle(self.screen_position[0], self.screen_position[1], 'yellow', self._size)
             pass
         else:
             # TODO drawRectangle
-            app.draw_rectangle(10, 10, 'blue', 40, 40)
+            self._game_drawer.draw_rectangle(self.screen_position[0], self.screen_position[1], 'blue', self._size, self._size)
             pass
 
     def tick(self):
@@ -39,13 +38,13 @@ class GameObject:
 
 
 class Wall(GameObject):
-    def __init__(self, in_surface, x, y, in_size: int, in_color=(0, 0, 255)):
-        super().__init__(in_surface, x, y, in_size, in_color)
+    def __init__(self, in_surface, x, y, in_size: int, in_color=(0, 0, 255), game_drawer=None):
+        super().__init__(in_surface, x, y, in_size, in_color, game_drawer=game_drawer)
 
 
 class Cookie(GameObject):
-    def __init__(self, in_surface, x, y):
-        super().__init__(in_surface, x, y, 4, (255, 255, 0))
+    def __init__(self, in_surface, x, y, game_drawer=None):
+        super().__init__(in_surface, x, y, 4, (255, 255, 0), game_drawer=game_drawer)
 
 
 class Direction(Enum):
@@ -57,8 +56,8 @@ class Direction(Enum):
 
 
 class MovableGameObject(GameObject):
-    def __init__(self, in_surface, x, y, in_size: int, in_color=(255, 0, 0), is_circle: bool = True):
-        super().__init__(in_surface, x, y, in_size, in_color, is_circle)
+    def __init__(self, in_surface, x, y, in_size: int, in_color=(255, 0, 0), is_circle: bool = True, game_drawer=None):
+        super().__init__(in_surface, x, y, in_size, in_color, is_circle, game_drawer=game_drawer)
         self.current_direction = Direction.STOP
         self.last_direction = Direction.STOP
 
@@ -89,8 +88,8 @@ class MovableGameObject(GameObject):
 
 
 class Ghost(MovableGameObject):
-    def __init__(self, in_surface, x, y, in_size: int, in_color=(255, 0, 0)):
-        super().__init__(in_surface, x, y, in_size, in_color)
+    def __init__(self, in_surface, x, y, in_size: int, in_color=(255, 0, 0), game_drawer=None):
+        super().__init__(in_surface, x, y, in_size, in_color, game_drawer=game_drawer)
 
     def tick(self):
         if bool(random.getrandbits(1)):
@@ -101,8 +100,8 @@ class Ghost(MovableGameObject):
 
 
 class Hero(MovableGameObject):
-    def __init__(self, in_surface, x, y, in_size: int):
-        super().__init__(in_surface, x, y, in_size, (255, 255, 0))
+    def __init__(self, in_surface, x, y, in_size: int, game_drawer=None):
+        super().__init__(in_surface, x, y, in_size, (255, 255, 0), game_drawer=game_drawer)
         self._score = 0
         self.bot = Bot()
 
@@ -124,7 +123,8 @@ class Bot:
 
 
 class GameController:
-    def __init__(self, name):
+    def __init__(self, name, game_drawer):
+        self._game_drawer = game_drawer
         self._game_objects = {}
         self._board = self.import_map(name)
         shape = self._board.shape
@@ -132,8 +132,9 @@ class GameController:
         self._height = shape[1] * UNIFIED_SIZE
         self._finished = False
 
+
     def import_map(self, name):
-        file = open('map-' + name + '.txt')
+        file = open('games/map-' + name + '.txt')
         start = file.tell()
         width = len(file.readline())
         board = np.zeros((1, width-1))
@@ -152,14 +153,14 @@ class GameController:
                     translated = translate_board_to_screen((x, y))
                     match mark:
                         case MapElements.WALL.value:
-                            wall = Wall(self, translated[0], translated[1], UNIFIED_SIZE)
+                            wall = Wall(self, translated[0], translated[1], UNIFIED_SIZE, game_drawer=self._game_drawer)
                             walls.append(wall)
                         case MapElements.PATH.value:
-                            cookie = Cookie(self, translated[0] + UNIFIED_SIZE // 2, translated[1] + UNIFIED_SIZE // 2)
+                            cookie = Cookie(self, translated[0] + UNIFIED_SIZE // 2, translated[1] + UNIFIED_SIZE // 2, game_drawer=self._game_drawer)
                             cookies.append(cookie)
                             mark = MapElements.COOKIE.value
                         case MapElements.GHOST.value:
-                            ghost = Ghost(self, translated[0] + UNIFIED_SIZE // 2, translated[1] + UNIFIED_SIZE // 2, UNIFIED_SIZE // 3)
+                            ghost = Ghost(self, translated[0] + UNIFIED_SIZE // 2, translated[1] + UNIFIED_SIZE // 2, UNIFIED_SIZE // 3, game_drawer=self._game_drawer)
                             ghosts.append(ghost)
                         case MapElements.HERO.value:
                             heroes.append(self.new_hero(translated[0] + UNIFIED_SIZE // 2, translated[1] + UNIFIED_SIZE // 2))
@@ -191,12 +192,12 @@ class GameController:
     def _update_scores(self):
         for i, hero in enumerate(self._game_objects['heroes']):
             # TODO displaying under screen
-            app.draw_text(300, 300, "Hello")
+            self._game_drawer.draw_text(300, 300, "Hello")
             print(hero._score)
 
     def _render_all_objects(self):
         # TODO clearAll
-        app.clear_all()
+        self._game_drawer.clear_all()
         for key, values in self._game_objects.items():
             if isinstance(values, list):
                 for value in values:
