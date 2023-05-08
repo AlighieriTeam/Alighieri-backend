@@ -20,11 +20,9 @@ class GameObject:
 
     def draw(self):
         if self._circle:
-            # TODO drawCircle
             self._game_drawer.draw_circle(self._position[0] + STANDARD_SIZE / 2, self._position[1] + STANDARD_SIZE / 2,
                                           self._color, self._size / 2)
         else:
-            # TODO drawRectangle
             self._game_drawer.draw_rectangle(self._position[0] + STANDARD_SIZE / 2, self._position[1] + STANDARD_SIZE / 2,
                                              self._color, self._size, self._size)
 
@@ -61,7 +59,7 @@ class Direction(Enum):
 
 
 class MovableGameObject(GameObject):
-    def __init__(self, in_surface, x, y, in_size, in_color='red', is_circle: bool = True, game_drawer=None):
+    def __init__(self, in_surface, x, y, in_size, in_color, is_circle: bool = True, game_drawer=None):
         super().__init__(in_surface, x, y, in_size, in_color, is_circle, game_drawer=game_drawer)
         self.current_direction = Direction.STOP
         self.last_direction = Direction.STOP
@@ -195,11 +193,9 @@ class GameController:
     def _update_scores(self):
         for i, hero in enumerate(self._game_objects['heroes']):
             # TODO displaying under screen
-            self._game_drawer.draw_text(300, 300, "Hello")
-            print(hero._score)
+            self._game_drawer.draw_text(0, 0, hero._score)
 
     def _render_all_objects(self):
-        # TODO clearAll
         for key, values in self._game_objects.items():
             if isinstance(values, list):
                 for value in values:
@@ -210,20 +206,6 @@ class GameController:
                 values.undraw()
                 values.tick()
                 values.draw()
-
-    '''def _render_objects(self):
-            for value in self._game_objects['walls']:
-                value.draw()
-            for value in self._game_objects['cookies']:
-                value.draw()
-            for value in self._game_objects['ghosts']:
-                value.undraw()
-                value.tick()
-                value.draw()
-            for value in self._game_objects['heroes']:
-                value.undraw()
-                value.tick()
-                value.draw()'''
 
     def _handle_events(self):
         pass
@@ -244,6 +226,9 @@ class GameController:
         if not self._game_objects['heroes'] or not self._game_objects['cookies']:
             self._finished = True
 
+    # TODO send to js
+    def get_map_shape(self):
+        return self._board.shape
 
 class MapElements(Enum):
     WALL = '#'

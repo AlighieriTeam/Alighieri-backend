@@ -15,16 +15,25 @@ var y_scale = screen.height / 14,
     x_scale = screen.width / 7;
 
 socketio.on('drawRectangle', function(data){
-    console.log('drawRectangle called');
+    //console.log('drawRectangle called');
     context.fillStyle = data["color"];
-    context.fillRect((data["x"] - (data["width"]/2))* x_scale, (data["y"] - (data["height"]/2))* y_scale, data["width"] * x_scale, data["height"] * y_scale);
+    let x = Math.trunc((data["x"] - (data["width"] / 2)) * x_scale),
+        y = Math.trunc((data["y"] - (data["height"]/2))* y_scale),
+        width = Math.trunc(data["width"] * x_scale),
+        height = Math.trunc(data["height"] * y_scale);
+    context.fillRect(x, y, width, height);
 })
 
 socketio.on('drawCircle', function(data){
-    console.log('drawCircle called');
-    context.moveTo((data["x"] - (data["width"]/2))* x_scale, (data["y"] - (data["height"]/2))* y_scale);
+    //console.log('drawCircle called');
+    let xp = Math.trunc((data["x"] - (data["width"] / 2)) * x_scale),
+        yp = Math.trunc((data["y"] - (data["height"]/2))* y_scale),
+        x = Math.trunc(data["x"] * x_scale),
+        y = Math.trunc(data["y"] * y_scale),
+        radius = Math.trunc(data["radius"] * y_scale);
+    context.moveTo(xp, yp);
     context.beginPath();
-    context.arc(data["x"] * x_scale, data["y"] * y_scale, data["radius"] * y_scale, 0, 2 * Math.PI, false);
+    context.arc(x, y, radius, 0, 2 * Math.PI, false);
     context.fillStyle = data["color"];
     context.fill();
 })
