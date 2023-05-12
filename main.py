@@ -1,2 +1,0 @@
-APP = None
-SOCKETIO = None

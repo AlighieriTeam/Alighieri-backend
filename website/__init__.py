@@ -1,11 +1,16 @@
 import json
+from threading import Thread
 from typing import Optional
 
 from flask import Flask, session, url_for
 from flask_socketio import join_room, leave_room, send, SocketIO, emit
+
+from games.GameDrawer import GameDrawer
+from games.pacman import PacmanController
 from .room import Room, Player
 
 rooms = {}
+app = Flask(__name__)
 
 def find_game(pin: str) -> Optional[Room]:
     return rooms.get(pin)
@@ -14,8 +19,15 @@ def del_room(pin: str) -> None:
     if pin in rooms.keys():
         del rooms[pin]
 
+def start_game(room, io):
+    with app.test_request_context():
+        game_drawer = GameDrawer(room, io)
+        game_controller = PacmanController('pacman', game_drawer)
+        game_controller.tick()
+        # game_thread = threading.Thread(target=start_game)
+        # game_thread.start()
+
 def create_app():
-    app = Flask(__name__)
     app.config['SECRET_KEY'] = 'secret!'
     socketio = SocketIO(app)
 
@@ -70,7 +82,7 @@ def create_app():
         print(f"{player['name']} left room {room}")
 
     @socketio.on('start_game')
-    def start_game():
+    def get_start_signal():
         room = session.get("room")
         player = json.loads(session.get("player"))
         if not room or not player or not player['is_owner']:
@@ -81,6 +93,8 @@ def create_app():
         curr_game = find_game(room)
         curr_game.started = True
         socketio.emit('redirect', url_for('views.game'), to=room)
+        game_thread = Thread(target=start_game, args=(room, socketio))
+        game_thread.start()
 
     @socketio.on("add_bot")
     def add_bot(bot_data):
