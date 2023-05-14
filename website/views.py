@@ -108,17 +108,16 @@ def game():
 
     print(player)
 
-    if player['is_owner']:
-        print("can start pacman")
-        # TODO: maybe get map size in another way in case of multiple maps and random choice of map
-        # TODO: or maybe from this point we should draw lots a map.txt and pass it to game object ???
-        map_size = None     # get map size directly from file
-        with open('games/map-pacman.txt', 'r') as f:
-            map = f.readlines()
-            height = len(map) * 100
-            width = len(map[0]) * 100
-            map_size = tuple((height, width))
+    # TODO: maybe get map size in another way in case of multiple maps and random choice of map
+    # TODO: or maybe from this point we should draw lots a map.txt and pass it to game object ???
+    map_size = None  # get map size directly from file
+    with open('games/map-pacman.txt', 'r') as f:
+        map = f.readlines()
+        height = len(map) * 100
+        width = len(map[0]) * 100
+        map_size = tuple((height, width))
 
+    if player['is_owner']:
         def start_game():
             with main.APP.test_request_context():
                 game_drawer = GameDrawer(session=session)
