@@ -1,12 +1,21 @@
 import json
+from threading import Thread
 
 from flask import session, url_for
 from flask_socketio import join_room, leave_room, emit
 
+from games.GameDrawer import GameDrawer
+from games.pacman import PacmanController
 from website import find_game, rooms, del_room
 
 
-def register_room_events(socketio):
+def register_room_events(app, socketio):
+
+    def start_game(room, io):
+        with app.test_request_context():
+            game_drawer = GameDrawer(room, io)
+            game_controller = PacmanController('pacman', game_drawer)
+            game_controller.tick()
 
     @socketio.on("rejoin")
     def rejoin():
@@ -60,7 +69,7 @@ def register_room_events(socketio):
         print(f"{player['name']} left room {room}")
 
     @socketio.on('start_game')
-    def start_game():
+    def get_start_signal():
         room = session.get("room")
         player = json.loads(session.get("player"))
         if not room or not player or not player['is_owner']:
@@ -70,6 +79,8 @@ def register_room_events(socketio):
             return
         curr_game = find_game(room)
         curr_game.started = True
+        game_thread = Thread(target=start_game, args=(room, socketio))
+        game_thread.start()
         socketio.emit('redirect', url_for('views.game'), to=room)
 
     @socketio.on("add_bot")

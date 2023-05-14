@@ -1,14 +1,10 @@
-import threading
-import time
-
 from flask import Blueprint, render_template, request, redirect, url_for, session, json, flash
-
-import main
-from games.GameDrawer import GameDrawer
-from games.pacman import PacmanController
 from . import find_game, cfg
 
+
 views = Blueprint('views', __name__)
+
+
 @views.route('/')
 @views.route('/home')
 def home_page():
@@ -116,14 +112,5 @@ def game():
         height = len(map) * 100
         width = len(map[0]) * 100
         map_size = tuple((height, width))
-
-    if player['is_owner']:
-        def start_game():
-            with main.APP.test_request_context():
-                game_drawer = GameDrawer(session=session)
-                game_controller = PacmanController('pacman', game_drawer)
-                game_controller.tick()
-        game_thread = threading.Thread(target=start_game)
-        game_thread.start()
 
     return render_template('game.html', players=curr_game.players, map_size=map_size)

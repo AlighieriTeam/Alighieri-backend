@@ -3,11 +3,8 @@ from flask import session
 from flask_socketio import emit, join_room
 
 from website import create_app
-import main
 
 app, socketio = create_app()
-main.APP = app
-main.SOCKETIO = socketio
 
 
 if __name__ == '__main__':
