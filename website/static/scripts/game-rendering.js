@@ -10,17 +10,30 @@ function test_me(){
 var screen = document.getElementById('screen');
 context = screen.getContext('2d');
 
+// TODO board dimensions
+var y_scale = screen.height / 14,
+    x_scale = screen.width / 7;
+
 socketio.on('drawRectangle', function(data){
-    console.log('drawRectangle called');
+    //console.log('drawRectangle called');
     context.fillStyle = data["color"];
-    context.fillRect(data["x"], data["y"], data["width"], data["height"]);
+    let x = Math.trunc((data["x"] - (data["width"] / 2)) * x_scale),
+        y = Math.trunc((data["y"] - (data["height"]/2))* y_scale),
+        width = Math.trunc(data["width"] * x_scale),
+        height = Math.trunc(data["height"] * y_scale);
+    context.fillRect(x, y, width, height);
 })
 
 socketio.on('drawCircle', function(data){
-    console.log('drawCircle called');
-    context.moveTo(data["x"], data["y"]);
+    //console.log('drawCircle called');
+    let xp = Math.trunc((data["x"] - (data["width"] / 2)) * x_scale),
+        yp = Math.trunc((data["y"] - (data["height"]/2))* y_scale),
+        x = Math.trunc(data["x"] * x_scale),
+        y = Math.trunc(data["y"] * y_scale),
+        radius = Math.trunc(data["radius"] * y_scale);
+    context.moveTo(xp, yp);
     context.beginPath();
-    context.arc(data["x"], data["y"], data["radius"], 0, 2 * Math.PI, false);
+    context.arc(x, y, radius, 0, 2 * Math.PI, false);
     context.fillStyle = data["color"];
     context.fill();
 })
@@ -29,7 +42,7 @@ socketio.on('drawText', function(data){
     console.log('drawText called');
     context.fillStyle = "white";
     context.font = "30px Arial";
-    context.fillText(data["text"], data["x"], data["y"]);
+    context.fillText(data["text"], data["x"] * x_scale, data["y"] * y_scale);
 })
 
 socketio.on('clearAll', function(){

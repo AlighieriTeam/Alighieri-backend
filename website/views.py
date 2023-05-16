@@ -1,4 +1,5 @@
 import threading
+import time
 
 from flask import Blueprint, render_template, request, redirect, url_for, session, json, flash
 
@@ -107,8 +108,16 @@ def game():
 
     print(player)
 
+    # TODO: maybe get map size in another way in case of multiple maps and random choice of map
+    # TODO: or maybe from this point we should draw lots a map.txt and pass it to game object ???
+    map_size = None  # get map size directly from file
+    with open('games/map-pacman.txt', 'r') as f:
+        map = f.readlines()
+        height = len(map) * 100
+        width = len(map[0]) * 100
+        map_size = tuple((height, width))
+
     if player['is_owner']:
-        print("can start pacman")
         def start_game():
             with main.APP.test_request_context():
                 game_drawer = GameDrawer(session=session)
@@ -117,4 +126,4 @@ def game():
         game_thread = threading.Thread(target=start_game)
         game_thread.start()
 
-    return render_template('game.html', players=curr_game.players)
+    return render_template('game.html', players=curr_game.players, map_size=map_size)
