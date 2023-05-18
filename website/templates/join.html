@@ -3,6 +3,9 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='styles/home.css') }}" />
     <link rel="stylesheet" href="{{ url_for('static', filename='styles/game.css') }}" />
     <link rel="stylesheet" href="{{ url_for('static', filename='styles/room.css') }}" />
+
+    <script type="text/javascript"  src ="{{ url_for('static', filename='scripts/common-events.js') }}"></script>
+    <script type="text/javascript"  src ="{{ url_for('static', filename='scripts/join-events.js') }}"></script>
 {% endblock %}
 {% block title %} Home {% endblock %}
 {% block content %}
@@ -16,86 +19,19 @@
 
             </div>
         <div style="text-align: center;">
-            <button class="cancel-game-button" onclick="leave()">Exit</button>
+            <button class="cancel-game-button" onclick="leave('{{ url_for('views.choose') }}')">Exit</button>
         </div>
     </div>
 </div>
-<!--TODO: move common elements of this script to file-->
-<!--TODO: add comments to explain how it works or make drawio-->
-<script type="text/javascript">
-    const socketio = io();
 
-    const playerMap = new Map();
-
-    function refreshPlayerList() {
-        const playerList = document.getElementById("player-list");
-        let content = "";
-        for (const [id, name] of playerMap.entries()) {
-            content += `
-                <div id="player_${id}" class="player_div player_gradient_${id}">
-                    <div class="ls-player-name">${name}</div>
-                    <div class="ls-player-del"></div>
-                </div>
-            `
-        }
-        playerList.innerHTML = content;
-    }
-
-    function leave(){
-        window.location.href='{{ url_for('views.choose') }}';
-    }
-
-    const addPlayer = (player) => {
-        if (!playerMap.has(player.id) || playerMap.get(player.id) === "") {
-            playerMap.set(player.id, player.name);
-        }
-        refreshPlayerList();
-        console.log(player.id);
-        console.log(player.name);
-    };
-
-    socketio.on("connection", (player) => {
-        console.log("[JS] something connected " + player["name"]);
-        addPlayer(player);
-    });
-
-    socketio.on('disconnection', (player) => {
-        console.log('[JS] user disconnected ' + player["name"]);
-        const playerList = document.getElementById("player-list");
-        playerList.innerHTML = "";
-        playerMap.delete(player["id"]);
-        refreshPlayerList();
-    });
-
-    socketio.on('redirect', function(destination) {
-        window.location.href = destination;
-    });
-
+<script>
     var actual_player_id = {{ actual_player_id }}
-
-    socketio.on('kick', function(json) {
-        //console.log("json id: " + json["id"]);
-        //console.log("curr id: " + actual_player_id);
-        if(json["id"] == actual_player_id){
-            window.location.href = json["dest"];
-        }
-        else{
-            delPlayer(json["id"])
-        }
-    });
-
-    function delPlayer(player_id){
-        const playerList = document.getElementById("player-list");
-        playerList.innerHTML = "";
-        playerMap.delete(player_id);
-        refreshPlayerList();
-    }
-
-    socketio.emit('connected');
 </script>
+
 {% for player in players %}
     <script>
         addPlayer(JSON.parse({{ player | tojson }}));
     </script>
 {% endfor %}
+
 {% endblock %}
