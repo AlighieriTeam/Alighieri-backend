@@ -1,6 +1,7 @@
 # Each game type has assigned max number of players
 import random
 import json
+from threading import Thread
 
 GAME_TYPES = {
     'pac-man': 4,
@@ -41,6 +42,7 @@ class Room:
         self.players: list[Player] = []
         self.names = generate_nicks(GAME_TYPES[game_type])
         self.started = False
+        self._game_thread = Thread()
 
     def add_player(self, name=None, is_owner=False, is_bot=False) -> Player | None:
         if len(self.players) >= GAME_TYPES.get(self.game_type):  # check at first, don't make unnecessary operation
@@ -61,3 +63,10 @@ class Room:
 
     def get_player_dict_list(self):
         return [vars(p) for p in self.players]
+
+    def move_game_to_room_thread(self, th):
+        self._game_thread = th
+
+    def start_game(self):
+        if self._game_thread:
+            self._game_thread.start()

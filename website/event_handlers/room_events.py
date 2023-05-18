@@ -80,7 +80,8 @@ def register_room_events(app, socketio):
         curr_game = find_game(room)
         curr_game.started = True
         game_thread = Thread(target=start_game, args=(room, socketio))
-        game_thread.start()
+        curr_game.move_game_to_room_thread(game_thread)
+        curr_game.start_game()
         socketio.emit('redirect', url_for('views.game'), to=room)
 
     @socketio.on("add_bot")
