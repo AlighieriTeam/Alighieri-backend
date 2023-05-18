@@ -30,9 +30,9 @@ def room():
         rooms[pin] = curr_game
 
         session['room'] = pin
-        session['player'] = player.to_json()
+        session['player'] = vars(player)
 
-        players = [p.to_json() for p in curr_game.players]
+        players = [vars(p) for p in curr_game.players]
 
         return render_template("room.html", players=players, bots=cfg.avail_bots, game_pin=pin)
 
@@ -67,9 +67,9 @@ def join():
         rooms[pin] = curr_game
 
         session['room'] = pin
-        session['player'] = player.to_json()
+        session['player'] = vars(player)
 
-        players = [p.to_json() for p in curr_game.players]
+        players = [vars(p) for p in curr_game.players]
 
         return render_template("join.html", players=players, actual_player_id=player.id, game_pin=pin)
 
@@ -90,7 +90,7 @@ def choose():
 @views.route('/game')
 def game():
     room = session.get('room')
-    player = json.loads(session.get("player"))
+    player = session.get("player")
     curr_game = find_game(room)
     if not room or not player:
         flash('You aren\'t assigned to this room', 'alert-danger')

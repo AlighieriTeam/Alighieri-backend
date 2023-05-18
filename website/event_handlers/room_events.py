@@ -1,4 +1,3 @@
-import json
 from threading import Thread
 
 from flask import session, url_for
@@ -25,7 +24,7 @@ def register_room_events(app, socketio):
     @socketio.on("connected")
     def connected():
         room = session.get("room")
-        player = json.loads(session.get("player"))
+        player = session.get("player")
         if not room or not player:
             return
         if room not in rooms:
@@ -44,7 +43,7 @@ def register_room_events(app, socketio):
     @socketio.on("disconnect")
     def disconnect():
         room = session.get("room")
-        player = json.loads(session.get("player"))
+        player = session.get("player")
         if not room or not player:
             return
         if room not in rooms:
@@ -71,7 +70,7 @@ def register_room_events(app, socketio):
     @socketio.on('start_game')
     def get_start_signal():
         room = session.get("room")
-        player = json.loads(session.get("player"))
+        player = session.get("player")
         if not room or not player or not player['is_owner']:
             return
         if room not in rooms:
