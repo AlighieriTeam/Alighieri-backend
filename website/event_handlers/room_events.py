@@ -12,8 +12,10 @@ def register_room_events(app, socketio):
 
     def start_game(room, io):
         with app.test_request_context():
+            curr_game = find_game(room)
             game_drawer = GameDrawer(room, io)
             game_controller = PacmanController('pacman', game_drawer)
+            curr_game.set_controller(game_controller)
             game_controller.tick()
 
     @socketio.on("rejoin")
@@ -58,14 +60,22 @@ def register_room_events(app, socketio):
                 # emitting that dest enable passing reason why redirecting (it will be visible by click on browser link)
                 destination = 'choose?msg=Owner of the room has left'  # it is necessary to show info alert for another players
                 emit('redirect', destination, to=room)
+                curr_game.stop_game()
                 del_room(room)
             else:
                 curr_game.del_player(int(player["id"]))
                 leave_room(room)
                 emit("disconnection", player, to=room)
                 return
-
-        print(f"{player['name']} left room {room}")
+        else:
+            if not curr_game.is_rejoinable():
+                print(f"Game not rejoinable - {player['name']} disconnecting")
+                leave_room(room)
+                curr_game.del_player(int(player["id"]))
+                if len(curr_game.players) < 2:
+                    curr_game.stop_game()
+                    del_room(room)
+                print(f"{player['name']} left room {room}")
 
     @socketio.on('start_game')
     def get_start_signal():

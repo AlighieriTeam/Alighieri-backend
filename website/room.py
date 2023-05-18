@@ -2,6 +2,11 @@
 import random
 import json
 from threading import Thread
+from typing import Optional
+import time
+import threading
+
+from games.pacman import PacmanController
 
 GAME_TYPES = {
     'pac-man': 4,
@@ -42,7 +47,9 @@ class Room:
         self.players: list[Player] = []
         self.names = generate_nicks(GAME_TYPES[game_type])
         self.started = False
-        self._game_thread = Thread()
+        self._game_thread: Optional[Thread] = None
+        self._game_controller: Optional[PacmanController] = None
+        self._timer = None
 
     def add_player(self, name=None, is_owner=False, is_bot=False) -> Player | None:
         if len(self.players) >= GAME_TYPES.get(self.game_type):  # check at first, don't make unnecessary operation
@@ -67,6 +74,39 @@ class Room:
     def move_game_to_room_thread(self, th):
         self._game_thread = th
 
+    def set_controller(self, controller):
+        if not self._game_controller:
+            self._game_controller = controller
+
     def start_game(self):
         if self._game_thread:
             self._game_thread.start()
+            self._timer = Timer(1)
+
+    def is_rejoinable(self):
+        return not self._timer.check_time()
+
+    def stop_game(self):
+        if self._game_thread:
+            self._game_controller.stop_game()
+
+class Timer:
+    def __init__(self, interval):
+        self.interval = interval
+        self.start_time = None
+        self.thread = threading.Thread(target=self._countdown)
+        self.thread.start()
+
+    def _countdown(self):
+        self.start_time = time.time()
+        while True:
+            elapsed_time = time.time() - self.start_time
+            if elapsed_time > self.interval:
+                break
+            time.sleep(0.01)
+
+    def check_time(self):
+        if self.start_time is None:
+            return False
+        return (time.time() - self.start_time) > self.interval
+

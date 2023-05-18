@@ -225,6 +225,9 @@ class GameController:
         if not self._game_objects['heroes'] or not self._game_objects['cookies']:
             self._finished = True
 
+    def stop_game(self):
+        self._finished = True
+
     # TODO send to js
     def get_map_shape(self):
         return self._board.shape
