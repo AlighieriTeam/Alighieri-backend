@@ -7,7 +7,7 @@
     <div class="choose-rectangle" style="margin: center;top: 20%;width: 1000px;height: 400px;">
         <div class="choose-button-text-align">
             <h3 class="choose-text" style="top: 20%;left: 10%;">Join to existing game</h3>
-            <form action="/join" method="post">
+            <form action="/room-player" method="post">
                 <button type ="submit" class="choose-button"  style="left:70%">Join</button>
                 <input class="choose-text-field" name="pin" type = "text" id="text-field" style="left:10%; ">
             </form>
@@ -24,7 +24,7 @@
        </div>
        <!--One form instead of n forms, we will recognize what game is by value parameter in button-->
        <!--IMPORTANT request.form.get() method in views.py will search by "name" parameter and take value from "value" parameter in each button-->
-       <form method="POST" action="/room">
+       <form method="POST" action="/room-owner">
           <button type="submit" name="game" value="pac-man" style="visibility: visible; height: 0; padding: 0; border: none;">
               <img style="top: 20%;left: 7.5%;" class ="choose-image" src="{{ url_for('static', filename='images/pacman.png') }}"  alt="pacman">
           </button>

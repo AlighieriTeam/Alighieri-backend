@@ -1,10 +1,10 @@
-// ------------ socketIO signals for room.html ------------
+// ------------ socketIO signals for room-owner.html ------------
 
 
 
 
 
-// ------------ JS functions for room.html ------------
+// ------------ JS functions for room-owner.html ------------
 
 function startGame() {
     socketio.emit('start_game');

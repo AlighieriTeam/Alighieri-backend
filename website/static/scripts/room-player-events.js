@@ -1,4 +1,4 @@
-// ------------ socketIO signals for join.html ------------
+// ------------ socketIO signals for room-player.html ------------
 
 socketio.on('kick', function(json) {
     if(json["id"] == actual_player_id){
@@ -11,7 +11,7 @@ socketio.on('kick', function(json) {
 
 
 
-// ------------ JS functions for join.html ------------
+// ------------ JS functions for room-player.html ------------
 
 function refreshPlayerList() {
     const playerList = document.getElementById("player-list");
