@@ -14,7 +14,7 @@ class GameDrawer(object):
             "width": width,
             "height": height
         }
-        print(data)
+        # print(data)
         self.__socketio.emit("drawRectangle", data, to=self.__room)
 
     def draw_circle(self, x: int, y: int, color: str, radius: int):
@@ -25,7 +25,7 @@ class GameDrawer(object):
             "color": color,
             "radius": radius
         }
-        print(data)
+        # print(data)
         self.__socketio.emit("drawCircle", data, to=self.__room)
 
     def draw_text(self, x: int, y: int, text: str):
@@ -35,7 +35,7 @@ class GameDrawer(object):
             "y": y,
             "text": text
         }
-        print(data)
+        # print(data)
         self.__socketio.emit("drawText", data, to=self.__room)
 
     def clear_all(self):

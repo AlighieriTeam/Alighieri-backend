@@ -7,6 +7,13 @@ function test_me(){
     socketio.emit('draw_text', 20, 20, "Hello");
 }
 
+function leave_game(page) {
+    socketio.emit("leave_game", {}, function() {
+        // Server has acknowledged the event, navigate to new page
+        window.location.href = page;
+    });
+}
+
 var screen = document.getElementById('screen');
 context = screen.getContext('2d');
 

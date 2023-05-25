@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session, json, flash
-from . import find_game, cfg
+from flask_socketio import leave_room
 
+from . import find_game, cfg, rooms
 
 views = Blueprint('views', __name__)
 
