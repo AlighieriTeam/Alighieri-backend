@@ -9,7 +9,7 @@
 
 <div class="container_game">
     <div class="row">
-            <canvas id ="screen" class="game_view" style="width: {{ map_size[0] }}px; height: {{ map_size[1] }}px; margin: auto;">
+            <canvas id ="screen" style="margin: auto" class="game_view" width="{{ map_size[0] }}" height="{{ map_size[1] }}">
                 <!--TODO: Make this universal to choosed game-->
             </canvas>
     </div>
@@ -20,6 +20,7 @@
                 {% for player in players %} <!--generate players-->
                     <div id="player_{{ player.id }}" class="player_div player_gradient_{{ player.id }}">
                         <div class="ls-player-name">{{ player.name }}</div>
+                        <div class="ls-player-points">{{ player.points }}</div>
                     <div class="ls-player-del"></div>
                 </div>
                 {% endfor %}
@@ -41,5 +42,9 @@
 </div>
 
 <script type="text/javascript"  src ="{{ url_for('static', filename='scripts/game-rendering.js') }}" defer></script>
+    <script>
+        var new_scale = {{ scale }};
+        set_scale(new_scale);
+    </script>
 
 {% endblock %}

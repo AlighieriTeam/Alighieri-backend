@@ -131,7 +131,6 @@ class GameController:
         self._board = self.import_map(name)
         self._finished = False
 
-
     def import_map(self, name):
         file = open('games/map-' + name + '.txt')
         start = file.tell()
