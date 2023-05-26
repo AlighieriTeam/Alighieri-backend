@@ -11,8 +11,8 @@ def home_page():
 
     return render_template("home.html")
 
-@views.route('/room', methods=['GET', 'POST'])
-def room():
+@views.route('/room-owner', methods=['GET', 'POST'])
+def room_owner():
     if request.method == 'POST':
         from .room import Room
         from . import rooms
@@ -34,13 +34,13 @@ def room():
 
         players = [p.to_json() for p in curr_game.players]
 
-        return render_template("room.html", players=players, bots=cfg.avail_bots, game_pin=pin)
+        return render_template("room-owner.html", players=players, bots=cfg.avail_bots, game_pin=pin)
 
-    # if tried to enter /room directly - redirect to choose
+    # if tried to enter /room-owner directly - redirect to choose
     return redirect(url_for('.choose'))
 
-@views.route('/join', methods=['GET', 'POST'])
-def join():
+@views.route('/room-player', methods=['GET', 'POST'])
+def room_player():
     if request.method == 'POST':
         from . import rooms
 
@@ -53,7 +53,7 @@ def join():
 
         r = session.get('room')
         if r == pin:
-            return render_template("join.html", players=[p.to_json() for p in curr_game.players], game_pin=pin)
+            return render_template("room-player.html", players=[p.to_json() for p in curr_game.players], game_pin=pin)
 
         if curr_game.started:
             flash('Game already started', 'alert-danger')  # second parameter must be existing class in BootStrap !
@@ -71,9 +71,9 @@ def join():
 
         players = [p.to_json() for p in curr_game.players]
 
-        return render_template("join.html", players=players, actual_player_id=player.id, game_pin=pin)
+        return render_template("room-player.html", players=players, actual_player_id=player.id, game_pin=pin)
 
-    # if tried to enter /join directly - redirect to choose
+    # if tried to enter /room-player directly - redirect to choose
     return redirect(url_for('.choose'))
 
 @views.route('/choose')
