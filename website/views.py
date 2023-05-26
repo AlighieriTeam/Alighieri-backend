@@ -109,8 +109,9 @@ def game():
     map_size = None  # get map size directly from file
     with open('games/map-pacman.txt', 'r') as f:
         map = f.readlines()
-        height = len(map) * 100
-        width = len(map[0]) * 100
+        scale = 100
+        height = len(map) * scale
+        width = (len(map[0]) - 1) * scale
         map_size = tuple((height, width))
 
-    return render_template('game.html', players=curr_game.players, map_size=map_size)
+    return render_template('game.html', players=curr_game.players, map_size=map_size, scale=scale)
