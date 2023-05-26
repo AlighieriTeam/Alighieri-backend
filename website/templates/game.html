@@ -34,7 +34,7 @@
                     <span id="time">15:00</span>    <!--after 30s timer finish counting and redirect to the choose page (by JS)-->
                 </div>
 
-                <button type="button" class="shadow-none btn btn-lg btn-block btn-success rounded-pill ls-close-button" onclick="window.location.href='/choose'">End game</button>
+                <button type="button" class="shadow-none btn btn-lg btn-block btn-success rounded-pill ls-close-button" onclick="leave_game('{{ url_for('views.choose')}}')">End game</button>
                 <button type="button" class="shadow-none btn btn-lg btn-block btn-success rounded-pill enter-button" onclick="test_me()">test</button>
             </div>
         </div>

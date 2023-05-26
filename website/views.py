@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session, json, flash
-from . import find_game, cfg
+from flask_socketio import leave_room
 
+from . import find_game, cfg, rooms
 
 views = Blueprint('views', __name__)
 
@@ -30,9 +31,9 @@ def room_owner():
         rooms[pin] = curr_game
 
         session['room'] = pin
-        session['player'] = player.to_json()
+        session['player'] = vars(player)
 
-        players = [p.to_json() for p in curr_game.players]
+        players = [vars(p) for p in curr_game.players]
 
         return render_template("room-owner.html", players=players, bots=cfg.avail_bots, game_pin=pin)
 
@@ -67,9 +68,9 @@ def room_player():
         rooms[pin] = curr_game
 
         session['room'] = pin
-        session['player'] = player.to_json()
+        session['player'] = vars(player)
 
-        players = [p.to_json() for p in curr_game.players]
+        players = [vars(p) for p in curr_game.players]
 
         return render_template("room-player.html", players=players, actual_player_id=player.id, game_pin=pin)
 
@@ -90,7 +91,7 @@ def choose():
 @views.route('/game')
 def game():
     room = session.get('room')
-    player = json.loads(session.get("player"))
+    player = session.get("player")
     curr_game = find_game(room)
     if not room or not player:
         flash('You aren\'t assigned to this room', 'alert-danger')
