@@ -38,7 +38,7 @@
 <!--TODO: start writing drawio to this-->
 <script type="text/javascript">
     const socketio = io();
-
+    const playerTokens = new Map();
     function addBot(b_key, b_val){    // b_val unused
         socketio.emit('add_bot', {name: b_key});
         console.log("bot sent: " + b_key);
@@ -58,11 +58,11 @@
     function refreshPlayerList() {
         const playerList = document.getElementById("player-list");
         let content = "";
-        for (const [id, name] of playerMap.entries()) {
+        for (const [id, name,token] of playerMap.entries()) {
             if(id != 0){
                 content += `
                     <div id="player_${id}" class="player_div player_gradient_${id}">
-                        <div class="ls-player-name">${name}</div>
+                        <div class="ls-player-name" onclick="copyToken(${id})" >${name}</div>
                         <div class="ls-player-del">
                           <i class="bi bi-x-circle"></i>
                           <i class="bi bi-x-circle-fill" onclick="delPlayer(${id}, '${name}')"></i>
@@ -73,7 +73,7 @@
             else{
                 content += `
                     <div id="player_${id}" class="player_div player_gradient_${id}">
-                        <div class="ls-player-name">${name}</div>
+                        <div class="ls-player-name"  onclick="copyToken(${id})">${name}</div>
                         <div class="ls-player-del"></div>
                     </div>
                 `
@@ -82,13 +82,23 @@
         playerList.innerHTML = content;
     }
 
-    function leave(){
-        window.location.href='{{ url_for('views.choose') }}';
-    }
+   function copyToken(playerId) {
+            const playerToken = playerTokens.get(playerId) || "";
+            const tempInput = document.createElement('input');
+            tempInput.value = playerToken;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+            alert('Token copied: ' + playerToken);
+
+   }
+
 
     const addPlayer = (player) => {
         if (!playerMap.has(player.id) || playerMap.get(player.id) === "") {
             playerMap.set(player.id, player.name);
+            playerTokens.set(player.id, player.token);
         }
         refreshPlayerList();
         console.log(player.id);
@@ -119,7 +129,7 @@
 </script>
 {% for player in players %}
     <script>
-        addPlayer(JSON.parse({{ player | tojson }}));
+        addPlayer(JSON.parse({{ player | tojson }}), '{{ player.token }}');
     </script>
 {% endfor %}
 {% endblock %}

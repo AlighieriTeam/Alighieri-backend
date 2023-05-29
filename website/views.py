@@ -26,7 +26,6 @@ def room():
         game_type = request.form.get('game')
         curr_game = Room(game_type)
         player = curr_game.add_player(is_owner=True)
-
         rooms[pin] = curr_game
 
         session['room'] = pin

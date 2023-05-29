@@ -24,22 +24,34 @@
 <!--TODO: add comments to explain how it works or make drawio-->
 <script type="text/javascript">
     const socketio = io();
-
     const playerMap = new Map();
-
+    const playerTokens = new Map();
     function refreshPlayerList() {
         const playerList = document.getElementById("player-list");
         let content = "";
         for (const [id, name] of playerMap.entries()) {
             content += `
                 <div id="player_${id}" class="player_div player_gradient_${id}">
-                    <div class="ls-player-name">${name}</div>
+                    <div class="ls-player-name" onclick="copyToken(${id})" >${name}</div>
                     <div class="ls-player-del"></div>
                 </div>
             `
         }
         playerList.innerHTML = content;
     }
+
+    function copyToken(playerId) {
+            const playerToken = playerTokens.get(playerId) || "";
+            const tempInput = document.createElement('input');
+            tempInput.value = playerToken;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+            alert('Token copied: ' + playerToken);
+
+    }
+
 
     function leave(){
         window.location.href='{{ url_for('views.choose') }}';
@@ -48,6 +60,7 @@
     const addPlayer = (player) => {
         if (!playerMap.has(player.id) || playerMap.get(player.id) === "") {
             playerMap.set(player.id, player.name);
+            playerTokens.set(player.id, player.token);
         }
         refreshPlayerList();
         console.log(player.id);
