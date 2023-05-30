@@ -9,9 +9,7 @@ GAME_TYPES = {
 
 
 def generate_token_for_player():
-    chars = [chr(x) for x in range(ord('A'), ord('Z') + 1)] \
-            + [chr(x) for x in range(ord('A'), ord('Z') + 1)] \
-            + [chr(x) for x in range(ord('0'), ord('9') + 1)]
+    chars = [chr(x) for x in range(ord('A'), ord('Z') + 1)]
     token_l = random.choices(chars, k=10)
     token = ''.join(s for s in token_l)
     return token

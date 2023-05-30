@@ -58,7 +58,7 @@
     function refreshPlayerList() {
         const playerList = document.getElementById("player-list");
         let content = "";
-        for (const [id, name,token] of playerMap.entries()) {
+        for (const [id, name] of playerMap.entries()) {
             if(id != 0){
                 content += `
                     <div id="player_${id}" class="player_div player_gradient_${id}">
@@ -83,6 +83,7 @@
     }
 
    function copyToken(playerId) {
+        if (playerId === 0) {
             const playerToken = playerTokens.get(playerId) || "";
             const tempInput = document.createElement('input');
             tempInput.value = playerToken;
@@ -91,7 +92,9 @@
             document.execCommand('copy');
             document.body.removeChild(tempInput);
             alert('Token copied: ' + playerToken);
-
+        }else{
+           alert('Not your token');
+        }
    }
 
 

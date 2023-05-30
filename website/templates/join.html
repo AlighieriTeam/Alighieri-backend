@@ -41,6 +41,7 @@
     }
 
     function copyToken(playerId) {
+        if (playerId === actual_player_id){
             const playerToken = playerTokens.get(playerId) || "";
             const tempInput = document.createElement('input');
             tempInput.value = playerToken;
@@ -49,7 +50,9 @@
             document.execCommand('copy');
             document.body.removeChild(tempInput);
             alert('Token copied: ' + playerToken);
-
+        }else{
+           alert('Not your token');
+        }
     }
 
 
