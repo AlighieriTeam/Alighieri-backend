@@ -53,7 +53,7 @@ def register_room_events(app, socketio):
             game_updater = GameUpdater(room, io)
             game_controller = PacmanController('pacman', game_drawer)
             game_controller.set_updater(game_updater)   # pass new class which handle with popup and updating players scores
-            game_controller.set_players([json.loads(player.to_json()) for player in curr_game.players])  # pass list of dicts of player
+            game_controller.set_players([player.to_json() for player in curr_game.players])  # pass list of dicts of player
             curr_game.set_controller(game_controller)
             game_controller.tick()
 
