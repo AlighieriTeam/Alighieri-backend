@@ -53,13 +53,21 @@ socketio.on('clearAll', function(){
 
 
 
+function dismiss_and_leave(page){   // because we want to manipulate both action
+    console.log("here 1");
+    leave_game(page); // send sig to server and redirect
+    console.log("here 2");
+    $('#endgame_popup').modal('hide');  // hide popup-modal
+    console.log("here 3");
+}
+
 socketio.on('showPopup', function(players) {
     let content = "";
     console.log(players)
     for (const player of players) {
         console.log(`Key: ${player["id"]}, Value: ${player["name"]}`);
         content += `
-            <div id='player_${player["id"]}' class="player_div player_gradient_1">
+            <div id='player_${player["id"]}' class="player_div">
                 <div class="ls-player-name">${player["name"]}</div>
                 <div class="ls-player-points">${player["points"]}</div>
                 <div class="ls-player-del"></div>
@@ -67,33 +75,32 @@ socketio.on('showPopup', function(players) {
         `
     }
 
-    var popup = document.getElementById("popup")
-
+    var popup_container = document.getElementById("popup_container")
     part1 = `
-        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal fade" id="endgame_popup" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
           <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
+            <div class="modal-content ls-modal-style">
               <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-                </button>
+                <div class="modal-title ls-modal-title ls-player-name"><h4>Player scores</h4></div>
+                <div class="ls-player-del">
+                  <i class="bi bi-x-circle ls-icon-color"></i>
+                  <i class="bi bi-x-circle-fill ls-icon-color" data-dismiss="modal"></i>
+                </div>
               </div>
               <div class="modal-body">
     `
 
     part2 = `
               </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
+              <div class="modal-footer ls-modal-footer">
+                <button type="button" class="shadow-none btn btn-lg btn-block btn-success rounded-pill ls-close-button" onclick="dismiss_and_leave('{{ url_for('views.choose')}}')">Exit</button>
               </div>
             </div>
           </div>
         </div>
     `
-    var ss = part1 + content + part2
-    popup.innerHTML = ss
-    $('#exampleModal').modal('show');
-    console.log('show_popup called');
+    var popup = part1 + content + part2
+    popup_container.innerHTML = popup
+
+    $('#endgame_popup').modal({backdrop: 'static', keyboard: false});
 });

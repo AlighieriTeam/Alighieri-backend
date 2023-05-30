@@ -21,18 +21,18 @@ function refreshPlayerList() {
     for (const [id, name] of playerMap.entries()) {
         if(id != 0){
             content += `
-                <div id="player_${id}" class="player_div player_gradient_${id}">
+                <div id="player_${id}" class="player_div">
                     <div class="ls-player-name">${name}</div>
                     <div class="ls-player-del">
-                      <i class="bi bi-x-circle"></i>
-                      <i class="bi bi-x-circle-fill" onclick="delPlayer(${id}, '${name}')"></i>
+                      <i class="bi bi-x-circle ls-icon-color"></i>
+                      <i class="bi bi-x-circle-fill ls-icon-color" onclick="delPlayer(${id}, '${name}')"></i>
                     </div>
                 </div>
             `
         }
         else{
             content += `
-                <div id="player_${id}" class="player_div player_gradient_${id}">
+                <div id="player_${id}" class="player_div">
                     <div class="ls-player-name">${name}</div>
                     <div class="ls-player-del"></div>
                 </div>

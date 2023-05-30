@@ -18,7 +18,7 @@ function refreshPlayerList() {
     let content = "";
     for (const [id, name] of playerMap.entries()) {
         content += `
-            <div id="player_${id}" class="player_div player_gradient_${id}">
+            <div id="player_${id}" class="player_div">
                 <div class="ls-player-name">${name}</div>
                 <div class="ls-player-del"></div>
             </div>

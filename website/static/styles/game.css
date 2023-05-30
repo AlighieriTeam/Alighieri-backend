@@ -14,14 +14,13 @@
 
 .player_div{
     border-radius: 50px;
-    height: 50px;
+    height: 60px;
     margin-top: 10px;
     vertical-align: middle;
+    box-sizing: border-box;
+    padding: 7px;
+    background: var(--main-dark);
 }
-.player_gradient_0{ background: var(--main-dark); }
-.player_gradient_1{ background: var(--main-dark); }
-.player_gradient_2{ background: var(--main-dark); }
-.player_gradient_3{ background: var(--main-dark); }
 
 /*delete button and player divs*/
 .ls-player-name{
@@ -55,14 +54,30 @@
 }
 
 .ls-close-button{
-    background-color: var(--accent-yep) !important;
+    background-color: var(--accent-nope) !important;
     color: var(--main-dark)  !important;
-    border-color: var(--accent-yep) !important;
+    border-color: var(--accent-nope) !important;
 }
 
 .ls-close-button:hover, .ls-close-button:focus,
 .ls-close-button:active, .ls-close-button:visited{
-    background-color: var(--accent-yep-hover) !important;
+    background-color: var(--accent-nope-hover) !important;
     color: var(--main-dark) !important;
-    border-color: var(--accent-yep-hover) !important;
+    border-color: var(--accent-nope-hover) !important;
+}
+
+.ls-modal-style{
+    border-radius: 50px;
+    background: var(--main);
+    box-sizing: border-box;
+    padding: 20px;
+}
+
+.ls-modal-footer{
+    display: flex;
+    justify-content: center;
+}
+
+.ls-modal-title{
+    color: var(--accent-yep)
 }
