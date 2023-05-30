@@ -40,7 +40,7 @@
 
 {% for player in players %}
     <script>
-        addPlayer(JSON.parse({{ player | tojson }}));
+        addPlayer(JSON.parse({{ player | tojson }}),'{{ player.token }}');
     </script>
 {% endfor %}
 
