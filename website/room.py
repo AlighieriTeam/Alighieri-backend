@@ -22,9 +22,9 @@ class Player:  # simple player class to show players in game page automatically
         self.is_bot = is_bot
         self.points = 0
 
-    def to_json(self) -> dict:
-        return json.loads(json.dumps(self, default=lambda o: o.__dict__,
-                          sort_keys=True, indent=4))
+    def to_json(self) -> str:
+        return json.dumps(self, default=lambda o: o.__dict__,
+                          sort_keys=True, indent=4)
 
 PLAYER_NICKNAMES = ['lion', 'tiger', 'leopard', 'cheetah', 'jaguar', 'panther', 'lynx', 'bobcat', 'ocelot',
                     'serval', 'elephant', 'rhinoceros', 'hippopotamus', 'giraffe', 'zebra', 'hyena', 'wolf', 'coyote',
