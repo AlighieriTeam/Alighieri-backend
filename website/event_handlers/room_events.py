@@ -1,8 +1,7 @@
-import json
 from threading import Thread
 
 from flask import session, url_for
-from flask_socketio import join_room, leave_room, emit
+from flask_socketio import join_room, leave_room, emit, send
 
 from games.GameDrawer import GameDrawer
 from games.pacman import PacmanController
@@ -11,10 +10,46 @@ from website import find_game, rooms, del_room
 
 def register_room_events(app, socketio):
 
+    def handle_leaving_game():
+        room = session.get("room")
+        player = session.get("player")
+        if not room or not player:
+            return
+        if room not in rooms:
+            leave_room(room)
+            return
+
+        curr_game = find_game(room)  # room === pin in session
+
+        # temporary 2nd condition for presentation
+        if not curr_game.started:
+            if player['is_owner']:
+                # emitting that dest enable passing reason why redirecting (it will be visible by click on browser link)
+                destination = 'choose?msg=Owner of the room has left'  # it is necessary to show info alert for another players
+                emit('redirect', destination, to=room)
+                curr_game.stop_game()
+                del_room(room)
+            else:
+                curr_game.del_player(int(player["id"]))
+                leave_room(room)
+                emit("disconnection", player, to=room)
+                return
+        else:
+            if not curr_game.is_rejoinable():
+                print(f"Game not rejoinable - {player['name']} disconnecting")
+                leave_room(room)
+                curr_game.del_player(int(player["id"]))
+                if len(curr_game.players) < 2:
+                    curr_game.stop_game()
+                    del_room(room)
+                print(f"{player['name']} left room {room}")
+
     def start_game(room, io):
         with app.test_request_context():
+            curr_game = find_game(room)
             game_drawer = GameDrawer(room, io)
             game_controller = PacmanController('pacman', game_drawer)
+            curr_game.set_controller(game_controller)
             game_controller.tick()
 
     @socketio.on("rejoin")
@@ -25,7 +60,7 @@ def register_room_events(app, socketio):
     @socketio.on("connected")
     def connected():
         room = session.get("room")
-        player = json.loads(session.get("player"))
+        player = session.get("player")
         if not room or not player:
             return
         if room not in rooms:
@@ -43,35 +78,18 @@ def register_room_events(app, socketio):
 
     @socketio.on("disconnect")
     def disconnect():
-        room = session.get("room")
-        player = json.loads(session.get("player"))
-        if not room or not player:
-            return
-        if room not in rooms:
-            leave_room(room)
-            return
+        handle_leaving_game()
 
-        curr_game = find_game(room)  # room === pin in session
-
-        # temporary 2nd condition for presentation
-        if not curr_game.started:
-            if player['is_owner']:
-                # emitting that dest enable passing reason why redirecting (it will be visible by click on browser link)
-                destination = 'choose?msg=Owner of the room has left'  # it is necessary to show info alert for another players
-                emit('redirect', destination, to=room)
-                del_room(room)
-            else:
-                curr_game.del_player(int(player["id"]))
-                leave_room(room)
-                emit("disconnection", player, to=room)
-                return
-
-        print(f"{player['name']} left room {room}")
+    @socketio.on("leave_game")
+    def leave_game(data):
+        handle_leaving_game()
+        # this is super important here to return anything
+        return {}
 
     @socketio.on('start_game')
     def get_start_signal():
         room = session.get("room")
-        player = json.loads(session.get("player"))
+        player = session.get("player")
         if not room or not player or not player['is_owner']:
             return
         if room not in rooms:
@@ -80,7 +98,8 @@ def register_room_events(app, socketio):
         curr_game = find_game(room)
         curr_game.started = True
         game_thread = Thread(target=start_game, args=(room, socketio))
-        game_thread.start()
+        curr_game.move_game_to_room_thread(game_thread)
+        curr_game.start_game()
         socketio.emit('redirect', url_for('views.game'), to=room)
 
     @socketio.on("add_bot")

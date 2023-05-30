@@ -131,7 +131,6 @@ class GameController:
         self._board = self.import_map(name)
         self._finished = False
 
-
     def import_map(self, name):
         file = open('games/map-' + name + '.txt')
         start = file.tell()
@@ -224,6 +223,9 @@ class GameController:
     def is_over(self):
         if not self._game_objects['heroes'] or not self._game_objects['cookies']:
             self._finished = True
+
+    def stop_game(self):
+        self._finished = True
 
     # TODO send to js
     def get_map_shape(self):

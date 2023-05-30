@@ -8,6 +8,7 @@ class Pacman(Base.Hero):
     def tick(self):
         super().tick()
         self.eat_cookie()
+        print("running")
 
     def eat_cookie(self):
         self._score += self._controller.delete_cookie(self._position)
