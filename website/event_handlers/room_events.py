@@ -1,3 +1,4 @@
+import json
 from threading import Thread
 
 from flask import session, url_for
@@ -45,13 +46,14 @@ def register_room_events(app, socketio):
                     del_room(room)
                 print(f"{player['name']} left room {room}")
 
-    def start_game(room, io):
+    def start_game(room: str, io):
         with app.test_request_context():
             curr_game = find_game(room)
             game_drawer = GameDrawer(room, io)
             game_updater = GameUpdater(room, io)
             game_controller = PacmanController('pacman', game_drawer)
-            game_controller.set_updater(game_updater)
+            game_controller.set_updater(game_updater)   # pass new class which handle with popup and updating players scores
+            game_controller.set_players([json.loads(player.to_json()) for player in curr_game.players])  # pass list of dicts of player
             curr_game.set_controller(game_controller)
             game_controller.tick()
 

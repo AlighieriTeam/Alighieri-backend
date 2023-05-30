@@ -1,12 +1,6 @@
 const socketio = io();
 socketio.emit('rejoin');
 
-function test_me(){
-    socketio.emit('draw_rectangle', 15, 15, 'blue', 5, 5);
-    socketio.emit('draw_circle', 10, 10, 'yellow', 5);
-    socketio.emit('draw_text', 20, 20, "Hello");
-}
-
 function leave_game(page) {
     socketio.emit("leave_game", {}, function() {
         // Server has acknowledged the event, navigate to new page
@@ -59,12 +53,19 @@ socketio.on('clearAll', function(){
 
 
 
-socketio.on('showPopup', function(data) {
-    let resultString = '';
-    Object.entries(data).forEach(([key, value]) => {
-      console.log(`Key: ${key}, Value: ${value}`);
-      //resultString += `Key: ${key}, Value: ${value}\n`;
-    });
+socketio.on('showPopup', function(players) {
+    let content = "";
+    console.log(players)
+    for (const player of players) {
+        console.log(`Key: ${player["id"]}, Value: ${player["name"]}`);
+        content += `
+            <div id='player_${player["id"]}' class="player_div player_gradient_1">
+                <div class="ls-player-name">${player["name"]}</div>
+                <div class="ls-player-points">${player["points"]}</div>
+                <div class="ls-player-del"></div>
+            </div>
+        `
+    }
 
     var popup = document.getElementById("popup")
 
@@ -91,7 +92,7 @@ socketio.on('showPopup', function(data) {
           </div>
         </div>
     `
-    var ss = part1 + part2
+    var ss = part1 + content + part2
     popup.innerHTML = ss
     $('#exampleModal').modal('show');
     console.log('show_popup called');

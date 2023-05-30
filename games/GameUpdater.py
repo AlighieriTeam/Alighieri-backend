@@ -8,6 +8,8 @@ class GameUpdater(object):
         # TODO: to implement, method to update player scores during the game
         pass
 
-    def show_popup(self, player_scores: dict):
+    def show_popup(self, players: list):
         ''' This method send player scores to room and shows popup '''
-        self.__socketio.emit("showPopup", player_scores, to=self.__room)
+        print("show popup called")
+        self.__socketio.emit("showPopup", players, to=self.__room)
+        print("show popup finished")
