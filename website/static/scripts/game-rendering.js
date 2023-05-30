@@ -46,7 +46,6 @@ socketio.on('drawCircle', function(data){
 })
 
 socketio.on('drawText', function(data){
-    console.log('drawText called');
     context.fillStyle = "white";
     context.font = "30px Arial";
     context.fillText(data["text"], data["x"] * scale, data["y"] * scale);
@@ -57,3 +56,43 @@ socketio.on('clearAll', function(){
     context.fillStyle = "black";
     context.fillRect(0, 0, screen.width, screen.height);
 })
+
+
+
+socketio.on('showPopup', function(data) {
+    let resultString = '';
+    Object.entries(data).forEach(([key, value]) => {
+      console.log(`Key: ${key}, Value: ${value}`);
+      //resultString += `Key: ${key}, Value: ${value}\n`;
+    });
+
+    var popup = document.getElementById("popup")
+
+    part1 = `
+        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+    `
+
+    part2 = `
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+              </div>
+            </div>
+          </div>
+        </div>
+    `
+    var ss = part1 + part2
+    popup.innerHTML = ss
+    $('#exampleModal').modal('show');
+    console.log('show_popup called');
+});
