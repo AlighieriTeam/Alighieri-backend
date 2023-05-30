@@ -7,7 +7,25 @@
 {% block title %} Game {% endblock %}
 {% block content %}
 
-<div id="popup_container"></div>
+<!-- START popup / modal -->
+<div class="modal fade" id="endgame_popup" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content ls-modal-style">
+            <div class="modal-header">
+                <div class="modal-title ls-modal-title ls-player-name"><h4>Player scores</h4></div>
+                <div class="ls-player-del">
+                    <i class="bi bi-x-circle ls-icon-color"></i>
+                    <i class="bi bi-x-circle-fill ls-icon-color" onclick="leave_game('{{ url_for('views.choose')}}')"></i>
+                </div>
+            </div>
+            <div class="modal-body"></div>
+            <div class="modal-footer ls-modal-footer">
+                <button type="button" class="shadow-none btn btn-lg btn-block btn-success rounded-pill ls-close-button" onclick="leave_game('{{ url_for('views.choose')}}')">Exit</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END popup / modal -->
 
 <div class="container_game">
     <div class="row">
