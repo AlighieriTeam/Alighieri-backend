@@ -13,34 +13,34 @@ SMALL_SIZE = 0.4
 
 class GameObject:
     def __init__(self, in_renderer, x, y, in_size, in_color=(255, 0, 0), is_circle: bool = False, game_drawer=None):
-        self._game_drawer = game_drawer
-        self._controller: GameController = in_renderer
-        self._color = in_color
-        self._position = [x, y]
-        self._size = in_size
-        self._circle = is_circle
+        self.game_drawer = game_drawer
+        self.controller: GameController = in_renderer
+        self.color = in_color
+        self.position = [x, y]
+        self.size = in_size
+        self.circle = is_circle
 
     def draw(self):
-        if self._circle:
-            self._game_drawer.draw_circle(self._position[0] + STANDARD_SIZE / 2, self._position[1] + STANDARD_SIZE / 2,
-                                          self._color, self._size / 2)
+        if self.circle:
+            self.game_drawer.draw_circle(self.position[0] + STANDARD_SIZE / 2, self.position[1] + STANDARD_SIZE / 2,
+                                         self.color, self.size / 2)
         else:
-            self._game_drawer.draw_rectangle(self._position[0] + STANDARD_SIZE / 2,
-                                             self._position[1] + STANDARD_SIZE / 2,
-                                             self._color, self._size, self._size)
+            self.game_drawer.draw_rectangle(self.position[0] + STANDARD_SIZE / 2,
+                                            self.position[1] + STANDARD_SIZE / 2,
+                                            self.color, self.size, self.size)
 
     def undraw(self):
-        self._game_drawer.draw_rectangle(self._position[0] + STANDARD_SIZE / 2, self._position[1] + STANDARD_SIZE / 2,
+        self.game_drawer.draw_rectangle(self.position[0] + STANDARD_SIZE / 2, self.position[1] + STANDARD_SIZE / 2,
                                          'black', STANDARD_SIZE, STANDARD_SIZE)
 
     def tick(self):
         pass
 
     def set_position(self, in_position):
-        temp = self._controller._board[self._position[0], self._position[1]]
-        self._controller._board[self._position[0], self._position[1]] = me.MapElements.PATH.value
-        self._position = in_position
-        self._controller._board[self._position[0], self._position[1]] = temp
+        temp = self.controller.board[self.position[0], self.position[1]]
+        self.controller.board[self.position[0], self.position[1]] = me.MapElements.PATH.value
+        self.position = in_position
+        self.controller.board[self.position[0], self.position[1]] = temp
 
 
 class Wall(GameObject):
@@ -73,15 +73,15 @@ class MovableGameObject(GameObject):
 
     def move(self):
         if self.check_direction(self.current_direction):
-            self.set_position([a + b for a, b in zip(self._position, self.current_direction.value)])
+            self.set_position([a + b for a, b in zip(self.position, self.current_direction.value)])
 
     def check_direction(self, direction):
-        new_position = [a + b for a, b in zip(self._position, direction.value)]
-        if new_position[0] < 0 or new_position[0] > self._controller._board.shape[0]:
+        new_position = [a + b for a, b in zip(self.position, direction.value)]
+        if new_position[0] < 0 or new_position[0] > self.controller.board.shape[0]:
             return False
-        if new_position[1] < 1 or new_position[1] > self._controller._board.shape[1]:
+        if new_position[1] < 1 or new_position[1] > self.controller.board.shape[1]:
             return False
-        check = self._controller._board[new_position[0], new_position[1]]
+        check = self.controller.board[new_position[0], new_position[1]]
         return check != me.MapElements.WALL.value and check != me.MapElements.BLOCK.value
 
     def get_possible_directions(self):
@@ -97,18 +97,33 @@ class Ghost(MovableGameObject):
         super().__init__(in_surface, x, y, in_size, in_color, game_drawer=game_drawer)
 
     def tick(self):
-        if bool(random.getrandbits(1)):
-            possibilities = self.get_possible_directions()
-            if possibilities:
-                self.set_direction(random.choice(possibilities))
-
+        self.set_direction(self.look_for_heroes())
         self.move()
 
+    def look_for_heroes(self):
+        direction = Direction.STOP
+        possibilities = self.get_possible_directions()
+        heroes_positions = [h.position for h in self.controller.game_objects['heroes']]
+        while possibilities:
+            if self.last_direction in possibilities:
+                direction = self.last_direction
+            else:
+                direction = random.choice(possibilities)
+            possibilities.remove(direction)
+            if direction == Direction.STOP:
+                continue
+            sigh = self.position.copy()
+            while self.controller.board[sigh[0]][sigh[1]] != me.MapElements.WALL.value:
+                if sigh in heroes_positions:
+                    return direction
+                sigh[0] += direction.value[0]
+                sigh[1] += direction.value[1]
+        return direction
 
 class Hero(MovableGameObject):
     def __init__(self, in_surface, x, y, in_size, game_drawer=None):
         super().__init__(in_surface, x, y, in_size, 'yellow', game_drawer=game_drawer)
-        self._score = 0
+        self.score = 0
         self.bot = Bot()
 
     def tick(self):
@@ -130,19 +145,19 @@ class Bot:
 
 class GameController:
     def __init__(self, name, game_drawer):
-        self._game_drawer = game_drawer
-        self._game_objects = {}
-        self._board = self.import_map(name)
-        self._finished = False
-        self._game_updater = None
-        self._players = None
+        self.game_drawer = game_drawer
+        self.game_objects = {}
+        self.board = self.import_map(name)
+        self.finished = False
+        self.game_updater = None
+        self.players = None
 
     def set_updater(self, game_updater):
-        self._game_updater = game_updater
+        self.game_updater = game_updater
 
     # TODO: count points for this players
     def set_players(self, players: list):
-        self._players = players
+        self.players = players
 
     def import_map(self, name):
         file = open('games/map-' + name + '.txt')
@@ -163,14 +178,14 @@ class GameController:
                 if mark in map_elements:
                     match mark:
                         case me.MapElements.WALL.value:
-                            wall = Wall(self, x, y, NORMAL_SIZE, game_drawer=self._game_drawer)
+                            wall = Wall(self, x, y, NORMAL_SIZE, game_drawer=self.game_drawer)
                             walls.append(wall)
                         case me.MapElements.PATH.value:
-                            cookie = Cookie(self, x, y, game_drawer=self._game_drawer)
+                            cookie = Cookie(self, x, y, game_drawer=self.game_drawer)
                             cookies.append(cookie)
                             mark = me.MapElements.COOKIE.value
                         case me.MapElements.GHOST.value:
-                            ghost = Ghost(self, x, y, NORMAL_SIZE, game_drawer=self._game_drawer)
+                            ghost = Ghost(self, x, y, NORMAL_SIZE, game_drawer=self.game_drawer)
                             ghosts.append(ghost)
                         case me.MapElements.HERO.value:
                             heroes.append(self.new_hero(x, y))
@@ -179,7 +194,7 @@ class GameController:
                     board_line.append(mark)
             board = np.append(board, [board_line], axis=0)
         board = np.delete(board, 0, axis=0)
-        self._game_objects = {
+        self.game_objects = {
             'walls': walls,
             'cookies': cookies,
             'ghosts': ghosts,
@@ -191,28 +206,28 @@ class GameController:
         return Hero(self, x, y, NORMAL_SIZE)
 
     def tick(self):
-        self._game_drawer.clear_all()
-        while not self._finished:
-            self._render_all_objects()
-            self._update_scores()
-            self._handle_events()
+        self.game_drawer.clear_all()
+        while not self.finished:
+            self.render_all_objects()
+            self.update_scores()
+            self.handle_events()
             self.check_collisions()
             self.is_over()
             time.sleep(0.25)  # TODO only for developing
             # self._finished = True  # to test popup
         print("Game over")
 
-        self._game_updater.show_popup(self._players)
+        self.game_updater.show_popup(self.players)
         time.sleep(
             1.0)  # little delay to give a chance for signal delivery to every player in room before room will be deleted
 
-    def _update_scores(self):
-        for i, hero in enumerate(self._game_objects['heroes']):
+    def update_scores(self):
+        for i, hero in enumerate(self.game_objects['heroes']):
             # TODO displaying under screen
-            self._game_drawer.draw_text(i, 0, hero._score)
+            self.game_drawer.draw_text(i, 0, hero.score)
 
-    def _render_all_objects(self):
-        for key, values in self._game_objects.items():
+    def render_all_objects(self):
+        for key, values in self.game_objects.items():
             if isinstance(values, list):
                 for value in values:
                     value.undraw()
@@ -223,31 +238,31 @@ class GameController:
                 values.tick()
                 values.draw()
 
-    def _handle_events(self):
+    def handle_events(self):
         pass
 
     def delete_cookie(self, board_position):
-        cookies = [c for c in self._game_objects['cookies'] if c._position != board_position]
-        if len(cookies) != len(self._game_objects['cookies']):
-            self._game_objects['cookies'] = cookies
+        cookies = [c for c in self.game_objects['cookies'] if c.position != board_position]
+        if len(cookies) != len(self.game_objects['cookies']):
+            self.game_objects['cookies'] = cookies
             return 1
         return 0
 
     def check_collisions(self):
-        ghosts_positions = [g._position for g in self._game_objects['ghosts']]
-        heroes = [h for h in self._game_objects['heroes'] if h._position not in ghosts_positions]
-        self._game_objects['heroes'] = heroes
+        ghosts_positions = [g.position for g in self.game_objects['ghosts']]
+        heroes = [h for h in self.game_objects['heroes'] if h.position not in ghosts_positions]
+        self.game_objects['heroes'] = heroes
 
     def is_over(self):
-        if not self._game_objects['heroes'] or not self._game_objects['cookies']:
-            self._finished = True
+        if not self.game_objects['heroes'] or not self.game_objects['cookies']:
+            self.finished = True
 
     def stop_game(self):
-        self._finished = True
+        self.finished = True
 
     # TODO send to js
     def get_map_shape(self):
-        return self._board.shape
+        return self.board.shape
 
 
 if __name__ == "__main__":
