@@ -130,6 +130,15 @@ class GameController:
         self._game_objects = {}
         self._board = self.import_map(name)
         self._finished = False
+        self._game_updater = None
+        self._players = None
+
+    def set_updater(self, game_updater):
+        self._game_updater = game_updater
+
+    # TODO: count points for this players
+    def set_players(self, players: list):
+        self._players = players
 
     def import_map(self, name):
         file = open('games/map-' + name + '.txt')
@@ -186,7 +195,11 @@ class GameController:
             self.check_collisions()
             self.is_over()
             time.sleep(0.25)   # TODO only for developing
+            #self._finished = True  # to test popup
         print("Game over")
+
+        self._game_updater.show_popup(self._players)
+        time.sleep(1.0)  # little delay to give a chance for signal delivery to every player in room before room will be deleted
 
     def _update_scores(self):
         for i, hero in enumerate(self._game_objects['heroes']):

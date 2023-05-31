@@ -1,12 +1,6 @@
 const socketio = io();
 socketio.emit('rejoin');
 
-function test_me(){
-    socketio.emit('draw_rectangle', 15, 15, 'blue', 5, 5);
-    socketio.emit('draw_circle', 10, 10, 'yellow', 5);
-    socketio.emit('draw_text', 20, 20, "Hello");
-}
-
 function leave_game(page) {
     socketio.emit("leave_game", {}, function() {
         // Server has acknowledged the event, navigate to new page
@@ -46,7 +40,6 @@ socketio.on('drawCircle', function(data){
 })
 
 socketio.on('drawText', function(data){
-    console.log('drawText called');
     context.fillStyle = "white";
     context.font = "30px Arial";
     context.fillText(data["text"], data["x"] * scale, data["y"] * scale);
@@ -57,3 +50,24 @@ socketio.on('clearAll', function(){
     context.fillStyle = "black";
     context.fillRect(0, 0, screen.width, screen.height);
 })
+
+
+
+socketio.on('showPopup', function(players) {
+    let content = "";
+    for (const player of players) {
+        console.log(`Key: ${player["id"]}, Value: ${player["name"]}`);
+        content += `
+            <div id='player_${player["id"]}' class="player_div">
+                <div class="ls-player-name">${player["name"]}</div>
+                <div class="ls-player-points">${player["points"]}</div>
+                <div class="ls-player-del"></div>
+            </div>
+        `
+    }
+
+    var popup_content = document.getElementsByClassName("modal-body")[0];
+    popup_content.innerHTML = content;
+
+    $('#endgame_popup').modal({backdrop: 'static', keyboard: false});
+});

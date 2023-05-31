@@ -38,3 +38,7 @@ body::-webkit-scrollbar{
 .website_text:hover{
     opacity: 1;
 }
+
+.ls-icon-color{
+    color: var(--accent-nope-hover) !important;
+}
