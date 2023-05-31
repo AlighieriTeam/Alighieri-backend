@@ -14,6 +14,13 @@ GAME_TYPES = {
 }
 
 
+def generate_token_for_player():
+    chars = [chr(x) for x in range(ord('A'), ord('Z') + 1)]
+    token_l = random.choices(chars, k=10)
+    token = ''.join(s for s in token_l)
+    return token
+
+
 class Player:  # simple player class to show players in game page automatically
     def __init__(self, id, name, is_owner=False, is_bot=False):
         self.id = id
@@ -21,10 +28,12 @@ class Player:  # simple player class to show players in game page automatically
         self.is_owner = is_owner
         self.is_bot = is_bot
         self.points = 0
+        self.token = generate_token_for_player()
 
     def to_json(self) -> str:
         return json.dumps(self, default=lambda o: o.__dict__,
                           sort_keys=True, indent=4)
+
 
 PLAYER_NICKNAMES = ['lion', 'tiger', 'leopard', 'cheetah', 'jaguar', 'panther', 'lynx', 'bobcat', 'ocelot',
                     'serval', 'elephant', 'rhinoceros', 'hippopotamus', 'giraffe', 'zebra', 'hyena', 'wolf', 'coyote',
@@ -58,8 +67,10 @@ class Room:
         occupied_ids = set(player.id for player in self.players)  # get all occupied ids in Room
         avail_ids = set(i for i in range(GAME_TYPES.get(self.game_type)))  # get all available ids based on game type
         player_id = list(avail_ids - occupied_ids)[0]  # get first free id
-        if name is None: player = Player(id=player_id, name=self.names[player_id], is_owner=is_owner, is_bot=is_bot)
-        else: player = Player(id=player_id, name=name, is_owner=is_owner, is_bot=is_bot)
+        if name is None:
+            player = Player(id=player_id, name=self.names[player_id], is_owner=is_owner, is_bot=is_bot)
+        else:
+            player = Player(id=player_id, name=name, is_owner=is_owner, is_bot=is_bot)
         self.players.append(player)
         return player
 
