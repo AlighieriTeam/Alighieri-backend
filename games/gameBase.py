@@ -4,6 +4,8 @@ import time
 import numpy as np
 from enum import Enum
 
+from games import MapElements as me
+
 STANDARD_SIZE = 1
 NORMAL_SIZE = 0.9
 SMALL_SIZE = 0.4
@@ -23,7 +25,8 @@ class GameObject:
             self._game_drawer.draw_circle(self._position[0] + STANDARD_SIZE / 2, self._position[1] + STANDARD_SIZE / 2,
                                           self._color, self._size / 2)
         else:
-            self._game_drawer.draw_rectangle(self._position[0] + STANDARD_SIZE / 2, self._position[1] + STANDARD_SIZE / 2,
+            self._game_drawer.draw_rectangle(self._position[0] + STANDARD_SIZE / 2,
+                                             self._position[1] + STANDARD_SIZE / 2,
                                              self._color, self._size, self._size)
 
     def undraw(self):
@@ -35,7 +38,7 @@ class GameObject:
 
     def set_position(self, in_position):
         temp = self._controller._board[self._position[0], self._position[1]]
-        self._controller._board[self._position[0], self._position[1]] = MapElements.PATH.value
+        self._controller._board[self._position[0], self._position[1]] = me.MapElements.PATH.value
         self._position = in_position
         self._controller._board[self._position[0], self._position[1]] = temp
 
@@ -79,7 +82,7 @@ class MovableGameObject(GameObject):
         if new_position[1] < 1 or new_position[1] > self._controller._board.shape[1]:
             return False
         check = self._controller._board[new_position[0], new_position[1]]
-        return check != MapElements.WALL.value and check != MapElements.BLOCK.value
+        return check != me.MapElements.WALL.value and check != me.MapElements.BLOCK.value
 
     def get_possible_directions(self):
         possible_directions = []
@@ -98,6 +101,7 @@ class Ghost(MovableGameObject):
             possibilities = self.get_possible_directions()
             if possibilities:
                 self.set_direction(random.choice(possibilities))
+
         self.move()
 
 
@@ -144,10 +148,10 @@ class GameController:
         file = open('games/map-' + name + '.txt')
         start = file.tell()
         width = len(file.readline())
-        board = np.zeros((1, width-1))
+        board = np.zeros((1, width - 1))
         file.seek(start)
 
-        map_elements = [element.value for element in list(MapElements)]
+        map_elements = [element.value for element in list(me.MapElements)]
         walls = []
         cookies = []
         ghosts = []
@@ -158,17 +162,17 @@ class GameController:
             for y, mark in enumerate(line):
                 if mark in map_elements:
                     match mark:
-                        case MapElements.WALL.value:
+                        case me.MapElements.WALL.value:
                             wall = Wall(self, x, y, NORMAL_SIZE, game_drawer=self._game_drawer)
                             walls.append(wall)
-                        case MapElements.PATH.value:
+                        case me.MapElements.PATH.value:
                             cookie = Cookie(self, x, y, game_drawer=self._game_drawer)
                             cookies.append(cookie)
-                            mark = MapElements.COOKIE.value
-                        case MapElements.GHOST.value:
+                            mark = me.MapElements.COOKIE.value
+                        case me.MapElements.GHOST.value:
                             ghost = Ghost(self, x, y, NORMAL_SIZE, game_drawer=self._game_drawer)
                             ghosts.append(ghost)
-                        case MapElements.HERO.value:
+                        case me.MapElements.HERO.value:
                             heroes.append(self.new_hero(x, y))
                         case _:
                             pass
@@ -194,12 +198,13 @@ class GameController:
             self._handle_events()
             self.check_collisions()
             self.is_over()
-            time.sleep(0.25)   # TODO only for developing
-            #self._finished = True  # to test popup
+            time.sleep(0.25)  # TODO only for developing
+            # self._finished = True  # to test popup
         print("Game over")
 
         self._game_updater.show_popup(self._players)
-        time.sleep(1.0)  # little delay to give a chance for signal delivery to every player in room before room will be deleted
+        time.sleep(
+            1.0)  # little delay to give a chance for signal delivery to every player in room before room will be deleted
 
     def _update_scores(self):
         for i, hero in enumerate(self._game_objects['heroes']):
@@ -243,14 +248,6 @@ class GameController:
     # TODO send to js
     def get_map_shape(self):
         return self._board.shape
-
-class MapElements(Enum):
-    WALL = '#'
-    PATH = ' '
-    BLOCK = '@'
-    GHOST = '^'
-    HERO = '*'
-    COOKIE = '.'
 
 
 if __name__ == "__main__":
