@@ -7,6 +7,22 @@
 {% block title %} Game {% endblock %}
 {% block content %}
 
+<!-- START popup / modal -->
+<div class="modal fade" id="endgame_popup" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content ls-modal-style">
+            <div class="modal-header">
+                <div class="modal-title ls-modal-title ls-player-name"><h4>Player scores</h4></div>
+            </div>
+            <div class="modal-body"></div>
+            <div class="modal-footer ls-modal-footer">
+                <button type="button" class="shadow-none btn btn-lg btn-block btn-success rounded-pill ls-close-button" onclick="leave_game('{{ url_for('views.choose')}}')">Exit</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END popup / modal -->
+
 <div class="container_game">
     <div class="row">
             <canvas id ="screen" style="margin: auto" class="game_view" width="{{ map_size[0] }}" height="{{ map_size[1] }}">
@@ -21,8 +37,8 @@
                     <div id="player_{{ player.id }}" class="player_div player_gradient_{{ player.id }}">
                         <div class="ls-player-name">{{ player.name }}</div>
                         <div class="ls-player-points">{{ player.points }}</div>
-                    <div class="ls-player-del"></div>
-                </div>
+                        <div class="ls-player-del"></div>
+                    </div>
                 {% endfor %}
             </div>
         </div>
@@ -35,7 +51,6 @@
                 </div>
 
                 <button type="button" class="shadow-none btn btn-lg btn-block btn-success rounded-pill ls-close-button" onclick="leave_game('{{ url_for('views.choose')}}')">End game</button>
-                <button type="button" class="shadow-none btn btn-lg btn-block btn-success rounded-pill enter-button" onclick="test_me()">test</button>
             </div>
         </div>
     </div>

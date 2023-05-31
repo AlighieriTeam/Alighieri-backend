@@ -30,7 +30,7 @@ class Player:  # simple player class to show players in game page automatically
         self.points = 0
         self.token = generate_token_for_player()
 
-    def to_json(self):
+    def to_json(self) -> str:
         return json.dumps(self, default=lambda o: o.__dict__,
                           sort_keys=True, indent=4)
 

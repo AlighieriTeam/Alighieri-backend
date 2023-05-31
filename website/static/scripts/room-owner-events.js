@@ -24,8 +24,8 @@ function refreshPlayerList() {
                 <div id="player_${id}" class="player_div player_gradient_${id}">
                     <div class="ls-player-name" onclick="copyToken(${id})">${name}</div>
                     <div class="ls-player-del">
-                      <i class="bi bi-x-circle"></i>
-                      <i class="bi bi-x-circle-fill" onclick="delPlayer(${id}, '${name}')"></i>
+                      <i class="bi bi-x-circle ls-icon-color"></i>
+                      <i class="bi bi-x-circle-fill ls-icon-color" onclick="delPlayer(${id}, '${name}')"></i>
                     </div>
                 </div>
             `
