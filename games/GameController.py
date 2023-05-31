@@ -223,7 +223,6 @@ class GameController:
             self.render_all_objects()
             self.update_scores()
             self.handle_events()
-            self.check_collisions()
             self.is_over()
             time.sleep(0.25)  # TODO only for developing
             # self._finished = True  # to test popup
@@ -239,6 +238,11 @@ class GameController:
             self.game_drawer.draw_text(i, 0, hero.score)
 
     def render_all_objects(self):
+        for wall in self.game_objects['walls']:
+            wall.draw()
+        for cookie in self.game_objects['cookies']:
+            cookie.draw()
+        '''
         for key, values in self.game_objects.items():
             if isinstance(values, list):
                 for value in values:
@@ -249,9 +253,19 @@ class GameController:
                 values.undraw()
                 values.tick()
                 values.draw()
+                '''
 
     def handle_events(self):
-        pass
+        for hero in self.game_objects['heroes']:
+            hero.undraw()
+            hero.tick()
+            hero.draw()
+        self.check_collisions()
+        for ghost in self.game_objects['ghosts']:
+            ghost.undraw()
+            ghost.tick()
+            ghost.draw()
+        self.check_collisions()
 
     def delete_cookie(self, board_position):
         cookies = [c for c in self.game_objects['cookies'] if c.position != board_position]
