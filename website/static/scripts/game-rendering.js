@@ -19,22 +19,32 @@ function set_scale(new_scale){
 
 socketio.on('drawRectangle', function(data){
     context.fillStyle = data["color"];
-    let x = Math.trunc((data["x"] - (data["width"] / 2)) * scale),
-        y = Math.trunc((data["y"] - (data["height"]/2))* scale),
+    let x = Math.trunc((data["x"] - (data["width"]/2)) * scale),
+        y = Math.trunc((data["y"] - (data["height"]/2)) * scale),
         width = Math.trunc(data["width"] * scale),
         height = Math.trunc(data["height"] * scale);
     context.fillRect(x, y, width, height);
 })
 
 socketio.on('drawCircle', function(data){
-    let xp = Math.trunc((data["x"] - (data["width"] / 2)) * scale),
-        yp = Math.trunc((data["y"] - (data["height"]/2))* scale),
-        x = Math.trunc(data["x"] * scale),
+    let x = Math.trunc(data["x"] * scale),
         y = Math.trunc(data["y"] * scale),
         radius = Math.trunc(data["radius"] * scale);
-    context.moveTo(xp, yp);
     context.beginPath();
     context.arc(x, y, radius, 0, 2 * Math.PI);
+    context.fillStyle = data["color"];
+    context.fill();
+})
+
+socketio.on('drawGhost', function(data){
+    let xp = Math.trunc((data["x"] - (data["width"]/2)) * scale),
+        yp = Math.trunc((data["y"] - (data["height"]/2)) * scale),
+        width = Math.trunc(data["width"] * scale),
+        height = Math.trunc(data["height"] * scale);
+    context.beginPath();
+    context.arc(xp + width/2, yp + height/2, height/2, Math.PI, 2 * Math.PI, false);
+    context.lineTo(xp + width, yp + height);
+    context.lineTo(xp, yp + height);
     context.fillStyle = data["color"];
     context.fill();
 })

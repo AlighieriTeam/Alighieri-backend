@@ -11,21 +11,33 @@ NORMAL_SIZE = 0.9
 SMALL_SIZE = 0.4
 
 
+class Shape(Enum):
+    RECTANGLE = 0
+    CIRCLE = 1
+    GHOST = 2
+
+
 class GameObject:
-    def __init__(self, in_renderer, x, y, in_size, in_color=(255, 0, 0), is_circle: bool = False, game_drawer=None):
+    def __init__(self, in_renderer, x, y, in_size, in_color=(255, 0, 0), in_shape: Shape = Shape.RECTANGLE, game_drawer=None):
         self.game_drawer = game_drawer
         self.controller: GameController = in_renderer
         self.color = in_color
         self.position = [x, y]
         self.size = in_size
-        self.circle = is_circle
+        self.shape = in_shape
 
     def draw(self):
-        if self.circle:
-            self.game_drawer.draw_circle(self.position[0] + STANDARD_SIZE / 2, self.position[1] + STANDARD_SIZE / 2,
-                                         self.color, self.size / 2)
-        else:
-            self.game_drawer.draw_rectangle(self.position[0] + STANDARD_SIZE / 2,
+        match self.shape:
+            case Shape.RECTANGLE:
+                self.game_drawer.draw_rectangle(self.position[0] + STANDARD_SIZE / 2,
+                                                self.position[1] + STANDARD_SIZE / 2,
+                                                self.color, self.size, self.size)
+            case Shape.CIRCLE:
+                self.game_drawer.draw_circle(self.position[0] + STANDARD_SIZE / 2,
+                                             self.position[1] + STANDARD_SIZE / 2,
+                                             self.color, self.size / 2)
+            case Shape.GHOST:
+                self.game_drawer.draw_ghost(self.position[0] + STANDARD_SIZE / 2,
                                             self.position[1] + STANDARD_SIZE / 2,
                                             self.color, self.size, self.size)
 
@@ -62,8 +74,8 @@ class Direction(Enum):
 
 
 class MovableGameObject(GameObject):
-    def __init__(self, in_surface, x, y, in_size, in_color, is_circle: bool = True, game_drawer=None):
-        super().__init__(in_surface, x, y, in_size, in_color, is_circle, game_drawer=game_drawer)
+    def __init__(self, in_surface, x, y, in_size, in_color, in_shape: Shape = Shape.CIRCLE, game_drawer=None):
+        super().__init__(in_surface, x, y, in_size, in_color, in_shape, game_drawer=game_drawer)
         self.current_direction = Direction.STOP
         self.last_direction = Direction.STOP
 
@@ -93,8 +105,8 @@ class MovableGameObject(GameObject):
 
 
 class Ghost(MovableGameObject):
-    def __init__(self, in_surface, x, y, in_size, in_color='red', game_drawer=None):
-        super().__init__(in_surface, x, y, in_size, in_color, game_drawer=game_drawer)
+    def __init__(self, in_surface, x, y, in_size, in_color='red', in_shape: Shape = Shape.GHOST, game_drawer=None):
+        super().__init__(in_surface, x, y, in_size, in_color, in_shape, game_drawer=game_drawer)
 
     def tick(self):
         self.set_direction(self.look_for_heroes())

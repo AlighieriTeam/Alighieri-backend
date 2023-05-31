@@ -1,4 +1,4 @@
-from games import gameBase as Base
+from games import GameController as Base
 
 
 class Pacman(Base.Hero):
