@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block links %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/home.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/game.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/room.css') }}" />
+
+    <script type="text/javascript"  src ="{{ url_for('static', filename='scripts/common-events.js') }}"></script>
+    <script type="text/javascript"  src ="{{ url_for('static', filename='scripts/room-owner-events.js') }}"></script>
+{% endblock %}
+{% block title %} Room {% endblock %}
+{% block content %}
+<div class="container_game">
+    <div class="room-rectangle center_div">
+        <div class="room-pin-container">
+            <p class="room-pin">{{game_pin}}</p>
+            <span class="room-pin-subtext">Room code</span>
+        </div>
+        <!--TODO: implement real Player class, this is a simple example-->
+        <div id="player-list">
+
+        </div>
+        <div style="text-align: center;">
+            <button class="cancel-game-button" onclick="leave('{{ url_for('views.choose') }}')">Cancel</button>
+            <button class="start-game-button" onclick="startGame()">Start game</button>
+            <div class="dropdown ls-dropdown-div">
+                <button class="shadow-none btn btn-lg btn-secondary dropdown-toggle btn-success rounded-pill ls-dropdown-btn ls-extended-button" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Add bot
+                </button>
+                <!--TODO: style dropdown list, add pointer on hover-->
+                <div class="dropdown-menu ls-dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    {% for b_key, b_val in bots.items() %}
+                        <!--For now only b_key is used (b_key == bot name), we have to consider what data bots need to work-->
+                        <span class="dropdown-item" onclick="addBot('{{ b_key }}', '{{ b_val }}')">{{ b_key }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% for player in players %}
+    <script>
+        addPlayer(JSON.parse('{{ player | tojson }}'), '{{ player.token }}');
+    </script>
+{% endfor %}
+
+{% endblock %}

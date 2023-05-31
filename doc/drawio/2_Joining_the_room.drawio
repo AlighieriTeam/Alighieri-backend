@@ -1,0 +1,205 @@
+<mxfile host="app.diagrams.net" modified="2023-05-25T22:03:37.103Z" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36 OPR/99.0.0.0" etag="C5aPjt36t9gbZDCroHqW" version="21.3.4" type="device">
+  <diagram name="Page-1" id="yOoXQrZUJldv7Uj9_9sr">
+    <mxGraphModel dx="1100" dy="649" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="f8KPX02JIXU7lZQcOivk-1" value="Python Server" style="shape=umlFrame;whiteSpace=wrap;html=1;pointerEvents=0;width=110;height=30;" parent="1" vertex="1">
+          <mxGeometry x="20" y="360" width="370" height="400" as="geometry" />
+        </mxCell>
+        <mxCell id="f8KPX02JIXU7lZQcOivk-2" value="JavaScript Client" style="shape=umlFrame;whiteSpace=wrap;html=1;pointerEvents=0;width=130;height=30;" parent="1" vertex="1">
+          <mxGeometry x="440" y="360" width="390" height="510" as="geometry" />
+        </mxCell>
+        <mxCell id="f8KPX02JIXU7lZQcOivk-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.486;entryY=-0.001;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" source="f8KPX02JIXU7lZQcOivk-4" target="f8KPX02JIXU7lZQcOivk-6" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="630" y="430" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="f8KPX02JIXU7lZQcOivk-4" value="" style="ellipse;html=1;shape=endState;fillColor=#60a917;strokeColor=#2D7600;fontColor=#ffffff;" parent="1" vertex="1">
+          <mxGeometry x="620" y="370" width="20" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="f8KPX02JIXU7lZQcOivk-6" value="room-owner.html &amp;amp;&amp;amp; room-player.html" style="shape=umlFrame;whiteSpace=wrap;html=1;pointerEvents=0;width=230;height=30;" parent="1" vertex="1">
+          <mxGeometry x="460" y="440" width="350" height="400" as="geometry" />
+        </mxCell>
+        <mxCell id="f8KPX02JIXU7lZQcOivk-7" value="render_template()" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="1" vertex="1">
+          <mxGeometry x="630" y="390" width="120" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="f8KPX02JIXU7lZQcOivk-8" value="" style="endArrow=classic;html=1;rounded=0;entryX=0.986;entryY=0.001;entryDx=0;entryDy=0;entryPerimeter=0;fontColor=#CC00CC;strokeColor=#CC00CC;strokeWidth=2;dashed=1;" parent="1" source="f8KPX02JIXU7lZQcOivk-9" target="f8KPX02JIXU7lZQcOivk-10" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="400" y="700" as="sourcePoint" />
+            <mxPoint x="350" y="440" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="f8KPX02JIXU7lZQcOivk-9" value="EMIT connected" style="html=1;whiteSpace=wrap;" parent="1" vertex="1">
+          <mxGeometry x="490" y="510" width="110" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="f8KPX02JIXU7lZQcOivk-10" value="ON connected" style="shape=umlFrame;whiteSpace=wrap;html=1;pointerEvents=0;width=125;height=30;" parent="1" vertex="1">
+          <mxGeometry x="40" y="450" width="300" height="270" as="geometry" />
+        </mxCell>
+        <mxCell id="f8KPX02JIXU7lZQcOivk-11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="f8KPX02JIXU7lZQcOivk-12" target="f8KPX02JIXU7lZQcOivk-13" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="f8KPX02JIXU7lZQcOivk-12" value="join_room" style="html=1;whiteSpace=wrap;" parent="1" vertex="1">
+          <mxGeometry x="70" y="606" width="70" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="f8KPX02JIXU7lZQcOivk-13" value="EMIT&lt;br&gt;connection(player, room)" style="html=1;whiteSpace=wrap;" parent="1" vertex="1">
+          <mxGeometry x="155" y="530" width="155" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="f8KPX02JIXU7lZQcOivk-14" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="f8KPX02JIXU7lZQcOivk-15" target="f8KPX02JIXU7lZQcOivk-21" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="f8KPX02JIXU7lZQcOivk-15" value="ON connection(player)" style="html=1;whiteSpace=wrap;" parent="1" vertex="1">
+          <mxGeometry x="490" y="606" width="130" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="f8KPX02JIXU7lZQcOivk-16" value="" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0;exitDx=0;exitDy=0;entryX=0;entryY=0;entryDx=0;entryDy=0;dashed=1;strokeColor=#CC00CC;strokeWidth=2;" parent="1" source="f8KPX02JIXU7lZQcOivk-13" target="f8KPX02JIXU7lZQcOivk-15" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="510" y="500" as="sourcePoint" />
+            <mxPoint x="410" y="570" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="f8KPX02JIXU7lZQcOivk-17" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="f8KPX02JIXU7lZQcOivk-18" target="f8KPX02JIXU7lZQcOivk-22" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="f8KPX02JIXU7lZQcOivk-18" value="playerMap&lt;br&gt;(variable)" style="html=1;whiteSpace=wrap;" parent="1" vertex="1">
+          <mxGeometry x="680" y="570" width="110" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="vimQxeY5SVY76Ld-wtsc-8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="f8KPX02JIXU7lZQcOivk-21" target="vimQxeY5SVY76Ld-wtsc-7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="f8KPX02JIXU7lZQcOivk-21" value="addPlayer(player)" style="html=1;whiteSpace=wrap;" parent="1" vertex="1">
+          <mxGeometry x="500" y="670" width="110" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="f8KPX02JIXU7lZQcOivk-22" value="refreshPlayerList()" style="html=1;whiteSpace=wrap;" parent="1" vertex="1">
+          <mxGeometry x="680" y="685" width="110" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="f8KPX02JIXU7lZQcOivk-45" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="f8KPX02JIXU7lZQcOivk-47" target="f8KPX02JIXU7lZQcOivk-12" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="f8KPX02JIXU7lZQcOivk-46" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="f8KPX02JIXU7lZQcOivk-47" target="f8KPX02JIXU7lZQcOivk-50" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="55" y="550" />
+              <mxPoint x="55" y="675" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="f8KPX02JIXU7lZQcOivk-47" value="Validate" style="rhombus;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="75" y="520" width="60" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="f8KPX02JIXU7lZQcOivk-48" value="ok" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="1" vertex="1">
+          <mxGeometry x="100" y="570" width="40" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="f8KPX02JIXU7lZQcOivk-49" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="f8KPX02JIXU7lZQcOivk-50" target="f8KPX02JIXU7lZQcOivk-54" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="f8KPX02JIXU7lZQcOivk-50" value="leave_room" style="html=1;whiteSpace=wrap;" parent="1" vertex="1">
+          <mxGeometry x="90" y="660" width="70" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="f8KPX02JIXU7lZQcOivk-51" value="!ok" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="1" vertex="1">
+          <mxGeometry x="45" y="518" width="40" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="f8KPX02JIXU7lZQcOivk-52" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="f8KPX02JIXU7lZQcOivk-53" target="f8KPX02JIXU7lZQcOivk-47" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="f8KPX02JIXU7lZQcOivk-53" value="" style="ellipse;html=1;shape=endState;fillColor=#60a917;strokeColor=#2D7600;fontColor=#ffffff;" parent="1" vertex="1">
+          <mxGeometry x="140" y="490" width="20" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="f8KPX02JIXU7lZQcOivk-54" value="" style="ellipse;html=1;shape=endState;fillColor=#000000;strokeColor=#ff0000;" parent="1" vertex="1">
+          <mxGeometry x="215" y="665" width="20" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="f8KPX02JIXU7lZQcOivk-56" value="&lt;font style=&quot;font-size: 29px;&quot;&gt;Joining the room&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=29;" parent="1" vertex="1">
+          <mxGeometry x="305" y="25" width="240" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="vimQxeY5SVY76Ld-wtsc-1" value="room_events.py" style="shape=umlFrame;whiteSpace=wrap;html=1;pointerEvents=0;width=110;height=24;" vertex="1" parent="1">
+          <mxGeometry x="30" y="406" width="350" height="334" as="geometry" />
+        </mxCell>
+        <mxCell id="vimQxeY5SVY76Ld-wtsc-3" value="1" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#CC00CC;fontColor=#CC00CC;" vertex="1" parent="1">
+          <mxGeometry x="490" y="490" width="20" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="vimQxeY5SVY76Ld-wtsc-4" value="2" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#CC00CC;fontColor=#CC00CC;" vertex="1" parent="1">
+          <mxGeometry x="300" y="510" width="20" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="vimQxeY5SVY76Ld-wtsc-5" value="ok" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="570" y="750" width="40" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="vimQxeY5SVY76Ld-wtsc-6" value="Short description&lt;br style=&quot;font-size: 14px;&quot;&gt;0. Room cannot exist without owner&lt;br style=&quot;font-size: 14px;&quot;&gt;1. If owner or player wants to join the room, &quot;connected&quot; signal is emited by JS and received by &lt;br&gt;Python server which listen on this signal.&lt;br style=&quot;font-size: 14px;&quot;&gt;2. On server site we have a validation, if it was successful then we join a session room and &lt;br&gt;emiting next signal named &quot;connection&quot; previous JS.&lt;br style=&quot;font-size: 14px;&quot;&gt;&lt;div style=&quot;font-size: 14px;&quot;&gt;3. &quot;connection&quot; signal has 2 arguments, first is player data and second is a session room&lt;/div&gt;&lt;div style=&quot;font-size: 14px;&quot;&gt;4. After &quot;connection&quot; signal was received we call addPlayer() function to update playerMap and&lt;/div&gt;&lt;div style=&quot;font-size: 14px;&quot;&gt;&amp;nbsp;update players on HTML website&lt;/div&gt;&lt;div style=&quot;font-size: 14px;&quot;&gt;5. If validation was successfull we can add player to variable named playerMap&lt;/div&gt;&lt;div style=&quot;font-size: 14px;&quot;&gt;6. Then we refresh player list on website&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="20" y="120" width="610" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="vimQxeY5SVY76Ld-wtsc-9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="1" source="vimQxeY5SVY76Ld-wtsc-7" target="f8KPX02JIXU7lZQcOivk-18">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="650" y="775" />
+              <mxPoint x="650" y="540" />
+              <mxPoint x="735" y="540" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="vimQxeY5SVY76Ld-wtsc-10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="vimQxeY5SVY76Ld-wtsc-7" target="f8KPX02JIXU7lZQcOivk-22">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="555" y="820" />
+              <mxPoint x="716" y="820" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="vimQxeY5SVY76Ld-wtsc-7" value="Validate" style="rhombus;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="525" y="745" width="60" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="vimQxeY5SVY76Ld-wtsc-11" value="!ok" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="550" y="790" width="40" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="vimQxeY5SVY76Ld-wtsc-13" value="&amp;nbsp;In case when we have more players &lt;br style=&quot;font-size: 14px;&quot;&gt;and someone new will join to room, &quot;connection&quot; &lt;br style=&quot;font-size: 14px;&quot;&gt;signal will be received by all players in room" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="440" y="967" width="320" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="vimQxeY5SVY76Ld-wtsc-14" value="Server" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="185" y="887" width="90" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="vimQxeY5SVY76Ld-wtsc-15" value="New&lt;br&gt;Player" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="20" y="887" width="90" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="vimQxeY5SVY76Ld-wtsc-16" value="Player" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="300" y="805" width="90" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="vimQxeY5SVY76Ld-wtsc-17" value="Player&lt;br&gt;Owner" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="300" y="967" width="90" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="vimQxeY5SVY76Ld-wtsc-19" value="" style="endArrow=classic;html=1;rounded=0;entryX=0;entryY=0;entryDx=0;entryDy=0;exitX=1;exitY=0;exitDx=0;exitDy=0;fillColor=#d80073;strokeColor=#A50040;" edge="1" parent="1" source="vimQxeY5SVY76Ld-wtsc-15" target="vimQxeY5SVY76Ld-wtsc-14">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="550" y="867" as="sourcePoint" />
+            <mxPoint x="600" y="817" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="vimQxeY5SVY76Ld-wtsc-20" value="" style="endArrow=classic;html=1;rounded=0;entryX=1;entryY=1;entryDx=0;entryDy=0;exitX=0;exitY=1;exitDx=0;exitDy=0;fillColor=#60a917;strokeColor=#2D7600;" edge="1" parent="1" source="vimQxeY5SVY76Ld-wtsc-14" target="vimQxeY5SVY76Ld-wtsc-15">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="249.57999999999998" y="878" as="sourcePoint" />
+            <mxPoint x="249.57999999999998" y="956" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="vimQxeY5SVY76Ld-wtsc-22" value="" style="endArrow=classic;html=1;rounded=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fillColor=#60a917;strokeColor=#2D7600;" edge="1" parent="1" source="vimQxeY5SVY76Ld-wtsc-14" target="vimQxeY5SVY76Ld-wtsc-17">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="285" y="927" as="sourcePoint" />
+            <mxPoint x="345" y="867" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="vimQxeY5SVY76Ld-wtsc-23" value="join" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="90" y="865" width="40" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="vimQxeY5SVY76Ld-wtsc-24" value="update" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="155" y="937" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="vimQxeY5SVY76Ld-wtsc-25" value="update" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="215" y="947" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="vimQxeY5SVY76Ld-wtsc-26" value="update" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="220" y="857" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="vimQxeY5SVY76Ld-wtsc-27" value="" style="endArrow=classic;html=1;rounded=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fillColor=#60a917;strokeColor=#2D7600;exitX=1;exitY=0;exitDx=0;exitDy=0;" edge="1" parent="1" source="vimQxeY5SVY76Ld-wtsc-14" target="vimQxeY5SVY76Ld-wtsc-16">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="263" y="953" as="sourcePoint" />
+            <mxPoint x="310" y="1007" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
