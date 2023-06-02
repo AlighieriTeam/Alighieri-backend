@@ -15,6 +15,11 @@
             <p class="room-pin">{{game_pin}}</p>
             <span class="room-pin-subtext">Room code</span>
         </div>
+        <div class="room-pin-container">
+            <p class="room-pin">{{ token }}</p>
+            <span class="room-pin-subtext">Token</span>
+        </div>
+
         <!--TODO: implement real Player class, this is a simple example-->
         <div id="player-list">
 
@@ -38,9 +43,12 @@
     </div>
 </div>
 
+<script>
+    const backgroundColor = '{{ color[0] }}';
+</script>
 {% for player in players %}
     <script>
-        addPlayer(JSON.parse('{{ player | tojson }}'), '{{ player.token }}');
+        addPlayer(JSON.parse('{{ player | tojson }}'));
     </script>
 {% endfor %}
 

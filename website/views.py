@@ -34,7 +34,7 @@ def room_owner():
 
         players = [vars(p) for p in curr_game.players]
 
-        return render_template("room-owner.html", players=players, bots=cfg.avail_bots, game_pin=pin)
+        return render_template("room-owner.html", players=players, bots=cfg.avail_bots, game_pin=pin, token=player.token, color=player.color)
 
     # if tried to enter /room-owner directly - redirect to choose
     return redirect(url_for('.choose'))
@@ -71,7 +71,7 @@ def room_player():
 
         players = [vars(p) for p in curr_game.players]
 
-        return render_template("room-player.html", players=players, actual_player_id=player.id, game_pin=pin)
+        return render_template("room-player.html", players=players, actual_player_id=player.id, game_pin=pin, token=player.token, color=player.color)
 
     # if tried to enter /room-player directly - redirect to choose
     return redirect(url_for('.choose'))

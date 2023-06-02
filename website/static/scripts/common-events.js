@@ -26,7 +26,6 @@ socketio.emit('connected');
 // ------------ common JS functions for join.html and room.html ------------
 
 const playerMap = new Map();
-const playerTokens = new Map();
 function leave(destination){
     window.location.href=destination;
 }
@@ -34,7 +33,6 @@ function leave(destination){
 function addPlayer(player) {
     if (!playerMap.has(player.id) || playerMap.get(player.id) === "") {
         playerMap.set(player.id, player.name);
-        playerTokens.set(player.id, player.token);
     }
     refreshPlayerList();
     console.log(player.id);
