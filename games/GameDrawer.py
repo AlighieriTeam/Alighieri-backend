@@ -26,6 +26,17 @@ class GameDrawer(object):
         }
         self.__socketio.emit("drawCircle", data, to=self.__room)
 
+    def draw_ghost(self, x: int, y: int, color: str, width: int, height: int):
+        # join_room(self.__room)
+        data = {
+            "x": x,
+            "y": y,
+            "color": color,
+            "width": width,
+            "height": height
+        }
+        self.__socketio.emit("drawGhost", data, to=self.__room)
+
     def draw_text(self, x: int, y: int, text: str):
         #join_room(self.__room)
         data = {

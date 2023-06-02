@@ -1,4 +1,4 @@
-from games import gameBase as Base
+from games import GameController as Base
 
 
 class Pacman(Base.Hero):
@@ -11,12 +11,12 @@ class Pacman(Base.Hero):
         print("running")
 
     def eat_cookie(self):
-        self._score += self._controller.delete_cookie(self._position)
+        self.score += self.controller.delete_cookie(self.position)
 
 
 class PacmanController(Base.GameController):
     def new_hero(self, x, y):
-        return Pacman(self, x, y, Base.NORMAL_SIZE, game_drawer=self._game_drawer)
+        return Pacman(self, x, y, Base.NORMAL_SIZE, game_drawer=self.game_drawer)
 
 
 if __name__ == "__main__":
