@@ -21,6 +21,27 @@ def generate_token_for_player():
     return token
 
 
+# List of static colors
+COLORS_LIST = [
+    (255, 0, 0),  # Red
+    (0, 255, 0),  # Green
+    (0, 0, 255),  # Blue
+    (255, 255, 0),  # Yellow
+    (255, 0, 255),  # Magenta
+    (0, 255, 255),  # Cyan
+    (128, 0, 0),  # Maroon
+    (0, 128, 0),  # Green (Medium)
+    (0, 0, 128),  # Navy
+    (128, 128, 0)  # Olive
+]
+
+
+def pick_random_colors(num_colors):
+    if num_colors > len(COLORS_LIST):
+        raise ValueError("Number of colors to pick exceeds the length of the colors list.")
+    return random.sample(COLORS_LIST, num_colors)
+
+
 class Player:  # simple player class to show players in game page automatically
     def __init__(self, id, name, is_owner=False, is_bot=False):
         self.id = id
@@ -29,6 +50,7 @@ class Player:  # simple player class to show players in game page automatically
         self.is_bot = is_bot
         self.points = 0
         self.token = generate_token_for_player()
+        self.color = pick_random_colors(1)
 
     def to_json(self) -> str:
         return json.dumps(self, default=lambda o: o.__dict__,
@@ -43,6 +65,7 @@ PLAYER_NICKNAMES = ['lion', 'tiger', 'leopard', 'cheetah', 'jaguar', 'panther', 
                     'dolphin', 'seal', 'otter', 'penguin', 'seagull']
 
 MOCK_PLAYERS = [Player(1, "Jacek"), Player(2, "Placek"), Player(3, "Yan"), Player(4, "Covalaki")]
+
 
 
 def generate_nicks(number_of_players):
@@ -102,6 +125,7 @@ class Room:
         if self._game_thread:
             self._game_controller.stop_game()
 
+
 class Timer:
     def __init__(self, interval):
         self.interval = interval
@@ -121,4 +145,3 @@ class Timer:
         if self.start_time is None:
             return False
         return (time.time() - self.start_time) > self.interval
-

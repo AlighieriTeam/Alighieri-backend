@@ -15,6 +15,10 @@
             <p class="room-pin">{{game_pin}}</p>
             <span class="room-pin-subtext">Room code</span>
         </div>
+         <div class="room-pin-container">
+            <p class="room-pin">{{ token }}</p>
+            <span class="room-pin-subtext">Token</span>
+        </div>
             <div id="player-list">
 
             </div>
@@ -26,12 +30,14 @@
 
 <script>
     var actual_player_id = {{ actual_player_id }}
+    const backgroundColor = '{{ color[0] }}';
 </script>
 
-{% for player in players %}
+{% for player_id, player_name in players.items() %}
     <script>
-        addPlayer(JSON.parse('{{ player | tojson }}'), '{{ player.token }}');
+        addPlayer({ id: {{ player_id }}, name: '{{ player_name }}' });
     </script>
+
 {% endfor %}
 
 {% endblock %}
