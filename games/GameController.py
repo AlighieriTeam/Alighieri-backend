@@ -1,3 +1,4 @@
+import pickle
 import random
 import time
 
@@ -170,6 +171,25 @@ class GameController:
     # TODO: count points for this players
     def set_players(self, players: list):
         self.players = players
+        self.__connect_players_and_heroes()
+
+    def __disconnect_players_and_heroes(self):
+        for player in self.players:
+            player["points"] = player["hero"].score
+            del player["hero"]
+    def __connect_players_and_heroes(self):
+        for player in self.players:
+            start_x, start_y = self.__set_location()
+            self.game_objects["heroes"].append(self.new_hero(start_x, start_y))
+            player["hero"] = self.game_objects["heroes"][-1]
+
+    def __set_location(self) -> tuple:
+        x, y = 0, 0
+        while self.board[x][y] != me.MapElements.COOKIE.value:
+            x = random.randint(1, self.board.shape[0] - 1)
+            y = random.randint(1, self.board.shape[1] - 1)
+        self.board[x][y] = me.MapElements.HERO.value
+        return x, y
 
     def import_map(self, name):
         file = open('games/map-' + name + '.txt')
@@ -199,13 +219,14 @@ class GameController:
                         case me.MapElements.GHOST.value:
                             ghost = Ghost(self, x, y, NORMAL_SIZE, game_drawer=self.game_drawer)
                             ghosts.append(ghost)
-                        case me.MapElements.HERO.value:
-                            heroes.append(self.new_hero(x, y))
+                        #case me.MapElements.HERO.value:
+                        #    heroes.append(self.new_hero(x, y))
                         case _:
                             pass
                     board_line.append(mark)
             board = np.append(board, [board_line], axis=0)
         board = np.delete(board, 0, axis=0)
+        print(board)
         self.game_objects = {
             'walls': walls,
             'cookies': cookies,
@@ -228,6 +249,7 @@ class GameController:
             # self._finished = True  # to test popup
         print("Game over")
 
+        self.__disconnect_players_and_heroes()
         self.game_updater.show_popup(self.players)
         time.sleep(
             1.0)  # little delay to give a chance for signal delivery to every player in room before room will be deleted
@@ -235,7 +257,8 @@ class GameController:
     def update_scores(self):
         for i, hero in enumerate(self.game_objects['heroes']):
             # TODO displaying under screen
-            self.game_drawer.draw_text(i, 0, hero.score)
+            print("hero no: {}, scores: {}".format(i, hero.score))
+            #self.game_drawer.draw_text(i, 0, hero.score)
 
     def render_all_objects(self):
         for wall in self.game_objects['walls']:

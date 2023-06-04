@@ -56,6 +56,9 @@ class Player:  # simple player class to show players in game page automatically
         return json.dumps(self, default=lambda o: o.__dict__,
                           sort_keys=True, indent=4)
 
+    def to_safe_json(self) -> dict:
+        return {k: v for k, v in vars(self).items() if k != 'token' and k != 'hero'}
+
 
 PLAYER_NICKNAMES = ['lion', 'tiger', 'leopard', 'cheetah', 'jaguar', 'panther', 'lynx', 'bobcat', 'ocelot',
                     'serval', 'elephant', 'rhinoceros', 'hippopotamus', 'giraffe', 'zebra', 'hyena', 'wolf', 'coyote',
