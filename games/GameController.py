@@ -260,6 +260,7 @@ class GameController:
             # TODO displaying under screen
             print("hero no: {}, scores: {}".format(i, hero.score[0]))
             #self.game_drawer.draw_text(i, 0, hero.score)
+            self.game_updater.update_scores(self.players)
 
     def render_all_objects(self):
         for wall in self.game_objects['walls']:
