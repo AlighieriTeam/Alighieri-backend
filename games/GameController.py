@@ -136,7 +136,7 @@ class Ghost(MovableGameObject):
 class Hero(MovableGameObject):
     def __init__(self, in_surface, x, y, in_size, game_drawer=None):
         super().__init__(in_surface, x, y, in_size, 'yellow', game_drawer=game_drawer)
-        self.score = 0
+        self.score = [0]  # to make score mutable
         self.bot = Bot()
 
     def tick(self):
@@ -181,7 +181,8 @@ class GameController:
         for player in self.players:
             start_x, start_y = self.__set_location()
             self.game_objects["heroes"].append(self.new_hero(start_x, start_y))
-            player["hero"] = self.game_objects["heroes"][-1]
+            #player["hero"] = self.game_objects["heroes"][-1]
+            player["points"] = self.game_objects["heroes"][-1].score
 
     def __set_location(self) -> tuple:
         x, y = 0, 0
@@ -249,7 +250,7 @@ class GameController:
             # self._finished = True  # to test popup
         print("Game over")
 
-        self.__disconnect_players_and_heroes()
+        #self.__disconnect_players_and_heroes()
         self.game_updater.show_popup(self.players)
         time.sleep(
             1.0)  # little delay to give a chance for signal delivery to every player in room before room will be deleted
@@ -257,7 +258,7 @@ class GameController:
     def update_scores(self):
         for i, hero in enumerate(self.game_objects['heroes']):
             # TODO displaying under screen
-            print("hero no: {}, scores: {}".format(i, hero.score))
+            print("hero no: {}, scores: {}".format(i, hero.score[0]))
             #self.game_drawer.draw_text(i, 0, hero.score)
 
     def render_all_objects(self):

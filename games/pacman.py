@@ -11,7 +11,7 @@ class Pacman(Base.Hero):
         print("running")
 
     def eat_cookie(self):
-        self.score += self.controller.delete_cookie(self.position)
+        self.score[0] += self.controller.delete_cookie(self.position)
 
 
 class PacmanController(Base.GameController):
