@@ -8,7 +8,7 @@ function leave(destination){
 
 function addPlayer(player) {
     if (!playerMap.has(player.id) || playerMap.get(player.id) === "") {
-        playerMap.set(player.id, player.name);
+        playerMap.set(player.id, {name: player.name, color: '(' + player.color[0].join(', ') + ')'});
     }
     refreshPlayerList();
     console.log(player.id);
@@ -19,23 +19,14 @@ function refreshPlayerList() {
     console.log("refresh called")
     const playerList = document.getElementById("player-list");
     let content = "";
-    for (const [id, name] of playerMap.entries()) {
-        if (id === actual_player_id){
-            content += `
-                <div id="player_${id}" class="player_div" style="background-color: rgb${backgroundColor}">
-                    <div class="ls-player-name">${name}</div>
-                    <div class="ls-player-points"></div>
-                </div>
-            `
-        }
-        else{
-             content += `
-                <div id="player_${id}" class="player_div">
-                    <div class="ls-player-name">${name}</div>
-                    <div class="ls-player-points"></div>
-                </div>
-            `
-        }
+    for (const [id, value] of playerMap.entries()) {
+        console.log(value["color"]);
+        content += `
+            <div id="player_${id}" class="player_div" style='background-color: rgb${value["color"]};'>
+                <div class="ls-player-name">${value["name"]}</div>
+                <div class="ls-player-points"></div>
+            </div>
+        `
     }
     playerList.innerHTML = content;
 }
@@ -46,23 +37,13 @@ function refreshPlayerList() {
 socketio.on('showPopup', function(players) {
     let content = "";
     for (const player of players) {
-        console.log(`Key: ${player["id"]}, Value: ${player["name"]}`);
-        if(player["id"] === actual_player_id){
-            content += `
-                <div id='player_${player["id"]}' class="player_div" style="background-color: rgb${backgroundColor}">
-                    <div class="ls-player-name">${player["name"]}</div>
-                    <div class="ls-player-points">${player["points"]}</div>
-                </div>
-            `
-        }
-        else{
-            content += `
-                <div id='player_${player["id"]}' class="player_div">
-                    <div class="ls-player-name">${player["name"]}</div>
-                    <div class="ls-player-points">${player["points"]}</div>
-                </div>
-            `
-        }
+        var color = '(' + player.color[0].join(', ') + ')'
+        content += `
+            <div id='player_${player["id"]}' class="player_div" style='background-color: rgb${color};'>
+                <div class="ls-player-name">${player["name"]}</div>
+                <div class="ls-player-points">${player["points"]}</div>
+            </div>
+        `
     }
 
     var popup_content = document.getElementsByClassName("modal-body")[0];
