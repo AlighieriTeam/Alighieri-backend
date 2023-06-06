@@ -105,7 +105,7 @@ class MovableGameObject(GameObject):
 
 
 class Ghost(MovableGameObject):
-    def __init__(self, in_surface, x, y, in_size, in_color='#FF595E', in_shape: Shape = Shape.GHOST, game_drawer=None):
+    def __init__(self, in_surface, x, y, in_size, in_color='#FF5714', in_shape: Shape = Shape.GHOST, game_drawer=None):
         super().__init__(in_surface, x, y, in_size, in_color, in_shape, game_drawer=game_drawer)
 
     def tick(self):
