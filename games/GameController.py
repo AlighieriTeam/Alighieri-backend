@@ -19,7 +19,7 @@ class Shape(Enum):
 
 
 class GameObject:
-    def __init__(self, in_renderer, x, y, in_size, in_color=(255, 0, 0), in_shape: Shape = Shape.RECTANGLE, game_drawer=None):
+    def __init__(self, in_renderer, x, y, in_size, in_color="(255, 0, 0)", in_shape: Shape = Shape.RECTANGLE, game_drawer=None):
         self.game_drawer = game_drawer
         self.controller: GameController = in_renderer
         self.color = in_color
@@ -134,8 +134,8 @@ class Ghost(MovableGameObject):
         return direction
 
 class Hero(MovableGameObject):
-    def __init__(self, in_surface, x, y, in_size, game_drawer=None):
-        super().__init__(in_surface, x, y, in_size, 'yellow', game_drawer=game_drawer)
+    def __init__(self, in_surface, x, y, in_size, color: str, game_drawer=None):
+        super().__init__(in_surface, x, y, in_size, in_color=color, game_drawer=game_drawer)
         self.score = [0]  # to make score mutable
         self.bot = Bot()
 
@@ -180,7 +180,7 @@ class GameController:
     def __connect_players_and_heroes(self):
         for player in self.players:
             start_x, start_y = self.__set_location()
-            self.game_objects["heroes"].append(self.new_hero(start_x, start_y))
+            self.game_objects["heroes"].append(self.new_hero(start_x, start_y, color=str(player["color"][0])))
             #player["hero"] = self.game_objects["heroes"][-1]
             player["points"] = self.game_objects["heroes"][-1].score
 
@@ -236,8 +236,8 @@ class GameController:
         }
         return board
 
-    def new_hero(self, x, y):
-        return Hero(self, x, y, NORMAL_SIZE)
+    def new_hero(self, x, y, color: str):
+        return Hero(self, x, y, NORMAL_SIZE, color=color)
 
     def tick(self):
         self.game_drawer.clear_all()
