@@ -8,7 +8,7 @@ function leave(destination){
 
 function addPlayer(player) {
     if (!playerMap.has(player.id) || playerMap.get(player.id) === "") {
-        playerMap.set(player.id, {name: player.name, color: '(' + player.color[0].join(', ') + ')'});
+        playerMap.set(player.id, {name: player.name, color: player.color[0]});
     }
     refreshPlayerList();
     console.log(player.id);
@@ -22,7 +22,7 @@ function refreshPlayerList() {
     for (const [id, value] of playerMap.entries()) {
         console.log(value["color"]);
         content += `
-            <div id="player_${id}" class="player_div" style='background-color: rgb${value["color"]};'>
+            <div id="player_${id}" class="player_div" style='background-color: ${value["color"]};'>
                 <div class="ls-player-name">${value["name"]}</div>
                 <div class="ls-player-points"></div>
             </div>
@@ -37,9 +37,9 @@ function refreshPlayerList() {
 socketio.on('showPopup', function(players) {
     let content = "";
     for (const player of players) {
-        var color = '(' + player.color[0].join(', ') + ')'
+        var color = player.color[0]
         content += `
-            <div id='player_${player["id"]}' class="player_div" style='background-color: rgb${color};'>
+            <div id='player_${player["id"]}' class="player_div" style='background-color: ${color};'>
                 <div class="ls-player-name">${player["name"]}</div>
                 <div class="ls-player-points">${player["points"]}</div>
             </div>

@@ -33,7 +33,7 @@ function refreshPlayerList() {
         }
         else{
             content += `
-                <div id="player_${id}" class="player_div player_gradient_${id}" style="background-color: rgb${backgroundColor}">
+                <div id="player_${id}" class="player_div player_gradient_${id}" style="background-color: ${backgroundColor}">
                     <div class="ls-player-name">${name}</div>
                     <div class="ls-player-del"></div>
                 </div>

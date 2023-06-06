@@ -1,4 +1,3 @@
-import pickle
 import random
 import time
 
@@ -19,7 +18,7 @@ class Shape(Enum):
 
 
 class GameObject:
-    def __init__(self, in_renderer, x, y, in_size, in_color="(255, 0, 0)", in_shape: Shape = Shape.RECTANGLE, game_drawer=None):
+    def __init__(self, in_renderer, x, y, in_size, in_color="black", in_shape: Shape = Shape.RECTANGLE, game_drawer=None):
         self.game_drawer = game_drawer
         self.controller: GameController = in_renderer
         self.color = in_color
@@ -57,7 +56,7 @@ class GameObject:
 
 
 class Wall(GameObject):
-    def __init__(self, in_surface, x, y, in_size, in_color='blue', game_drawer=None):
+    def __init__(self, in_surface, x, y, in_size, in_color='#40376e', game_drawer=None):
         super().__init__(in_surface, x, y, in_size, in_color, game_drawer=game_drawer)
 
 
@@ -106,7 +105,7 @@ class MovableGameObject(GameObject):
 
 
 class Ghost(MovableGameObject):
-    def __init__(self, in_surface, x, y, in_size, in_color='red', in_shape: Shape = Shape.GHOST, game_drawer=None):
+    def __init__(self, in_surface, x, y, in_size, in_color='#FF595E', in_shape: Shape = Shape.GHOST, game_drawer=None):
         super().__init__(in_surface, x, y, in_size, in_color, in_shape, game_drawer=game_drawer)
 
     def tick(self):

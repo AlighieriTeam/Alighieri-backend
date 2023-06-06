@@ -23,16 +23,10 @@ def generate_token_for_player():
 
 # List of static colors
 COLORS_LIST = [
-    (255, 0, 0),  # Red
-    (0, 255, 0),  # Green
-    (0, 0, 255),  # Blue
-    (255, 255, 0),  # Yellow
-    (255, 0, 255),  # Magenta
-    (0, 255, 255),  # Cyan
-    (128, 0, 0),  # Maroon
-    (0, 128, 0),  # Green (Medium)
-    (0, 0, 128),  # Navy
-    (128, 128, 0)  # Olive
+    "#FF924C",  # Orange
+    "#FFCA3A",  # Yellow
+    "#8AC926",  # Green
+    "#1982C4"   # Blue
 ]
 
 

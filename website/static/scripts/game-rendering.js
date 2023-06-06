@@ -30,7 +30,7 @@ socketio.on('drawCircle', function(data){
         radius = Math.trunc(data["radius"] * scale);
     context.beginPath();
     context.arc(x, y, radius, 0, 2 * Math.PI);
-    context.fillStyle = 'rgb'+data["color"];
+    context.fillStyle = data["color"];
     context.fill();
 })
 
