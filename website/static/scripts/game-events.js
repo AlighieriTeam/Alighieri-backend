@@ -72,8 +72,7 @@ socketio.on('showPopup', function(players) {
 });
 
 socketio.on('updateScores', function(players) {
-    for (const player of players){
-        console.log(`${player["id"]} -> ${player["points"][0]}`);
-        playerScoreDivs[player["id"]].innerHTML = player["points"][0];
-    }
+    // try to find better way to update score than searching for specific divs all the time, like in commit (8b6fbf2)
+    for (const player of players)
+        document.querySelector(`#player_${player["id"]}`).querySelector(`.ls-player-points`).innerHTML = player["points"][0];
 });

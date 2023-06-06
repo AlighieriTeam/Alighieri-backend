@@ -62,10 +62,8 @@
 </script>
 
 <script>
-    var playerScoreDivs = {};
     {% for player in players %}
         addPlayer(JSON.parse('{{ player | tojson }}'));
-        playerScoreDivs[{{ player["id"] }}] = document.querySelector('#player_{{ player["id"] }}').querySelector(".ls-player-points");
     {% endfor %}
 </script>
 
