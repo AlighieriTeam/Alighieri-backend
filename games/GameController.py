@@ -163,7 +163,7 @@ class GameController:
         self.board = self.import_map(name)
         self.finished = False
         self.game_updater = None
-        self.players = None
+        self.players: list = []
 
     def set_updater(self, game_updater):
         self.game_updater = game_updater
@@ -243,7 +243,7 @@ class GameController:
         self.game_drawer.clear_all()
         while not self.finished:
             self.render_all_objects()
-            self.update_scores()
+            self.game_updater.update_scores(self.players)
             self.handle_events()
             self.is_over()
             time.sleep(0.25)  # TODO only for developing
@@ -252,15 +252,14 @@ class GameController:
 
         #self.__disconnect_players_and_heroes()
         self.game_updater.show_popup(self.players)
-        time.sleep(
-            1.0)  # little delay to give a chance for signal delivery to every player in room before room will be deleted
+        time.sleep(1.0)  # little delay to give a chance for signal delivery to every player in room before room will be deleted
 
-    def update_scores(self):
+    '''def update_scores(self):
         for i, hero in enumerate(self.game_objects['heroes']):
             # TODO displaying under screen
             print("hero no: {}, scores: {}".format(i, hero.score[0]))
             #self.game_drawer.draw_text(i, 0, hero.score)
-            self.game_updater.update_scores(self.players)
+        self.game_updater.update_scores(self.players)'''
 
     def render_all_objects(self):
         for wall in self.game_objects['walls']:

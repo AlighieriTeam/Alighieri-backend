@@ -1,5 +1,3 @@
-const socketio = io();
-socketio.emit('rejoin');
 
 function leave_game(page) {
     socketio.emit("leave_game", {}, function() {
@@ -60,36 +58,3 @@ socketio.on('clearAll', function(){
     context.fillStyle = "black";
     context.fillRect(0, 0, screen.width, screen.height);
 })
-
-
-
-socketio.on('showPopup', function(players) {
-    let content = "";
-    for (const player of players) {
-        console.log(`Key: ${player["id"]}, Value: ${player["name"]}`);
-        content += `
-            <div id='player_${player["id"]}' class="player_div">
-                <div class="ls-player-name">${player["name"]}</div>
-                <div class="ls-player-points">${player["points"]}</div>
-                <div class="ls-player-del"></div>
-            </div>
-        `
-    }
-
-    var popup_content = document.getElementsByClassName("modal-body")[0];
-    popup_content.innerHTML = content;
-
-    $('#endgame_popup').modal({backdrop: 'static', keyboard: false});
-});
-
-
-var pl0 = document.getElementById("player_0") != null ? document.getElementById("player_0").querySelector(".ls-player-points") : null;
-var pl1 = document.getElementById("player_1") != null ? document.getElementById("player_1").querySelector(".ls-player-points") : null;
-var pl2 = document.getElementById("player_2") != null ? document.getElementById("player_2").querySelector(".ls-player-points") : null;
-var pl3 = document.getElementById("player_3") != null ? document.getElementById("player_3").querySelector(".ls-player-points") : null;
-var arr = [pl0,pl1,pl2,pl3]
-socketio.on('updateScores', function(players) {
-    for (var i = 0; i < players.length; i++) {
-      arr[i].innerHTML = players[i]["points"][0];
-    }
-});
