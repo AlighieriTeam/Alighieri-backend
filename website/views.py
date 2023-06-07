@@ -118,4 +118,7 @@ def game():
         width = (len(map[0]) - 1) * scale
         map_size = tuple((height, width))
 
-    return render_template('game.html', players=curr_game.players, map_size=map_size, scale=scale)
+    safe_players = [player.to_safe_json() for player in curr_game.players]
+    print(safe_players)
+
+    return render_template('game.html', players=safe_players, actual_player_id=player["id"], map_size=map_size, scale=scale, color=player["color"])

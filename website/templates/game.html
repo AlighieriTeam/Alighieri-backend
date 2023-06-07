@@ -2,7 +2,9 @@
 {% block links %}
     <link rel="stylesheet" href="{{ url_for('static', filename='styles/home.css') }}" />
     <link rel="stylesheet" href="{{ url_for('static', filename='styles/game.css') }}" />
+
     <script src="{{ url_for('static', filename='scripts/timer.js') }}"></script>
+    <script type="text/javascript"  src ="{{ url_for('static', filename='scripts/game-events.js') }}"></script>
 {% endblock %}
 {% block title %} Game {% endblock %}
 {% block content %}
@@ -32,14 +34,9 @@
     <div class="row">
         <div class="col-sm-6 col-xs-12">
             <div class="grid_div center_div" style="margin-top: 25px;">
-                <!--TODO: implement real Player class, this is a simple example-->
-                {% for player in players %} <!--generate players-->
-                    <div id="player_{{ player.id }}" class="player_div player_gradient_{{ player.id }}">
-                        <div class="ls-player-name">{{ player.name }}</div>
-                        <div class="ls-player-points">{{ player.points }}</div>
-                        <div class="ls-player-del"></div>
-                    </div>
-                {% endfor %}
+                <div id="player-list">
+
+                </div>
             </div>
         </div>
         <div class="col-sm-6 col-xs-12">
@@ -56,9 +53,23 @@
     </div>
 </div>
 
+<script>
+    var actual_player_id = {{ actual_player_id }}
+    const backgroundColor = '{{ color[0] }}';
+    console.log(backgroundColor)
+    console.log(actual_player_id)
+</script>
+
+<script>
+    {% for player in players %}
+        addPlayer(JSON.parse('{{ player | tojson }}'));
+    {% endfor %}
+</script>
+
+
 <script type="text/javascript"  src ="{{ url_for('static', filename='scripts/game-rendering.js') }}" defer></script>
     <script>
-        var new_scale = {{ scale }};
+        let new_scale = {{ scale }};
         set_scale(new_scale);
     </script>
 

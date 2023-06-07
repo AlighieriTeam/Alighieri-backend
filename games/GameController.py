@@ -18,7 +18,7 @@ class Shape(Enum):
 
 
 class GameObject:
-    def __init__(self, in_renderer, x, y, in_size, in_color=(255, 0, 0), in_shape: Shape = Shape.RECTANGLE, game_drawer=None):
+    def __init__(self, in_renderer, x, y, in_size, in_color="black", in_shape: Shape = Shape.RECTANGLE, game_drawer=None):
         self.game_drawer = game_drawer
         self.controller: GameController = in_renderer
         self.color = in_color
@@ -56,7 +56,7 @@ class GameObject:
 
 
 class Wall(GameObject):
-    def __init__(self, in_surface, x, y, in_size, in_color='blue', game_drawer=None):
+    def __init__(self, in_surface, x, y, in_size, in_color='#40376e', game_drawer=None):
         super().__init__(in_surface, x, y, in_size, in_color, game_drawer=game_drawer)
 
 
@@ -105,7 +105,7 @@ class MovableGameObject(GameObject):
 
 
 class Ghost(MovableGameObject):
-    def __init__(self, in_surface, x, y, in_size, in_color='red', in_shape: Shape = Shape.GHOST, game_drawer=None):
+    def __init__(self, in_surface, x, y, in_size, in_color='#FF5714', in_shape: Shape = Shape.GHOST, game_drawer=None):
         super().__init__(in_surface, x, y, in_size, in_color, in_shape, game_drawer=game_drawer)
 
     def tick(self):
@@ -133,9 +133,9 @@ class Ghost(MovableGameObject):
         return direction
 
 class Hero(MovableGameObject):
-    def __init__(self, in_surface, x, y, in_size, game_drawer=None):
-        super().__init__(in_surface, x, y, in_size, 'yellow', game_drawer=game_drawer)
-        self.score = 0
+    def __init__(self, in_surface, x, y, in_size, color: str, game_drawer=None):
+        super().__init__(in_surface, x, y, in_size, in_color=color, game_drawer=game_drawer)
+        self.score = [0]  # to make score mutable
         self.bot = Bot()
 
     def tick(self):
@@ -162,7 +162,7 @@ class GameController:
         self.board = self.import_map(name)
         self.finished = False
         self.game_updater = None
-        self.players = None
+        self.players: list = []
 
     def set_updater(self, game_updater):
         self.game_updater = game_updater
@@ -170,6 +170,26 @@ class GameController:
     # TODO: count points for this players
     def set_players(self, players: list):
         self.players = players
+        self.__connect_players_and_heroes()
+
+    def __disconnect_players_and_heroes(self):
+        for player in self.players:
+            player["points"] = player["hero"].score
+            del player["hero"]
+    def __connect_players_and_heroes(self):
+        for player in self.players:
+            start_x, start_y = self.__set_location()
+            self.game_objects["heroes"].append(self.new_hero(start_x, start_y, color=str(player["color"][0])))
+            #player["hero"] = self.game_objects["heroes"][-1]
+            player["points"] = self.game_objects["heroes"][-1].score
+
+    def __set_location(self) -> tuple:
+        x, y = 0, 0
+        while self.board[x][y] != me.MapElements.COOKIE.value:
+            x = random.randint(1, self.board.shape[0] - 1)
+            y = random.randint(1, self.board.shape[1] - 1)
+        self.board[x][y] = me.MapElements.HERO.value
+        return x, y
 
     def import_map(self, name):
         file = open('games/map-' + name + '.txt')
@@ -199,13 +219,14 @@ class GameController:
                         case me.MapElements.GHOST.value:
                             ghost = Ghost(self, x, y, NORMAL_SIZE, game_drawer=self.game_drawer)
                             ghosts.append(ghost)
-                        case me.MapElements.HERO.value:
-                            heroes.append(self.new_hero(x, y))
+                        #case me.MapElements.HERO.value:
+                        #    heroes.append(self.new_hero(x, y))
                         case _:
                             pass
                     board_line.append(mark)
             board = np.append(board, [board_line], axis=0)
         board = np.delete(board, 0, axis=0)
+        print(board)
         self.game_objects = {
             'walls': walls,
             'cookies': cookies,
@@ -214,28 +235,30 @@ class GameController:
         }
         return board
 
-    def new_hero(self, x, y):
-        return Hero(self, x, y, NORMAL_SIZE)
+    def new_hero(self, x, y, color: str):
+        return Hero(self, x, y, NORMAL_SIZE, color=color)
 
     def tick(self):
         self.game_drawer.clear_all()
         while not self.finished:
             self.render_all_objects()
-            self.update_scores()
+            self.game_updater.update_scores(self.players)
             self.handle_events()
             self.is_over()
             time.sleep(0.25)  # TODO only for developing
             # self._finished = True  # to test popup
         print("Game over")
 
+        #self.__disconnect_players_and_heroes()
         self.game_updater.show_popup(self.players)
-        time.sleep(
-            1.0)  # little delay to give a chance for signal delivery to every player in room before room will be deleted
+        time.sleep(1.0)  # little delay to give a chance for signal delivery to every player in room before room will be deleted
 
-    def update_scores(self):
+    '''def update_scores(self):
         for i, hero in enumerate(self.game_objects['heroes']):
             # TODO displaying under screen
-            self.game_drawer.draw_text(i, 0, hero.score)
+            print("hero no: {}, scores: {}".format(i, hero.score[0]))
+            #self.game_drawer.draw_text(i, 0, hero.score)
+        self.game_updater.update_scores(self.players)'''
 
     def render_all_objects(self):
         for wall in self.game_objects['walls']:

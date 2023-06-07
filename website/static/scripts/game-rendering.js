@@ -1,5 +1,3 @@
-const socketio = io();
-socketio.emit('rejoin');
 
 function leave_game(page) {
     socketio.emit("leave_game", {}, function() {
@@ -60,24 +58,3 @@ socketio.on('clearAll', function(){
     context.fillStyle = "black";
     context.fillRect(0, 0, screen.width, screen.height);
 })
-
-
-
-socketio.on('showPopup', function(players) {
-    let content = "";
-    for (const player of players) {
-        console.log(`Key: ${player["id"]}, Value: ${player["name"]}`);
-        content += `
-            <div id='player_${player["id"]}' class="player_div">
-                <div class="ls-player-name">${player["name"]}</div>
-                <div class="ls-player-points">${player["points"]}</div>
-                <div class="ls-player-del"></div>
-            </div>
-        `
-    }
-
-    var popup_content = document.getElementsByClassName("modal-body")[0];
-    popup_content.innerHTML = content;
-
-    $('#endgame_popup').modal({backdrop: 'static', keyboard: false});
-});

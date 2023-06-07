@@ -23,16 +23,10 @@ def generate_token_for_player():
 
 # List of static colors
 COLORS_LIST = [
-    (255, 0, 0),  # Red
-    (0, 255, 0),  # Green
-    (0, 0, 255),  # Blue
-    (255, 255, 0),  # Yellow
-    (255, 0, 255),  # Magenta
-    (0, 255, 255),  # Cyan
-    (128, 0, 0),  # Maroon
-    (0, 128, 0),  # Green (Medium)
-    (0, 0, 128),  # Navy
-    (128, 128, 0)  # Olive
+    "#FFB800",  # Orange
+    "#E4FF1A",  # Yellow
+    "#6EEB83",  # Green
+    "#1BE7FF"   # Blue
 ]
 
 
@@ -50,11 +44,15 @@ class Player:  # simple player class to show players in game page automatically
         self.is_bot = is_bot
         self.points = 0
         self.token = generate_token_for_player()
+        # TODO: maybe we should set color as string like "(255,0,0)" instead of one tuple element list like [(255,0,0)] ? it will be easier to process it in JS
         self.color = pick_random_colors(1)
 
     def to_json(self) -> str:
         return json.dumps(self, default=lambda o: o.__dict__,
                           sort_keys=True, indent=4)
+
+    def to_safe_json(self) -> dict:
+        return {k: v for k, v in vars(self).items() if k != 'token' and k != 'hero'}
 
 
 PLAYER_NICKNAMES = ['lion', 'tiger', 'leopard', 'cheetah', 'jaguar', 'panther', 'lynx', 'bobcat', 'ocelot',
