@@ -13,7 +13,14 @@
     color: var(--accent-yep)
 }
 
-.room-pin-subtext {
+.room-token {
+    font-size: 2.5em;
+    font-weight: bold;
+    font-style: italic;
+    color: var(--accent-yep)
+}
+
+.room-subtext {
     font-size: 1.3em;
     color: white;
 }
