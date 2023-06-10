@@ -22,7 +22,7 @@ function refreshPlayerList() {
     for (const [id, value] of playerMap.entries()) {
         console.log(value["color"]);
         content += `
-            <div id="player_${id}" class="player_div" style='background-color: ${value["color"]};'>
+            <div id="player_${id}" class="player-div" style="background: var(--gradient-${value["color"]});">
                 <div class="ls-player-name">${value["name"]}</div>
                 <div class="ls-player-points"></div>
             </div>
@@ -32,14 +32,12 @@ function refreshPlayerList() {
 }
 
 
-
-
 socketio.on('showPopup', function(players) {
     let content = "";
     for (const player of players) {
         var color = player.color[0]
         content += `
-            <div id='player_${player["id"]}' class="player_div" style='background-color: ${color};'>
+            <div id='player_${player["id"]}' class="player-div" style="background: var(--gradient-${color});">
                 <div class="ls-player-name">${player["name"]}</div>
                 <div class="ls-player-points">${player["points"]}</div>
             </div>
