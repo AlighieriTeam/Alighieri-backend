@@ -161,6 +161,7 @@ class GameController:
     def __init__(self, name, game_drawer):
         self.game_drawer = game_drawer
         self.game_objects = {}
+        self.spawns = []
         self.board = self.import_map(name)
         self.finished = False
         self.game_updater = None
@@ -179,9 +180,12 @@ class GameController:
             player["points"] = player["hero"].score
             del player["hero"]
     def __connect_players_and_heroes(self):
+        print(self.spawns)
         for player in self.players:
-            start_x, start_y = self.__set_location()
-            self.game_objects["heroes"].append(self.new_hero(start_x, start_y, color=str(player["color"][0])))
+            random_position = random.choice(self.spawns)
+            self.spawns.remove(random_position)
+            print(random_position)
+            self.game_objects["heroes"].append(self.new_hero(random_position[0], random_position[1], color=str(player["color"][0])))
             #player["hero"] = self.game_objects["heroes"][-1]
             player["points"] = self.game_objects["heroes"][-1].score
 
@@ -199,7 +203,6 @@ class GameController:
         width = len(file.readline())
         board = np.zeros((1, width - 1))
         file.seek(start)
-
         map_elements = [element.value for element in list(me.MapElements)]
         walls = []
         cookies = []
@@ -221,8 +224,8 @@ class GameController:
                         case me.MapElements.GHOST.value:
                             ghost = Ghost(self, x, y, NORMAL_SIZE, game_drawer=self.game_drawer)
                             ghosts.append(ghost)
-                        #case me.MapElements.HERO.value:
-                        #    heroes.append(self.new_hero(x, y))
+                        case me.MapElements.HERO.value:
+                            self.spawns.append((x, y))
                         case _:
                             pass
                     board_line.append(mark)
@@ -252,8 +255,10 @@ class GameController:
         print("Game over")
 
         #self.__disconnect_players_and_heroes()
+        time.sleep(0.1)  # little delay to give a chance for signal delivery to update scores (left bottom corner in game)
         self.game_updater.show_popup(self.players)
-        time.sleep(1.0)  # little delay to give a chance for signal delivery to every player in room before room will be deleted
+        time.sleep(0.1)  # little delay to give a chance for signal delivery to every player in room before room will be deleted
+
 
     '''def update_scores(self):
         for i, hero in enumerate(self.game_objects['heroes']):

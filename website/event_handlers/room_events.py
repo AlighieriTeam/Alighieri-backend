@@ -57,6 +57,16 @@ def register_room_events(app, socketio):
             curr_game.set_controller(game_controller)
             game_controller.tick()
 
+    @socketio.on("timerOut")
+    def leave_on_timer_out():
+        room = session.get("room")
+        curr_game = find_game(room)
+        curr_game.stop_game()
+        del_room(room)
+        print('game ended')
+
+
+
     @socketio.on("rejoin")
     def rejoin():
         ''' We need to join again to room, because redirection from room/join to game automatically leaves the room '''
@@ -87,6 +97,7 @@ def register_room_events(app, socketio):
 
     @socketio.on("leave_game")
     def leave_game(data):
+        print("entered leave_game")
         handle_leaving_game()
         # this is super important here to return anything
         return {}
