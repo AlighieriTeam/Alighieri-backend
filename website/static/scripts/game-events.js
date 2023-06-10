@@ -15,27 +15,34 @@ function addPlayer(player) {
     console.log(player.name);
 }
 
-function refreshPlayerList() {
-    console.log("refresh called")
-    const playerList = document.getElementById("player-list");
-    let content = "";
-    for (const [id, value] of playerMap.entries()) {
-        console.log(value["color"]);
-        content += `
-            <div id="player_${id}" class="player_div" style='background-color: ${value["color"]};'>
-                <div class="ls-player-name">${value["name"]}</div>
-                <div class="ls-player-points"></div>
-            </div>
-        `
-    }
-    playerList.innerHTML = content;
-}
+function refreshPlayerList(players) {
+  const playerList = document.getElementById("player-list");
+  let content = "";
 
+  players.forEach((player) => {
+    const id = player.id;
+    const name = player.name;
+    const points = player.points;
+    const color = player.color;
+
+    content += `
+      <div id="player_${id}" class="player_div" style="background-color: ${color};">
+        <div class="ls-player-name">${name}</div>
+        <div class="ls-player-points">${points}</div>
+      </div>
+    `;
+  });
+
+  playerList.innerHTML = content;
+}
 
 
 
 socketio.on('showPopup', function(players) {
     let content = "";
+    players.sort(function(a, b) {
+    return b.points - a.points;
+    });
     for (const player of players) {
         var color = player.color[0]
         content += `
@@ -53,7 +60,9 @@ socketio.on('showPopup', function(players) {
 });
 
 socketio.on('updateScores', function(players) {
-    // try to find better way to update score than searching for specific divs all the time, like in commit (8b6fbf2)
-    for (const player of players)
-        document.querySelector(`#player_${player["id"]}`).querySelector(`.ls-player-points`).innerHTML = player["points"][0];
+   players.sort(function(a, b) {
+    return b.points - a.points;
+  });
+
+  refreshPlayerList(players);
 });
