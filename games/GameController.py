@@ -253,8 +253,9 @@ class GameController:
         print("Game over")
 
         #self.__disconnect_players_and_heroes()
+        time.sleep(0.1)  # little delay to give a chance for signal delivery to update scores (left bottom corner in game)
         self.game_updater.show_popup(self.players)
-        time.sleep(1.0)  # little delay to give a chance for signal delivery to every player in room before room will be deleted
+        time.sleep(0.1)  # little delay to give a chance for signal delivery to every player in room before room will be deleted
 
 
     '''def update_scores(self):

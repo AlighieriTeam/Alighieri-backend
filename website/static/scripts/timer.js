@@ -19,7 +19,7 @@ function startTimer(duration, display) {
 }
 
 window.onload = function () {
-    var seconds = 3,
+    var seconds = 900,
         display = document.querySelector('#time');
     startTimer(seconds, display);
 };
