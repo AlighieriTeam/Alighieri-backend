@@ -23,10 +23,10 @@ function refreshPlayerList(players) {
     const id = player.id;
     const name = player.name;
     const points = player.points;
-    const color = player.color;
+    const color = player.color[0];
 
     content += `
-      <div id="player_${id}" class="player_div" style="background-color: ${color};">
+      <div id="player_${id}" class="player-div" style="background: var(--gradient-${color});">
         <div class="ls-player-name">${name}</div>
         <div class="ls-player-points">${points}</div>
       </div>
@@ -36,8 +36,6 @@ function refreshPlayerList(players) {
   playerList.innerHTML = content;
 }
 
-
-
 socketio.on('showPopup', function(players) {
     let content = "";
     players.sort(function(a, b) {
@@ -46,7 +44,7 @@ socketio.on('showPopup', function(players) {
     for (const player of players) {
         var color = player.color[0]
         content += `
-            <div id='player_${player["id"]}' class="player_div" style='background-color: ${color};'>
+            <div id='player_${player["id"]}' class="player-div" style="background: var(--gradient-${color});">
                 <div class="ls-player-name">${player["name"]}</div>
                 <div class="ls-player-points">${player["points"]}</div>
             </div>

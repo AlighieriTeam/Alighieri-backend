@@ -4,6 +4,8 @@ import time
 import numpy as np
 from enum import Enum
 
+import pygame
+
 from games import MapElements as me
 
 STANDARD_SIZE = 1
@@ -18,7 +20,7 @@ class Shape(Enum):
 
 
 class GameObject:
-    def __init__(self, in_renderer, x, y, in_size, in_color="black", in_shape: Shape = Shape.RECTANGLE, game_drawer=None):
+    def __init__(self, in_renderer, x, y, in_size, in_color="background", in_shape: Shape = Shape.RECTANGLE, game_drawer=None):
         self.game_drawer = game_drawer
         self.controller: GameController = in_renderer
         self.color = in_color
@@ -43,7 +45,7 @@ class GameObject:
 
     def undraw(self):
         self.game_drawer.draw_rectangle(self.position[0] + STANDARD_SIZE / 2, self.position[1] + STANDARD_SIZE / 2,
-                                         'black', STANDARD_SIZE, STANDARD_SIZE)
+                                         'background', STANDARD_SIZE, STANDARD_SIZE)
 
     def tick(self):
         pass
@@ -56,13 +58,13 @@ class GameObject:
 
 
 class Wall(GameObject):
-    def __init__(self, in_surface, x, y, in_size, in_color='#40376e', game_drawer=None):
+    def __init__(self, in_surface, x, y, in_size, in_color='wall', game_drawer=None):
         super().__init__(in_surface, x, y, in_size, in_color, game_drawer=game_drawer)
 
 
 class Cookie(GameObject):
     def __init__(self, in_surface, x, y, game_drawer=None):
-        super().__init__(in_surface, x, y, SMALL_SIZE, 'white', game_drawer=game_drawer)
+        super().__init__(in_surface, x, y, SMALL_SIZE, 'cookie', game_drawer=game_drawer)
 
 
 class Direction(Enum):
@@ -105,7 +107,7 @@ class MovableGameObject(GameObject):
 
 
 class Ghost(MovableGameObject):
-    def __init__(self, in_surface, x, y, in_size, in_color='#FF5714', in_shape: Shape = Shape.GHOST, game_drawer=None):
+    def __init__(self, in_surface, x, y, in_size, in_color='ghost', in_shape: Shape = Shape.GHOST, game_drawer=None):
         super().__init__(in_surface, x, y, in_size, in_color, in_shape, game_drawer=game_drawer)
 
     def tick(self):

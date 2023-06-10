@@ -16,7 +16,7 @@ function set_scale(new_scale){
 }
 
 socketio.on('drawRectangle', function(data){
-    context.fillStyle = data["color"];
+    context.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--game-' + data["color"]);
     let x = Math.trunc((data["x"] - (data["width"]/2)) * scale),
         y = Math.trunc((data["y"] - (data["height"]/2)) * scale),
         width = Math.trunc(data["width"] * scale),
@@ -30,7 +30,7 @@ socketio.on('drawCircle', function(data){
         radius = Math.trunc(data["radius"] * scale);
     context.beginPath();
     context.arc(x, y, radius, 0, 2 * Math.PI);
-    context.fillStyle = data["color"];
+    context.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--game-' + data["color"]);
     context.fill();
 })
 
@@ -43,7 +43,7 @@ socketio.on('drawGhost', function(data){
     context.arc(xp + width/2, yp + height/2, height/2, Math.PI, 2 * Math.PI, false);
     context.lineTo(xp + width, yp + height);
     context.lineTo(xp, yp + height);
-    context.fillStyle = data["color"];
+    context.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--game-' + data["color"]);
     context.fill();
 })
 
