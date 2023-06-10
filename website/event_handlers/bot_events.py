@@ -1,4 +1,4 @@
-from flask_socketio import emit
+from flask_socketio import emit, join_room
 from flask import request
 
 def register_bot_events(socketio):
@@ -23,7 +23,7 @@ def register_bot_events(socketio):
             if p.token == token:
                 p.sid = request.sid
                 break
-
+        join_room(f"_{room_pin}")
         emit("bot_connected", to=request.sid)
 
 

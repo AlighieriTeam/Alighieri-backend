@@ -14,3 +14,10 @@ class GameUpdater(object):
 
     def start_game(self, data, destination):
         self.__socketio.emit("bot_start", data, to=destination)
+
+    def ask_for_action(self, actions, destination):
+        self.__socketio.emit("bot_ask", actions, to=destination)
+
+    def update_game_state(self, updates):
+        self.__socketio.emit("game_update", updates, to=f"_{self.__room}")
+

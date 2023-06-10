@@ -144,15 +144,19 @@ class Hero(MovableGameObject):
 
 
 class RemoteHero(Hero):
-    def __init__(self, in_surface, x, y, in_size, color: str, sid, game_drawer=None):
-        super().__init__(in_surface, x, y, in_size, in_color=color, game_drawer=game_drawer)
+    def __init__(self, in_surface, x, y, in_size, color: str, sid, game_drawer=None, game_updater=None):
+        super().__init__(in_surface, x, y, in_size, color=color, game_drawer=game_drawer)
         self.sid = sid
+        self.game_updater = game_updater
         self.fails = 0
+        self.updates = {}
 
     def tick(self):
         # self.set_direction(self.bot.get_action(GameState(self.get_possible_directions())))
-        actions = self.get_possible_directions()
-        self.move()
+        # actions = self.get_possible_directions()
+        # self.game_updater.ask_for_action()
+        # self.move()
+        super().tick()
 
 class GameState:
     def __init__(self, possibilities):
@@ -174,6 +178,11 @@ class GameController:
         self.finished = False
         self.game_updater = None
         self.players: list = []
+        self.update_json = {
+            "players_update": [],
+            "eaten_cookies": [],
+            "ghosts_update": [g.position for g in self.game_objects['ghosts']]
+        }
 
     def set_updater(self, game_updater):
         self.game_updater = game_updater
@@ -190,7 +199,7 @@ class GameController:
     def __connect_players_and_heroes(self):
         for player in self.players:
             start_x, start_y = self.__set_location()
-            self.game_objects["heroes"].append(self.new_hero(start_x, start_y, color=str(player["color"][0])))
+            self.game_objects["heroes"].append(self.new_hero(start_x, start_y, color=str(player["color"][0]), sid=player['sid']))
             #player["hero"] = self.game_objects["heroes"][-1]
             player["points"] = self.game_objects["heroes"][-1].score
 
@@ -246,7 +255,9 @@ class GameController:
         }
         return board
 
-    def new_hero(self, x, y, color: str):
+    def new_hero(self, x, y, color: str, sid=None):
+        if sid is not None:
+            return RemoteHero(self, x, y, NORMAL_SIZE, color=color, sid=sid, game_updater=self.game_updater)
         return Hero(self, x, y, NORMAL_SIZE, color=color)
 
     def tick(self):
@@ -303,16 +314,20 @@ class GameController:
                 '''
 
     def handle_events(self):
-        for hero in self.game_objects['heroes']:
+        for i, hero in enumerate(self.game_objects['heroes']):
             hero.undraw()
             hero.tick()
+            self.update_json["players_update"].append({i: hero.position})
             hero.draw()
         self.check_collisions()
-        for ghost in self.game_objects['ghosts']:
+        for i, ghost in enumerate(self.game_objects['ghosts']):
             ghost.undraw()
             ghost.tick()
+            self.update_json["players_update"].append({i: ghost.position})
             ghost.draw()
         self.check_collisions()
+        self.game_updater.update_game_state(self.update_json)
+        self.__reset_updates()
 
     def delete_cookie(self, board_position):
         cookies = [c for c in self.game_objects['cookies'] if c.position != board_position]
@@ -336,6 +351,13 @@ class GameController:
     # TODO send to js
     def get_map_shape(self):
         return self.board.shape
+
+    def __reset_updates(self):
+        self.update_json = {
+            "players_update": [],
+            "eaten_cookies": [],
+            "ghosts_update": [g.position for g in self.game_objects['ghosts']]
+        }
 
 
 if __name__ == "__main__":
