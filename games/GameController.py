@@ -143,6 +143,17 @@ class Hero(MovableGameObject):
         self.move()
 
 
+class RemoteHero(Hero):
+    def __init__(self, in_surface, x, y, in_size, color: str, sid, game_drawer=None):
+        super().__init__(in_surface, x, y, in_size, in_color=color, game_drawer=game_drawer)
+        self.sid = sid
+        self.fails = 0
+
+    def tick(self):
+        # self.set_direction(self.bot.get_action(GameState(self.get_possible_directions())))
+        actions = self.get_possible_directions()
+        self.move()
+
 class GameState:
     def __init__(self, possibilities):
         self.possibilities = possibilities
@@ -240,6 +251,19 @@ class GameController:
 
     def tick(self):
         self.game_drawer.clear_all()
+        board = self.board.tolist()
+        start_json = {
+            "board": board,
+            "player_positions": [h.position for h in self.game_objects['heroes']],
+            "player_index": 0,
+            "ghosts": [g.position for g in self.game_objects['ghosts']],
+            "cookies": [c.position for c in self.game_objects['cookies']]
+        }
+        for i, player in enumerate(self.players):
+            if player['sid'] is not None:
+                start_json['player_index'] = i
+                self.game_updater.start_game(start_json, player['sid'])
+
         while not self.finished:
             self.render_all_objects()
             self.game_updater.update_scores(self.players)
