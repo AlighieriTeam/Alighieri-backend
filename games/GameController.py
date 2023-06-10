@@ -256,6 +256,7 @@ class GameController:
         self.game_updater.show_popup(self.players)
         time.sleep(1.0)  # little delay to give a chance for signal delivery to every player in room before room will be deleted
 
+
     '''def update_scores(self):
         for i, hero in enumerate(self.game_objects['heroes']):
             # TODO displaying under screen

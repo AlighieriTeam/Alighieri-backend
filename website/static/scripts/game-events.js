@@ -39,6 +39,7 @@ function refreshPlayerList(players) {
 
 
 socketio.on('showPopup', function(players) {
+    clearInterval(timerId);
     let content = "";
     players.sort(function(a, b) {
     return b.points - a.points;
