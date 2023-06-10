@@ -116,7 +116,8 @@ def register_room_events(app, socketio):
 
         curr_game = find_game(room)
 
-        player = curr_game.add_player(name=bot_data['name'], is_bot=True)
+        player = curr_game.add_player(is_bot=True)
+        player.name += " - " + bot_data['name']
         # TODO: try to inform owner that room is full, somehow by flash, disable add bot button, js alert?
         if player is None: return
         player = vars(player)
