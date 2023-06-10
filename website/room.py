@@ -46,6 +46,7 @@ class Player:  # simple player class to show players in game page automatically
         self.token = generate_token_for_player()
         # TODO: maybe we should set color as string like "(255,0,0)" instead of one tuple element list like [(255,0,0)] ? it will be easier to process it in JS
         self.color = pick_random_colors(1)
+        self.sid = None
 
     def to_json(self) -> str:
         return json.dumps(self, default=lambda o: o.__dict__,
