@@ -19,6 +19,9 @@ class RemotePacman(Base.RemoteHero):
 
     def tick(self):
         super().tick()
+        # actions = self.get_possible_directions()
+        # self.game_updater.ask_for_action(actions, self.sid)
+
         self.eat_cookie()
         print("remote running")
 

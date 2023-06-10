@@ -152,11 +152,27 @@ class RemoteHero(Hero):
         self.updates = {}
 
     def tick(self):
+        import queue
+        response_queue = queue.Queue()
         # self.set_direction(self.bot.get_action(GameState(self.get_possible_directions())))
-        # actions = self.get_possible_directions()
-        # self.game_updater.ask_for_action()
+        actions = self.get_possible_directions()
+        action_list = [d.name for d in actions]
         # self.move()
-        super().tick()
+        # super().tick()
+        def player_action(data):
+            response_queue.put(data)
+
+        self.game_updater.ask_for_action(action_list, self.sid, callback=player_action)
+        action = Direction.STOP
+        try:
+            action_idx = response_queue.get(timeout=3)
+            action = actions[action_idx]
+            self.fails = 0
+        except queue.Empty:
+            self.fails += 1
+        self.set_direction(action)
+        self.move()
+
 
 class GameState:
     def __init__(self, possibilities):

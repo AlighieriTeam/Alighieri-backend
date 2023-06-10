@@ -1,5 +1,6 @@
 from flask_socketio import emit, join_room
-from flask import request
+from flask import request, session
+
 
 def register_bot_events(socketio):
     @socketio.on("bot_connect")
@@ -24,6 +25,16 @@ def register_bot_events(socketio):
                 p.sid = request.sid
                 break
         join_room(f"_{room_pin}")
+        session['room'] = room_pin
         emit("bot_connected", to=request.sid)
 
+    @socketio.on("bot_answer")
+    def bot_answer(data):
+        room_pin = session.get('room')
+        if not room_pin:
+            emit("bot_error", "Invalid session", to=request.sid)
+        from website import find_game
+        room = find_game(room_pin)
+        if not room:
+            emit("bot_error", "Invalid session - not connected to any room", to=request.sid)
 
