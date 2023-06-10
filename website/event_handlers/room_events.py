@@ -46,12 +46,12 @@ def register_room_events(app, socketio):
                     del_room(room)
                 print(f"{player['name']} left room {room}")
 
-    def start_game(room: str, io):
+    def start_game(room: str, io, generateRandomMap: bool = False):
         with app.test_request_context():
             curr_game = find_game(room)
             game_drawer = GameDrawer(room, io)
             game_updater = GameUpdater(room, io)
-            game_controller = PacmanController('pacman', game_drawer)
+            game_controller = PacmanController("pacman", game_drawer, generateRandomMap)
             game_controller.set_updater(game_updater)   # pass new class which handle with popup and updating players scores
             game_controller.set_players([vars(player) for player in curr_game.players])  # pass list of dicts of player
             curr_game.set_controller(game_controller)
@@ -92,7 +92,7 @@ def register_room_events(app, socketio):
         return {}
 
     @socketio.on('start_game')
-    def get_start_signal():
+    def get_start_signal(generateRandomMap: bool = False):
         room = session.get("room")
         player = session.get("player")
         if not room or not player or not player['is_owner']:
@@ -102,7 +102,7 @@ def register_room_events(app, socketio):
             return
         curr_game = find_game(room)
         curr_game.started = True
-        game_thread = Thread(target=start_game, args=(room, socketio))
+        game_thread = Thread(target=start_game, args=(room, socketio, generateRandomMap))
         curr_game.move_game_to_room_thread(game_thread)
         curr_game.start_game()
         socketio.emit('redirect', url_for('views.game'), to=room)

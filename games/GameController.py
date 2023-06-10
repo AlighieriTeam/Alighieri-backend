@@ -5,6 +5,7 @@ import numpy as np
 from enum import Enum
 
 from games import MapElements as me
+from games.MapGenerator import MapGenerator
 
 STANDARD_SIZE = 1
 NORMAL_SIZE = 0.9
@@ -156,7 +157,10 @@ class Bot:
 
 
 class GameController:
-    def __init__(self, name, game_drawer):
+    def __init__(self, name, game_drawer, generateRandomMap: bool = False):
+        if generateRandomMap:
+            MapGenerator().save_map_to_file()
+            name = "random"
         self.game_drawer = game_drawer
         self.game_objects = {}
         self.board = self.import_map(name)
@@ -172,10 +176,6 @@ class GameController:
         self.players = players
         self.__connect_players_and_heroes()
 
-    def __disconnect_players_and_heroes(self):
-        for player in self.players:
-            player["points"] = player["hero"].score
-            del player["hero"]
     def __connect_players_and_heroes(self):
         for player in self.players:
             start_x, start_y = self.__set_location()
@@ -253,30 +253,11 @@ class GameController:
         self.game_updater.show_popup(self.players)
         time.sleep(1.0)  # little delay to give a chance for signal delivery to every player in room before room will be deleted
 
-    '''def update_scores(self):
-        for i, hero in enumerate(self.game_objects['heroes']):
-            # TODO displaying under screen
-            print("hero no: {}, scores: {}".format(i, hero.score[0]))
-            #self.game_drawer.draw_text(i, 0, hero.score)
-        self.game_updater.update_scores(self.players)'''
-
     def render_all_objects(self):
         for wall in self.game_objects['walls']:
             wall.draw()
         for cookie in self.game_objects['cookies']:
             cookie.draw()
-        '''
-        for key, values in self.game_objects.items():
-            if isinstance(values, list):
-                for value in values:
-                    value.undraw()
-                    value.tick()
-                    value.draw()
-            else:
-                values.undraw()
-                values.tick()
-                values.draw()
-                '''
 
     def handle_events(self):
         for hero in self.game_objects['heroes']:

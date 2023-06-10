@@ -7,7 +7,8 @@
 // ------------ JS functions for room-owner.html ------------
 
 function startGame() {
-    socketio.emit('start_game');
+    var generateRandomMap = document.getElementById("generateRandomMap").checked;
+    socketio.emit('start_game', generateRandomMap);
 }
 
 function addBot(b_key, b_val){    // b_val unused
