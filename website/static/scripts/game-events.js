@@ -26,7 +26,7 @@ function refreshPlayerList(players) {
     const color = player.color;
 
     content += `
-      <div id="player_${id}" class="player_div" style="background: var(--gradient-${color};">
+      <div id="player_${id}" class="player_div" style="background: var(--gradient-${color});">
         <div class="ls-player-name">${name}</div>
         <div class="ls-player-points">${points}</div>
       </div>
