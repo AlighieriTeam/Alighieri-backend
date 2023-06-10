@@ -333,6 +333,7 @@ class GameController:
         cookies = [c for c in self.game_objects['cookies'] if c.position != board_position]
         if len(cookies) != len(self.game_objects['cookies']):
             self.game_objects['cookies'] = cookies
+            self.update_json['eaten_cookies'].append(board_position)
             return 1
         return 0
 
