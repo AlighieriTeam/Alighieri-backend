@@ -323,7 +323,6 @@ class GameController:
         for i, ghost in enumerate(self.game_objects['ghosts']):
             ghost.undraw()
             ghost.tick()
-            self.update_json["players_update"].append({i: ghost.position})
             ghost.draw()
         self.check_collisions()
         self.game_updater.update_game_state(self.update_json)
