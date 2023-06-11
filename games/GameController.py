@@ -169,6 +169,13 @@ class GameController:
         self.game_updater = None
         self.players: list = []
 
+    def __set_size(self):
+        # TODO: change it, maybe we should choose 3 sizes of random map in game lobby?
+        if self.board.shape[1] == 8: self.game_drawer.set_screen_size(self.board.shape[1], self.board.shape[0], 100)
+        elif self.board.shape[1] == 16: self.game_drawer.set_screen_size(self.board.shape[1], self.board.shape[0], 50)
+        elif self.board.shape[1] == 24: self.game_drawer.set_screen_size(self.board.shape[1], self.board.shape[0], 30)
+        elif self.board.shape[1] == 32: self.game_drawer.set_screen_size(self.board.shape[1], self.board.shape[0], 25)
+
     def set_updater(self, game_updater):
         self.game_updater = game_updater
 
@@ -244,6 +251,8 @@ class GameController:
     def tick(self):
         self.game_drawer.clear_all()
         while not self.finished:
+            self.__set_size()
+            #self.game_drawer.set_screen_size(self.board.shape[1], self.board.shape[0], 25)
             self.render_all_objects()
             self.game_updater.update_scores(self.players)
             self.handle_events()

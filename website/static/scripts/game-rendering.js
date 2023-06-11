@@ -6,14 +6,17 @@ function leave_game(page) {
     });
 }
 
-var screen = document.getElementById('screen'),
-    context = screen.getContext('2d');
-let scale = 100;
+var screen = document.getElementById('screen');
+context = screen.getContext('2d');
+let scale = 0;  // placeholder, we get scale from game by socketio in setScreenSize
 
-
-function set_scale(new_scale){
-    scale = new_scale;
-}
+socketio.on('setScreenSize', function(data){
+    if(screen.height != data["width"] * data["scale"] || screen.width != data["height"] * data["scale"] ){
+        scale = data["scale"];
+        screen.height = data["width"] * data["scale"];
+        screen.width = data["height"] * data["scale"];
+    }
+})
 
 socketio.on('drawRectangle', function(data){
     context.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--game-' + data["color"]);

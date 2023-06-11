@@ -4,10 +4,10 @@ from games import MapElements as me
 
 class MapGenerator():
     def __init__(self):
-        self._width = 15
-        self._height = 29
+        self._width = 24
+        self._height = 45
         self._board = [[me.MapElements.WALL.value for _ in range(self._width)] for _ in range(self._height)]
-        self._total_tiles = self._width * self._height // 5
+        self._total_tiles = self._width * self._height // 6
 
     def _roll_new_start(self):
         self._board = [[me.MapElements.WALL.value for _ in range(self._width)] for _ in range(self._height)]

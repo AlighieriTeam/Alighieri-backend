@@ -2,7 +2,8 @@
     margin-top: 25px;
 }
 
-.game_view{
+#screen{
+    margin: auto;
     background-color: black;
 }
 

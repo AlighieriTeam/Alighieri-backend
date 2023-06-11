@@ -108,17 +108,7 @@ def game():
 
     print(player)
 
-    # TODO: maybe get map size in another way in case of multiple maps and random choice of map
-    # TODO: or maybe from this point we should draw lots a map.txt and pass it to game object ???
-    map_size = None  # get map size directly from file
-    with open('games/map-pacman.txt', 'r') as f:
-        map = f.readlines()
-        scale = 100
-        height = len(map) * scale
-        width = (len(map[0]) - 1) * scale
-        map_size = tuple((height, width))
-
     safe_players = [player.to_safe_json() for player in curr_game.players]
     print(safe_players)
 
-    return render_template('game.html', players=safe_players, actual_player_id=player["id"], map_size=map_size, scale=scale, color=player["color"])
+    return render_template('game.html', players=safe_players, actual_player_id=player["id"], color=player["color"])
