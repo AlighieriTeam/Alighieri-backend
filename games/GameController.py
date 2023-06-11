@@ -4,10 +4,8 @@ import time
 import numpy as np
 from enum import Enum
 
-import pygame
-
 from games import MapElements as me
-from games.MapGenerator import MapGenerator
+from games.PacmanMapGenerator import PacmanMapGenerator
 
 STANDARD_SIZE = 1
 NORMAL_SIZE = 0.9
@@ -161,7 +159,7 @@ class Bot:
 class GameController:
     def __init__(self, name, game_drawer, generateRandomMap: bool = False):
         if generateRandomMap:
-            MapGenerator().save_map_to_file()
+            PacmanMapGenerator().generate_map()
             name = "random"
         self.game_drawer = game_drawer
         self.game_objects = {}
