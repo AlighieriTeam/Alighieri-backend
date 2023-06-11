@@ -3,9 +3,9 @@ import random
 from games import MapElements as me
 
 class MapGenerator():
-    def __init__(self):
-        self._width = 24
-        self._height = 45
+    def __init__(self, width: int = 8, height: int = 15):
+        self._width = width
+        self._height = height
         self._board = [[me.MapElements.WALL.value for _ in range(self._width)] for _ in range(self._height)]
         self._total_tiles = self._width * self._height // 6
 

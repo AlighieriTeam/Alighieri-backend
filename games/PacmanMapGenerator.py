@@ -4,8 +4,8 @@ from games import MapElements as me
 from games.MapGenerator import MapGenerator
 
 class PacmanMapGenerator(MapGenerator):
-    def __init__(self, pacman_no: int = 4, ghost_no: int = 4):
-        super().__init__()
+    def __init__(self, width: int = 8, height: int = 15, pacman_no: int = 4, ghost_no: int = 4):
+        super().__init__(width=width, height=height)
         self._pacman_no = pacman_no
         self._ghost_no = ghost_no
 
