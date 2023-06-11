@@ -65,6 +65,14 @@ PLAYER_NICKNAMES = ['lion', 'tiger', 'leopard', 'cheetah', 'jaguar', 'panther', 
 MOCK_PLAYERS = [Player(1, "Jacek"), Player(2, "Placek"), Player(3, "Yan"), Player(4, "Covalaki")]
 
 
+def color_exists(players, color):
+    return any(player['color'] == color for player in players)
+
+
+def check_unique_colors(players):
+    colors = [player['color'] for player in players]
+    return len(colors) == len(set(colors))
+
 
 def generate_nicks(number_of_players):
     return random.sample(PLAYER_NICKNAMES, number_of_players)

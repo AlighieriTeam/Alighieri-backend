@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, sessio
 from flask_socketio import leave_room
 
 from . import find_game, cfg, rooms
+from .room import check_unique_colors, pick_random_colors, color_exists
 
 views = Blueprint('views', __name__)
 
@@ -53,9 +54,9 @@ def room_player():
             flash('Room with given id does not exist', 'alert-danger')  # second parameter must be existing class in BootStrap !
             return redirect(url_for('.choose'))
 
-        r = session.get('room')
-        if r == pin:
-            return render_template("room-player.html", players=[p.to_json() for p in curr_game.players], game_pin=pin)
+        # r = session.get('room')
+        # if r == pin:
+        #     return render_template("room-player.html", players=[p.to_json() for p in curr_game.players], game_pin=pin)
 
         if curr_game.started:
             flash('Game already started', 'alert-danger')  # second parameter must be existing class in BootStrap !
@@ -72,6 +73,10 @@ def room_player():
         session['player'] = vars(player)
 
         players = [vars(p) for p in curr_game.players]
+
+        colors =  [vars(p)['color'] for p in curr_game.players]
+        while player.color in colors:
+            player.color = pick_random_colors(1)
 
         player_dict = {pla['id']: pla['name'] for pla in players}
 
