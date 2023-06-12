@@ -8,6 +8,7 @@ from games.GameDrawer import GameDrawer
 from games.GameUpdater import GameUpdater
 from games.pacman import PacmanController
 from website import find_game, rooms, del_room
+from website.room import pick_random_colors
 
 
 def register_room_events(app, socketio):
@@ -128,6 +129,9 @@ def register_room_events(app, socketio):
         curr_game = find_game(room)
 
         player = curr_game.add_player(is_bot=True)
+        colors = [vars(p)['color'] for p in curr_game.players]
+        while player.color in colors:
+            player.color = pick_random_colors(1)
         player.name += " - " + bot_data['name']
         # TODO: try to inform owner that room is full, somehow by flash, disable add bot button, js alert?
         if player is None: return

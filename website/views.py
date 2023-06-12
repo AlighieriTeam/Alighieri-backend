@@ -34,7 +34,9 @@ def room_owner():
         session['player'] = vars(player)
 
         players = [vars(p) for p in curr_game.players]
-
+        colors = [vars(p)['color'] for p in curr_game.players]
+        while player.color in colors:
+            player.color = pick_random_colors(1)
         player_dict = {pla['id']: pla['name'] for pla in players}
 
         return render_template("room-owner.html", players=player_dict, bots=cfg.avail_bots, game_pin=pin, token=player.token, color=player.color)
