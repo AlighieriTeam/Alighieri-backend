@@ -133,8 +133,9 @@ class Ghost(MovableGameObject):
         return direction
 
 class Hero(MovableGameObject):
-    def __init__(self, in_surface, x, y, in_size, color: str, game_drawer=None):
+    def __init__(self, in_surface, x, y, in_size, color: str, p_id, game_drawer=None):
         super().__init__(in_surface, x, y, in_size, in_color=color, game_drawer=game_drawer)
+        self.id = p_id
         self.score = [0]  # to make score mutable
         self.bot = Bot()
 
@@ -144,8 +145,8 @@ class Hero(MovableGameObject):
 
 
 class RemoteHero(Hero):
-    def __init__(self, in_surface, x, y, in_size, color: str, sid, game_drawer=None, game_updater=None):
-        super().__init__(in_surface, x, y, in_size, color=color, game_drawer=game_drawer)
+    def __init__(self, in_surface, x, y, in_size, color: str, p_id, sid, game_drawer=None, game_updater=None):
+        super().__init__(in_surface, x, y, in_size, color=color, p_id=p_id, game_drawer=game_drawer)
         self.sid = sid
         self.game_updater = game_updater
         self.fails = 0
@@ -215,7 +216,7 @@ class GameController:
     def __connect_players_and_heroes(self):
         for player in self.players:
             start_x, start_y = self.__set_location()
-            self.game_objects["heroes"].append(self.new_hero(start_x, start_y, color=str(player["color"][0]), sid=player['sid']))
+            self.game_objects["heroes"].append(self.new_hero(start_x, start_y, color=str(player["color"][0]), p_id=player['id'], sid=player['sid']))
             #player["hero"] = self.game_objects["heroes"][-1]
             player["points"] = self.game_objects["heroes"][-1].score
 
@@ -271,10 +272,10 @@ class GameController:
         }
         return board
 
-    def new_hero(self, x, y, color: str, sid=None):
+    def new_hero(self, x, y, color: str, p_id, sid=None):
         if sid is not None:
-            return RemoteHero(self, x, y, NORMAL_SIZE, color=color, sid=sid, game_updater=self.game_updater)
-        return Hero(self, x, y, NORMAL_SIZE, color=color)
+            return RemoteHero(self, x, y, NORMAL_SIZE, color=color, p_id=p_id, sid=sid, game_updater=self.game_updater)
+        return Hero(self, x, y, NORMAL_SIZE, color=color, p_id=p_id)
 
     def tick(self):
         self.game_drawer.clear_all()
@@ -330,10 +331,10 @@ class GameController:
                 '''
 
     def handle_events(self):
-        for i, hero in enumerate(self.game_objects['heroes']):
+        for hero in self.game_objects['heroes']:
             hero.undraw()
             hero.tick()
-            self.update_json["players_update"].append({i: hero.position})
+            self.update_json["players_update"].append({hero.id: hero.position})
             hero.draw()
         self.check_collisions()
         for i, ghost in enumerate(self.game_objects['ghosts']):
