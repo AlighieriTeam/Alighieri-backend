@@ -5,6 +5,14 @@ class GameDrawer(object):
         self.__room = room
         self.__socketio = socketio
 
+    def set_screen_size(self, width, height, scale):
+        data = {
+            "width": width,
+            "height": height,
+            "scale": scale
+        }
+        self.__socketio.emit("setScreenSize", data, to=self.__room)
+
     def draw_rectangle(self, x: int, y: int, color: str, width: int, height: int):
         #join_room(self.__room)
         data = {

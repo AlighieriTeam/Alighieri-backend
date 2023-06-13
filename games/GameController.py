@@ -4,10 +4,8 @@ import time
 import numpy as np
 from enum import Enum
 
-import pygame
-
 from games import MapElements as me
-from games.MapGenerator import MapGenerator
+from games.PacmanMapGenerator import PacmanMapGenerator
 
 STANDARD_SIZE = 1
 NORMAL_SIZE = 0.9
@@ -161,7 +159,7 @@ class Bot:
 class GameController:
     def __init__(self, name, game_drawer, generateRandomMap: bool = False):
         if generateRandomMap:
-            MapGenerator().save_map_to_file()
+            PacmanMapGenerator(width=24, height=45).generate_map()   # avail sizes in __set_size()
             name = "random"
         self.game_drawer = game_drawer
         self.game_objects = {}
@@ -170,6 +168,14 @@ class GameController:
         self.finished = False
         self.game_updater = None
         self.players: list = []
+
+    def __set_size(self):
+        # TODO: change it, maybe we should choose 3 sizes of random map in game lobby?
+        # small -> 8x15, medium -> 16x30, big -> 24x45, huge -> 32x60
+        if self.board.shape[1] == 8: self.game_drawer.set_screen_size(self.board.shape[1], self.board.shape[0], 100)
+        elif self.board.shape[1] == 16: self.game_drawer.set_screen_size(self.board.shape[1], self.board.shape[0], 50)
+        elif self.board.shape[1] == 24: self.game_drawer.set_screen_size(self.board.shape[1], self.board.shape[0], 30)
+        elif self.board.shape[1] == 32: self.game_drawer.set_screen_size(self.board.shape[1], self.board.shape[0], 25)
 
     def set_updater(self, game_updater):
         self.game_updater = game_updater
@@ -246,6 +252,8 @@ class GameController:
     def tick(self):
         self.game_drawer.clear_all()
         while not self.finished:
+            self.__set_size()
+            #self.game_drawer.set_screen_size(self.board.shape[1], self.board.shape[0], 25)
             self.render_all_objects()
             self.game_updater.update_scores(self.players)
             self.handle_events()

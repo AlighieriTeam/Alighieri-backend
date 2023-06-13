@@ -27,7 +27,7 @@
 
 <div class="container_game">
     <div class="row">
-            <canvas id ="screen" style="margin: auto" class="game_view" width="{{ map_size[0] }}" height="{{ map_size[1] }}">
+            <canvas id ="screen">
                 <!--TODO: Make this universal to choosed game-->
             </canvas>
     </div>
@@ -68,9 +68,5 @@
 
 
 <script type="text/javascript"  src ="{{ url_for('static', filename='scripts/game-rendering.js') }}" defer></script>
-    <script>
-        let new_scale = {{ scale }};
-        set_scale(new_scale);
-    </script>
 
 {% endblock %}
