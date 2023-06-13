@@ -143,6 +143,8 @@ class Hero(MovableGameObject):
         self.set_direction(self.bot.get_action(GameState(self.get_possible_directions())))
         self.move()
 
+    def is_timeout(self):
+        return False
 
 class RemoteHero(Hero):
     def __init__(self, in_surface, x, y, in_size, color: str, p_id, sid, game_drawer=None, game_updater=None):
@@ -174,6 +176,8 @@ class RemoteHero(Hero):
         self.set_direction(action)
         self.move()
 
+    def is_timeout(self):
+        return self.fails >= 3
 
 class GameState:
     def __init__(self, possibilities):
@@ -254,8 +258,9 @@ class GameController:
                             cookies.append(cookie)
                             mark = me.MapElements.COOKIE.value
                         case me.MapElements.GHOST.value:
-                            ghost = Ghost(self, x, y, NORMAL_SIZE, game_drawer=self.game_drawer)
-                            ghosts.append(ghost)
+                            pass
+                            # ghost = Ghost(self, x, y, NORMAL_SIZE, game_drawer=self.game_drawer)
+                            # ghosts.append(ghost)
                         #case me.MapElements.HERO.value:
                         #    heroes.append(self.new_hero(x, y))
                         case _:
@@ -335,13 +340,15 @@ class GameController:
             hero.undraw()
             hero.tick()
             self.update_json["players_update"].append({hero.id: hero.position})
-            hero.draw()
+            if not hero.is_timeout():
+                hero.draw()
         self.check_collisions()
         for i, ghost in enumerate(self.game_objects['ghosts']):
             ghost.undraw()
             ghost.tick()
             ghost.draw()
         self.check_collisions()
+        self.check_connections()
         self.game_updater.update_game_state(self.update_json)
         self.__reset_updates()
 
@@ -356,6 +363,10 @@ class GameController:
     def check_collisions(self):
         ghosts_positions = [g.position for g in self.game_objects['ghosts']]
         heroes = [h for h in self.game_objects['heroes'] if h.position not in ghosts_positions]
+        self.game_objects['heroes'] = heroes
+
+    def check_connections(self):
+        heroes = [h for h in self.game_objects['heroes'] if not h.is_timeout()]
         self.game_objects['heroes'] = heroes
 
     def is_over(self):
