@@ -22,6 +22,9 @@ def register_bot_events(socketio):
             emit("bot_error", "Invalid room pin", to=request.sid)
         for p in room.players:
             if p.token == token:
+                if p.sid is not None:
+                    emit("bot_kicked", "Bot assign overriden", to=p.sid)
+                    return
                 p.sid = request.sid
                 break
         join_room(f"_{room_pin}")
