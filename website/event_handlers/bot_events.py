@@ -22,6 +22,19 @@ def register_bot_events(socketio):
             emit("bot_error", "Invalid room pin", to=request.sid)
         for p in room.players:
             if p.token == token:
+                if p.sid is not None:
+                    import queue
+                    response_queue = queue.Queue()
+                    def bot_confirmed(data):
+                        response_queue.put(data)
+
+                    emit("bot_confirm", callback=bot_confirmed, to=p.sid)
+                    try:
+                        response_queue.get(timeout=1)
+                        emit("bot_error", "Bot already connected", to=request.sid)
+                        return
+                    except queue.Empty:
+                        pass
                 p.sid = request.sid
                 break
         join_room(f"_{room_pin}")
