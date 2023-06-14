@@ -7,6 +7,7 @@ from flask_socketio import join_room, leave_room, emit, send
 from games.GameDrawer import GameDrawer
 from games.GameUpdater import GameUpdater
 from games.pacman import PacmanController
+from games.snake import SnakeController
 from website import find_game, rooms, del_room
 from website.room import pick_random_colors
 
@@ -52,7 +53,7 @@ def register_room_events(app, socketio):
             curr_game = find_game(room)
             game_drawer = GameDrawer(room, io)
             game_updater = GameUpdater(room, io)
-            game_controller = PacmanController("pacman", game_drawer, generateRandomMap)
+            game_controller = SnakeController("snake", game_drawer, generateRandomMap)
             game_controller.set_updater(game_updater)   # pass new class which handle with popup and updating players scores
             game_controller.set_players([vars(player) for player in curr_game.players])  # pass list of dicts of player
             curr_game.set_controller(game_controller)

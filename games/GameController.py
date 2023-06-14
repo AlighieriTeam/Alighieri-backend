@@ -251,9 +251,8 @@ class GameController:
 
     def tick(self):
         self.game_drawer.clear_all()
+        self.__set_size()
         while not self.finished:
-            self.__set_size()
-            #self.game_drawer.set_screen_size(self.board.shape[1], self.board.shape[0], 25)
             self.render_all_objects()
             self.game_updater.update_scores(self.players)
             self.handle_events()
@@ -309,7 +308,3 @@ class GameController:
     def get_map_shape(self):
         return self.board.shape
 
-
-if __name__ == "__main__":
-    game_controller = GameController('pacman')
-    game_controller.tick()

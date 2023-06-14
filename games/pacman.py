@@ -17,8 +17,3 @@ class Pacman(Base.Hero):
 class PacmanController(Base.GameController):
     def new_hero(self, x, y, color: str):
         return Pacman(self, x, y, Base.NORMAL_SIZE, color=color, game_drawer=self.game_drawer)
-
-
-if __name__ == "__main__":
-    game_renderer = PacmanController('pacman')
-    game_renderer.tick()
