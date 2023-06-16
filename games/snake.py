@@ -1,19 +1,17 @@
 import copy
 
 from games import GameController as gc
+from games.MapElements import MapElements
 
 
 class Segment(gc.MovableGameObject):
     def __init__(self, in_surface, x, y, in_size, color, game_drawer=None):
         super().__init__(in_surface, x, y, in_size, color, game_drawer=game_drawer)
-        self.last_position = self.position
+        self.last_position = copy.deepcopy(self.position)
+        self.controller.board[self.position[0], self.position[1]] = MapElements.HERO.value
 
     def set_position(self, in_position):
         self.last_position = copy.deepcopy(self.position)
-        if in_position[0] > self.controller.board.shape[0]:
-            in_position[0] = 0
-        if in_position[1] > self.controller.board.shape[1]:
-            in_position[1] = 0
         super().set_position(in_position)
 
 
@@ -26,33 +24,45 @@ class Snake(gc.Hero):
     def tick(self):
         super().tick()
         self.eat_cookie()
-        self.move()
         print("running")
 
     def move(self):
-        for i in range(len(self.segments)):
-            if i == 0:
-                if self.check_direction(self.current_direction):
-                    self.set_position([a + b for a, b in zip(self.position, self.current_direction.value)])
-            else:
-                self.segments[i].set_position(self.segments[i - 1].last_position)
+        if not self.check_direction(self.current_direction):
+            return
+        self.position = [a + b for a, b in zip(self.segments[0].position, self.current_direction.value)]
+        self.segments[0].set_position(self.position)
+        for i in range(1, len(self.segments)):
+            self.segments[i].set_position(self.segments[i - 1].last_position)
 
     def get_possible_directions(self):
         possible_directions = super().get_possible_directions()
         possible_directions.remove(gc.Direction.STOP)
+        match self.last_direction:
+            case gc.Direction.LEFT: possible_directions.remove(gc.Direction.RIGHT)
+            case gc.Direction.RIGHT: possible_directions.remove(gc.Direction.LEFT)
+            case gc.Direction.UP: possible_directions.remove(gc.Direction.DOWN)
+            case gc.Direction.DOWN: possible_directions.remove(gc.Direction.UP)
         return possible_directions
 
     def draw(self):
         for segment in self.segments:
             segment.draw()
 
+    def undraw(self):
+        for segment in self.segments:
+            segment.undraw()
+
     def eat_cookie(self):
-        eaten = self.controller.delete_cookie(self.position)
+        eaten = self.controller.delete_cookie(self.segments[0].position)
         if eaten == 1:
             self.score[0] += 1
-            new_segment = Segment(self.controller, 0, 0, self.size, color=self.color, game_drawer=self.game_drawer)
-            new_segment.position = copy.deepcopy(self.segments[-1].position)
-            self.segments.append(new_segment)
+            self.add_segment()
+
+    def add_segment(self):
+        x = self.segments[-1].last_position[0]
+        y = self.segments[-1].last_position[1]
+        new_segment = Segment(self.controller, x, y, self.size, color=self.color+'-light', game_drawer=self.game_drawer)
+        self.segments.append(new_segment)
 
 
 class SnakeController(gc.GameController):
@@ -60,20 +70,13 @@ class SnakeController(gc.GameController):
         return Snake(self, x, y, gc.NORMAL_SIZE, color=color, game_drawer=self.game_drawer)
 
     def check_collisions(self):
-        heads = [snake.segments[0].position for snake in self.game_objects['heroes']]
+        # TODO fix
+        '''
+        heads = [snake for snake in self.game_objects['heroes']]
         for snake in self.game_objects['heroes']:
-            for i in range(1, len(snake.segments)):
+            for tail in snake.segments[1:]:
                 for head in heads:
-                    if snake.segments[i].position:
+                    if tail.position == head.segemnts[0].position:
                         heads.remove(head)
-        heads = list(dict.fromkeys(heads))
-        new_heroes = []
-        for snake in self.game_objects['heroes']:
-            if snake.segments[0] in heads:
-                new_heroes.append(snake)
-        self.game_objects['heroes'] = new_heroes
-
-
-if __name__ == "__main__":
-    game_renderer = SnakeController('snake')
-    game_renderer.tick()
+        self.game_objects['heroes'] = heads
+        '''

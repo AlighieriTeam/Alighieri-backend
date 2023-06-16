@@ -133,6 +133,7 @@ class Ghost(MovableGameObject):
                 sigh[1] += direction.value[1]
         return direction
 
+
 class Hero(MovableGameObject):
     def __init__(self, in_surface, x, y, in_size, color: str, game_drawer=None):
         super().__init__(in_surface, x, y, in_size, in_color=color, game_drawer=game_drawer)
@@ -251,8 +252,8 @@ class GameController:
 
     def tick(self):
         self.game_drawer.clear_all()
-        self.__set_size()
         while not self.finished:
+            self.__set_size()
             self.render_all_objects()
             self.game_updater.update_scores(self.players)
             self.handle_events()
