@@ -50,10 +50,7 @@ class GameObject:
         pass
 
     def set_position(self, in_position):
-        temp = self.controller.board[self.position[0], self.position[1]]
-        self.controller.board[self.position[0], self.position[1]] = me.MapElements.PATH.value
         self.position = in_position
-        self.controller.board[self.position[0], self.position[1]] = temp
 
 
 class Wall(GameObject):

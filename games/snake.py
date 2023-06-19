@@ -1,14 +1,12 @@
 import copy
 
 from games import GameController as gc
-from games.MapElements import MapElements
 
 
 class Segment(gc.MovableGameObject):
     def __init__(self, in_surface, x, y, in_size, color, game_drawer=None):
         super().__init__(in_surface, x, y, in_size, color, game_drawer=game_drawer)
         self.last_position = copy.deepcopy(self.position)
-        self.controller.board[self.position[0], self.position[1]] = MapElements.HERO.value
 
     def set_position(self, in_position):
         self.last_position = copy.deepcopy(self.position)
@@ -70,7 +68,6 @@ class SnakeController(gc.GameController):
         return Snake(self, x, y, gc.NORMAL_SIZE, color=color, game_drawer=self.game_drawer)
 
     def check_collisions(self):
-        # TODO fix
         '''
         heads = [snake for snake in self.game_objects['heroes']]
         for snake in self.game_objects['heroes']:
@@ -78,5 +75,11 @@ class SnakeController(gc.GameController):
                 for head in heads:
                     if tail.position == head.segemnts[0].position:
                         heads.remove(head)
+            for head in heads:
+                if snake != head:
+                    if snake.segments[0].position == head.segments[0].position:
+                        heads.remove(head)
+                        heads.remove(snake)
         self.game_objects['heroes'] = heads
         '''
+
