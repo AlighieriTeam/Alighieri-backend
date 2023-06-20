@@ -20,13 +20,12 @@
             <p class="room-token">{{ token }}</p>
         </div>
 
-        <!--TODO: implement real Player class, this is a simple example-->
         <div id="player-list">
 
         </div>
         <div style="text-align: center;">
-            <button class="cancel-game-button" onclick="leave('{{ url_for('views.choose') }}')">Cancel</button>
-            <button class="start-game-button" onclick="startGame()">Start game</button>
+            <button class="ls-button ls-cancel-game-button" onclick="leave('{{ url_for('views.choose') }}')">Cancel</button>
+            <button class="ls-button ls-start-game-button" onclick="startGame()">Start game</button>
             <div class="dropdown ls-dropdown-div">
                 <button class="shadow-none btn btn-lg btn-secondary dropdown-toggle btn-success rounded-pill ls-dropdown-btn ls-extended-button" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Add bot
@@ -38,6 +37,12 @@
                         <span class="dropdown-item" onclick="addBot('{{ b_key }}', '{{ b_val }}')">{{ b_key }}</span>
                     {% endfor %}
                 </div>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="generateRandomMap">
+                <label class="form-check-label" for="generateRandomMap">
+                    Generate random map
+                </label>
             </div>
         </div>
     </div>

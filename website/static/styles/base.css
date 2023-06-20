@@ -1,12 +1,60 @@
 :root {
+    /* website colors */
     --main-dark: #362754;
     --main-dark-hover: #241A38;
     --main: #473370;
     --main-light: #9F8FCC;
-    --accent-yep: #23E7C9;
-    --accent-yep-hover: #16CAAF;
-    --accent-nope: #E26D5A;
-    --accent-nope-hover: #dd5540;
+    --accent-yep: #31EDED;
+    --accent-yep-hover: #14E1E1;
+    --accent-nope: #E35B5E;
+    --accent-nope-hover: #DE3F42;
+
+    /* game colors */
+    --game-wall: #40376e;
+    --game-ghost: #FF5714;
+    --game-background: black;
+    --game-cookie: white;
+
+    --game-yellow: #F9DB58;
+    --game-yellow-light: #FAE275;
+    --game-orange: #FF9940;
+    --game-orange-light: #FFB370;
+    --game-red: #F23D70;
+    --game-red-light: #F6799D;
+    --game-blue: #3DAAF2;
+    --game-blue-light: #79C4F6;
+    --game-green: #39E69B;
+    --game-green-light: #6EEDB6;
+
+    --gradient-yellow:
+            linear-gradient(125deg,
+            var(--game-yellow) 0%, var(--game-yellow) 50%,
+            var(--game-yellow-light) calc(50% + 1px), var(--game-yellow-light) 70%,
+            var(--main-dark) calc(70% + 1px), var(--main-dark) 100%);
+
+    --gradient-orange:
+            linear-gradient(125deg,
+            var(--game-orange) 0%, var(--game-orange) 50%,
+            var(--game-orange-light) calc(50% + 1px), var(--game-orange-light) 70%,
+            var(--main-dark) calc(70% + 1px), var(--main-dark) 100%);
+
+    --gradient-red:
+            linear-gradient(125deg,
+            var(--game-red) 0%, var(--game-red) 50%,
+            var(--game-red-light) calc(50% + 1px), var(--game-red-light) 70%,
+            var(--main-dark) calc(70% + 1px), var(--main-dark) 100%);
+
+    --gradient-blue:
+            linear-gradient(125deg,
+            var(--game-blue) 0%, var(--game-blue) 50%,
+            var(--game-blue-light) calc(50% + 1px), var(--game-blue-light) 70%,
+            var(--main-dark) calc(70% + 1px), var(--main-dark) 100%);
+
+    --gradient-green:
+            linear-gradient(125deg,
+            var(--game-green) 0%, var(--game-green) 50%,
+            var(--game-green-light) calc(50% + 1px), var(--game-green-light) 70%,
+            var(--main-dark) calc(70% + 1px), var(--main-dark) 100%);
 }
 
 

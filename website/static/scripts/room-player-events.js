@@ -19,7 +19,7 @@ function refreshPlayerList() {
     for (const [id, name] of playerMap.entries()) {
         if (id === actual_player_id){
             content += `
-                <div id="player_${id}" class="player_div player_gradient_${id}" style="background-color: ${backgroundColor}">
+                <div id="player_${id}" class="player-div" style="background: var(--gradient-${backgroundColor});">
                 <div class="ls-player-name">${name}</div>
                 <div class="ls-player-del"></div>
                 </div>
@@ -27,8 +27,8 @@ function refreshPlayerList() {
         }
         else{
              content += `
-                <div id="player_${id}" class="player_div player_gradient_${id}">
-                <div class="ls-player-name">${name}</div>
+                <div id="player_${id}" class="player-div">
+                <div class="ls-player-name" style="color: white">${name}</div>
                 <div class="ls-player-del"></div>
                 </div>
             `

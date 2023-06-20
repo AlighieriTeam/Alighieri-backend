@@ -8,6 +8,7 @@ from games.GameDrawer import GameDrawer
 from games.GameUpdater import GameUpdater
 from games.pacman import PacmanController
 from website import find_game, rooms, del_room
+from website.room import pick_random_colors
 
 
 def register_room_events(app, socketio):
@@ -46,16 +47,26 @@ def register_room_events(app, socketio):
                     del_room(room)
                 print(f"{player['name']} left room {room}")
 
-    def start_game(room: str, io):
+    def start_game(room: str, io, generateRandomMap: bool = False):
         with app.test_request_context():
             curr_game = find_game(room)
             game_drawer = GameDrawer(room, io)
             game_updater = GameUpdater(room, io)
-            game_controller = PacmanController('pacman', game_drawer)
+            game_controller = PacmanController("pacman", game_drawer, generateRandomMap)
             game_controller.set_updater(game_updater)   # pass new class which handle with popup and updating players scores
             game_controller.set_players([vars(player) for player in curr_game.players])  # pass list of dicts of player
             curr_game.set_controller(game_controller)
             game_controller.tick()
+
+    @socketio.on("timerOut")
+    def leave_on_timer_out():
+        room = session.get("room")
+        curr_game = find_game(room)
+        curr_game.stop_game()
+        del_room(room)
+        print('game ended')
+
+
 
     @socketio.on("rejoin")
     def rejoin():
@@ -87,12 +98,13 @@ def register_room_events(app, socketio):
 
     @socketio.on("leave_game")
     def leave_game(data):
+        print("entered leave_game")
         handle_leaving_game()
         # this is super important here to return anything
         return {}
 
     @socketio.on('start_game')
-    def get_start_signal():
+    def get_start_signal(generateRandomMap: bool = False):
         room = session.get("room")
         player = session.get("player")
         if not room or not player or not player['is_owner']:
@@ -102,7 +114,7 @@ def register_room_events(app, socketio):
             return
         curr_game = find_game(room)
         curr_game.started = True
-        game_thread = Thread(target=start_game, args=(room, socketio))
+        game_thread = Thread(target=start_game, args=(room, socketio, generateRandomMap))
         curr_game.move_game_to_room_thread(game_thread)
         curr_game.start_game()
         socketio.emit('redirect', url_for('views.game'), to=room)
@@ -116,7 +128,11 @@ def register_room_events(app, socketio):
 
         curr_game = find_game(room)
 
-        player = curr_game.add_player(name=bot_data['name'], is_bot=True)
+        player = curr_game.add_player(is_bot=True)
+        colors = [vars(p)['color'] for p in curr_game.players]
+        while player.color in colors:
+            player.color = pick_random_colors(1)
+        player.name += " - " + bot_data['name']
         # TODO: try to inform owner that room is full, somehow by flash, disable add bot button, js alert?
         if player is None: return
         player = vars(player)

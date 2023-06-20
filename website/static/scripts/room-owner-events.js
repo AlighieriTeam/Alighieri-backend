@@ -7,7 +7,8 @@
 // ------------ JS functions for room-owner.html ------------
 
 function startGame() {
-    socketio.emit('start_game');
+    var generateRandomMap = document.getElementById("generateRandomMap").checked;
+    socketio.emit('start_game', generateRandomMap);
 }
 
 function addBot(b_key, b_val){    // b_val unused
@@ -22,8 +23,8 @@ function refreshPlayerList() {
     for (const [id, name] of playerMap.entries()) {
         if(id !== 0){
             content += `
-                <div id="player_${id}" class="player_div player_gradient_${id}">
-                    <div class="ls-player-name">${name}</div>
+                <div id="player_${id}" class="player-div">
+                    <div class="ls-player-name" style="color: white">${name}</div>
                     <div class="ls-player-del">
                       <i class="bi bi-x-circle ls-icon-color"></i>
                       <i class="bi bi-x-circle-fill ls-icon-color" onclick="delPlayer(${id}, '${name}')"></i>
@@ -33,7 +34,7 @@ function refreshPlayerList() {
         }
         else{
             content += `
-                <div id="player_${id}" class="player_div player_gradient_${id}" style="background-color: ${backgroundColor}">
+                <div id="player_${id}" class="player-div" style="background: var(--gradient-${backgroundColor});">
                     <div class="ls-player-name">${name}</div>
                     <div class="ls-player-del"></div>
                 </div>

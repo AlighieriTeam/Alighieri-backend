@@ -5,6 +5,7 @@ import numpy as np
 from enum import Enum
 
 from games import MapElements as me
+from games.PacmanMapGenerator import PacmanMapGenerator
 
 STANDARD_SIZE = 1
 NORMAL_SIZE = 0.9
@@ -18,7 +19,7 @@ class Shape(Enum):
 
 
 class GameObject:
-    def __init__(self, in_renderer, x, y, in_size, in_color="black", in_shape: Shape = Shape.RECTANGLE, game_drawer=None):
+    def __init__(self, in_renderer, x, y, in_size, in_color="background", in_shape: Shape = Shape.RECTANGLE, game_drawer=None):
         self.game_drawer = game_drawer
         self.controller: GameController = in_renderer
         self.color = in_color
@@ -43,7 +44,7 @@ class GameObject:
 
     def undraw(self):
         self.game_drawer.draw_rectangle(self.position[0] + STANDARD_SIZE / 2, self.position[1] + STANDARD_SIZE / 2,
-                                         'black', STANDARD_SIZE, STANDARD_SIZE)
+                                         'background', STANDARD_SIZE, STANDARD_SIZE)
 
     def tick(self):
         pass
@@ -56,13 +57,13 @@ class GameObject:
 
 
 class Wall(GameObject):
-    def __init__(self, in_surface, x, y, in_size, in_color='#40376e', game_drawer=None):
+    def __init__(self, in_surface, x, y, in_size, in_color='wall', game_drawer=None):
         super().__init__(in_surface, x, y, in_size, in_color, game_drawer=game_drawer)
 
 
 class Cookie(GameObject):
     def __init__(self, in_surface, x, y, game_drawer=None):
-        super().__init__(in_surface, x, y, SMALL_SIZE, 'white', game_drawer=game_drawer)
+        super().__init__(in_surface, x, y, SMALL_SIZE, 'cookie', game_drawer=game_drawer)
 
 
 class Direction(Enum):
@@ -105,7 +106,7 @@ class MovableGameObject(GameObject):
 
 
 class Ghost(MovableGameObject):
-    def __init__(self, in_surface, x, y, in_size, in_color='#FF5714', in_shape: Shape = Shape.GHOST, game_drawer=None):
+    def __init__(self, in_surface, x, y, in_size, in_color='ghost', in_shape: Shape = Shape.GHOST, game_drawer=None):
         super().__init__(in_surface, x, y, in_size, in_color, in_shape, game_drawer=game_drawer)
 
     def tick(self):
@@ -192,9 +193,13 @@ class Bot:
 
 
 class GameController:
-    def __init__(self, name, game_drawer):
+    def __init__(self, name, game_drawer, generateRandomMap: bool = False):
+        if generateRandomMap:
+            PacmanMapGenerator(width=24, height=45).generate_map()   # avail sizes in __set_size()
+            name = "random"
         self.game_drawer = game_drawer
         self.game_objects = {}
+        self.spawns = []
         self.board = self.import_map(name)
         self.finished = False
         self.game_updater = None
@@ -205,6 +210,14 @@ class GameController:
             "ghosts_update": [g.position for g in self.game_objects['ghosts']]
         }
 
+    def __set_size(self):
+        # TODO: change it, maybe we should choose 3 sizes of random map in game lobby?
+        # small -> 8x15, medium -> 16x30, big -> 24x45, huge -> 32x60
+        if self.board.shape[1] == 8: self.game_drawer.set_screen_size(self.board.shape[1], self.board.shape[0], 100)
+        elif self.board.shape[1] == 16: self.game_drawer.set_screen_size(self.board.shape[1], self.board.shape[0], 50)
+        elif self.board.shape[1] == 24: self.game_drawer.set_screen_size(self.board.shape[1], self.board.shape[0], 30)
+        elif self.board.shape[1] == 32: self.game_drawer.set_screen_size(self.board.shape[1], self.board.shape[0], 25)
+
     def set_updater(self, game_updater):
         self.game_updater = game_updater
 
@@ -213,15 +226,12 @@ class GameController:
         self.players = players
         self.__connect_players_and_heroes()
 
-    def __disconnect_players_and_heroes(self):
-        for player in self.players:
-            player["points"] = player["hero"].score
-            del player["hero"]
     def __connect_players_and_heroes(self):
+        print(self.spawns)
         for player in self.players:
-            start_x, start_y = self.__set_location()
-            self.game_objects["heroes"].append(self.new_hero(start_x, start_y, color=str(player["color"][0]), p_id=player['id'], sid=player['sid']))
-            #player["hero"] = self.game_objects["heroes"][-1]
+            random_position = random.choice(self.spawns)
+            self.spawns.remove(random_position)
+            self.game_objects["heroes"].append(self.new_hero(random_position[0], random_position[1], color=str(player["color"][0]), p_id=player['id'], sid=player['sid']))
             player["points"] = self.game_objects["heroes"][-1].score
 
     def __set_location(self) -> tuple:
@@ -238,7 +248,6 @@ class GameController:
         width = len(file.readline())
         board = np.zeros((1, width - 1))
         file.seek(start)
-
         map_elements = [element.value for element in list(me.MapElements)]
         walls = []
         cookies = []
@@ -258,11 +267,10 @@ class GameController:
                             cookies.append(cookie)
                             mark = me.MapElements.COOKIE.value
                         case me.MapElements.GHOST.value:
-                            pass
-                            # ghost = Ghost(self, x, y, NORMAL_SIZE, game_drawer=self.game_drawer)
-                            # ghosts.append(ghost)
-                        #case me.MapElements.HERO.value:
-                        #    heroes.append(self.new_hero(x, y))
+                            ghost = Ghost(self, x, y, NORMAL_SIZE, game_drawer=self.game_drawer)
+                            ghosts.append(ghost)
+                        case me.MapElements.HERO.value:
+                            self.spawns.append((x, y))
                         case _:
                             pass
                     board_line.append(mark)
@@ -298,6 +306,8 @@ class GameController:
                 self.game_updater.start_game(start_json, player['sid'])
 
         while not self.finished:
+            self.__set_size()
+            #self.game_drawer.set_screen_size(self.board.shape[1], self.board.shape[0], 25)
             self.render_all_objects()
             self.game_updater.update_scores(self.players)
             self.handle_events()
@@ -307,33 +317,16 @@ class GameController:
         print("Game over")
 
         #self.__disconnect_players_and_heroes()
+        time.sleep(0.1)  # little delay to give a chance for signal delivery to update scores (left bottom corner in game)
         self.game_updater.show_popup(self.players)
-        time.sleep(1.0)  # little delay to give a chance for signal delivery to every player in room before room will be deleted
+        time.sleep(0.1)  # little delay to give a chance for signal delivery to every player in room before room will be deleted
 
-    '''def update_scores(self):
-        for i, hero in enumerate(self.game_objects['heroes']):
-            # TODO displaying under screen
-            print("hero no: {}, scores: {}".format(i, hero.score[0]))
-            #self.game_drawer.draw_text(i, 0, hero.score)
-        self.game_updater.update_scores(self.players)'''
 
     def render_all_objects(self):
         for wall in self.game_objects['walls']:
             wall.draw()
         for cookie in self.game_objects['cookies']:
             cookie.draw()
-        '''
-        for key, values in self.game_objects.items():
-            if isinstance(values, list):
-                for value in values:
-                    value.undraw()
-                    value.tick()
-                    value.draw()
-            else:
-                values.undraw()
-                values.tick()
-                values.draw()
-                '''
 
     def handle_events(self):
         for hero in self.game_objects['heroes']:

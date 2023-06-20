@@ -29,44 +29,38 @@
     text-align: center;
 }
 
-.start-game-button{
+.ls-button{
     width: 200px;
     height: 60px;
     font-size: 1.4em;
     align-items: center;
     display: inline-block;
     color: var(--main-dark);
-    background: var(--accent-yep);
-    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
-    margin: 0 auto;
-    border-radius: 30px;
-    border: none;
-}
-
-.start-game-button:hover{
-    background: var(--accent-yep-hover);
-}
-
-.cancel-game-button {
-    width: 200px;
-    height: 60px;
-    font-size: 1.4em;
-    align-items: center;
-    display: inline-block;
-    color: var(--main-dark);
-    background: var(--accent-nope);
     box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
     margin: 0.5em 1em auto 0;
     border-radius: 30px;
     border: none;
 }
 
-.cancel-game-button:hover{
+.ls-start-game-button{
+    background: var(--accent-yep);
+}
+
+.ls-start-game-button:hover{
+    background: var(--accent-yep-hover);
+}
+
+.ls-cancel-game-button {
+    background: var(--accent-nope);
+}
+
+.ls-cancel-game-button:hover{
     background: var(--accent-nope-hover);
 }
 
 .ls-dropdown-div{
-    margin-top: 20px;
+    height: 60px;
+    margin: 1.0em 0 auto 0;
     width: 100%;
 }
 

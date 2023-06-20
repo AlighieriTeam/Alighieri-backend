@@ -2,7 +2,8 @@
     margin-top: 25px;
 }
 
-.game_view{
+#screen{
+    margin: auto;
     background-color: black;
 }
 
@@ -12,7 +13,7 @@
     padding-bottom: 20px;
 }
 
-.player_div{
+.player-div{
     border-radius: 50px;
     height: 60px;
     margin-top: 10px;
@@ -20,6 +21,7 @@
     box-sizing: border-box;
     padding: 7px;
     background: var(--main-dark);
+    color: var(--main-dark-hover);
 }
 
 /*delete button and player divs*/
@@ -31,6 +33,7 @@
     /*border: 1px solid red;*/
 }
 .ls-player-points{
+    color: white;
     box-sizing: border-box;
     padding: 10px;
     width: 10%;
