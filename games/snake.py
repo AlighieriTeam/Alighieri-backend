@@ -36,7 +36,7 @@ class Snake(gc.Hero):
         possible_directions = super().get_possible_directions()
         possible_directions.remove(gc.Direction.STOP)
         direction = gc.Direction.STOP
-        match self.last_direction:
+        match self.current_direction:
             case gc.Direction.LEFT: direction = gc.Direction.RIGHT
             case gc.Direction.RIGHT: direction = gc.Direction.LEFT
             case gc.Direction.UP: direction = gc.Direction.DOWN
