@@ -11,3 +11,13 @@ class GameUpdater(object):
     def show_popup(self, players: list):
         ''' This method send player scores to room and shows popup '''
         self.__socketio.emit("showPopup", players, to=self.__room)
+
+    def start_game(self, data, destination):
+        self.__socketio.emit("bot_start", data, to=destination)
+
+    def ask_for_action(self, actions, destination, callback):
+        self.__socketio.emit("bot_ask", actions, to=destination, callback=callback)
+
+    def update_game_state(self, updates):
+        self.__socketio.emit("game_update", updates, to=f"_{self.__room}")
+

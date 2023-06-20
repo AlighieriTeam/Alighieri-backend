@@ -143,8 +143,9 @@ class Ghost(MovableGameObject):
 
 
 class Hero(MovableGameObject):
-    def __init__(self, in_surface, x, y, in_size, color: str, game_drawer=None):
+    def __init__(self, in_surface, x, y, in_size, color: str, p_id, game_drawer=None):
         super().__init__(in_surface, x, y, in_size, in_color=color, game_drawer=game_drawer)
+        self.id = p_id
         self.score = [0]  # to make score mutable
         self.bot = Bot()
 
@@ -152,6 +153,41 @@ class Hero(MovableGameObject):
         self.set_direction(self.bot.get_action(GameState(self.get_possible_directions())))
         self.move()
 
+    def is_timeout(self):
+        return False
+
+class RemoteHero(Hero):
+    def __init__(self, in_surface, x, y, in_size, color: str, p_id, sid, game_drawer=None, game_updater=None):
+        super().__init__(in_surface, x, y, in_size, color=color, p_id=p_id, game_drawer=game_drawer)
+        self.sid = sid
+        self.game_updater = game_updater
+        self.fails = 0
+        self.updates = {}
+
+    def tick(self):
+        import queue
+        response_queue = queue.Queue()
+        # self.set_direction(self.bot.get_action(GameState(self.get_possible_directions())))
+        actions = self.get_possible_directions()
+        action_list = [d.name for d in actions]
+        # self.move()
+        # super().tick()
+        def player_action(data):
+            response_queue.put(data)
+
+        self.game_updater.ask_for_action(action_list, self.sid, callback=player_action)
+        action = Direction.STOP
+        try:
+            action_idx = response_queue.get(timeout=3)
+            action = actions[action_idx]
+            self.fails = 0
+        except queue.Empty:
+            self.fails += 1
+        self.set_direction(action)
+        self.move()
+
+    def is_timeout(self):
+        return self.fails >= 3
 
 class GameState:
     def __init__(self, possibilities):
@@ -181,6 +217,11 @@ class GameController:
         self.random_cookies = True
         if not self.random_cookies:
             self.add_all_cookies()
+        self.update_json = {
+            "players_update": [],
+            "eaten_cookies": [],
+            "ghosts_update": [g.position for g in self.game_objects['ghosts']]
+        }
 
     def __set_size(self):
         # TODO: change it, maybe we should choose 3 sizes of random map in game lobby?
@@ -207,10 +248,7 @@ class GameController:
         for player in self.players:
             random_position = random.choice(self.spawns)
             self.spawns.remove(random_position)
-            print(random_position)
-            self.game_objects["heroes"].append(
-                self.new_hero(random_position[0], random_position[1], color=str(player["color"][0])))
-            # player["hero"] = self.game_objects["heroes"][-1]
+            self.game_objects["heroes"].append(self.new_hero(random_position[0], random_position[1], color=str(player["color"][0]), p_id=player['id'], sid=player['sid']))
             player["points"] = self.game_objects["heroes"][-1].score
 
     def __set_location(self) -> tuple:
@@ -262,11 +300,26 @@ class GameController:
         }
         return board
 
-    def new_hero(self, x, y, color: str):
-        return Hero(self, x, y, NORMAL_SIZE, color=color)
+    def new_hero(self, x, y, color: str, p_id, sid=None):
+        if sid is not None:
+            return RemoteHero(self, x, y, NORMAL_SIZE, color=color, p_id=p_id, sid=sid, game_updater=self.game_updater)
+        return Hero(self, x, y, NORMAL_SIZE, color=color, p_id=p_id)
 
     def tick(self):
         self.game_drawer.clear_all()
+        board = self.board.tolist()
+        start_json = {
+            "board": board,
+            "player_positions": [h.position for h in self.game_objects['heroes']],
+            "player_index": 0,
+            "ghosts": [g.position for g in self.game_objects['ghosts']],
+            "cookies": [c.position for c in self.game_objects['cookies']]
+        }
+        for i, player in enumerate(self.players):
+            if player['sid'] is not None:
+                start_json['player_index'] = i
+                self.game_updater.start_game(start_json, player['sid'])
+
         while not self.finished:
             self.__set_size()
             if self.random_cookies:
@@ -293,13 +346,18 @@ class GameController:
         for hero in self.game_objects['heroes']:
             hero.undraw()
             hero.tick()
-            hero.draw()
+            self.update_json["players_update"].append({hero.id: hero.position})
+            if not hero.is_timeout():
+                hero.draw()
         self.check_collisions()
-        for ghost in self.game_objects['ghosts']:
+        for i, ghost in enumerate(self.game_objects['ghosts']):
             ghost.undraw()
             ghost.tick()
             ghost.draw()
         self.check_collisions()
+        self.check_connections()
+        self.game_updater.update_game_state(self.update_json)
+        self.__reset_updates()
 
     def add_random_cookie(self):
         place = random.choice(self.cookie_places)
@@ -318,12 +376,17 @@ class GameController:
         cookies = [c for c in self.game_objects['cookies'] if c.position != board_position]
         if len(cookies) != len(self.game_objects['cookies']):
             self.game_objects['cookies'] = cookies
+            self.update_json['eaten_cookies'].append(board_position)
             return 1
         return 0
 
     def check_collisions(self):
         ghosts_positions = [g.position for g in self.game_objects['ghosts']]
         heroes = [h for h in self.game_objects['heroes'] if h.position not in ghosts_positions]
+        self.game_objects['heroes'] = heroes
+
+    def check_connections(self):
+        heroes = [h for h in self.game_objects['heroes'] if not h.is_timeout()]
         self.game_objects['heroes'] = heroes
 
     def is_over(self):
@@ -336,3 +399,15 @@ class GameController:
     # TODO send to js
     def get_map_shape(self):
         return self.board.shape
+
+    def __reset_updates(self):
+        self.update_json = {
+            "players_update": [],
+            "eaten_cookies": [],
+            "ghosts_update": [g.position for g in self.game_objects['ghosts']]
+        }
+
+
+if __name__ == "__main__":
+    game_controller = GameController('pacman')
+    game_controller.tick()

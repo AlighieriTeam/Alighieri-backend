@@ -46,6 +46,7 @@ class Player:  # simple player class to show players in game page automatically
         self.points = 0
         self.token = generate_token_for_player()
         self.color = pick_random_colors(1)
+        self.sid = None
 
     def to_json(self) -> str:
         return json.dumps(self, default=lambda o: o.__dict__,

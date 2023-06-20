@@ -57,3 +57,4 @@ class GameDrawer(object):
     def clear_all(self):
         #join_room(self.__room)
         self.__socketio.emit("clearAll", to=self.__room)
+
