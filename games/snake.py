@@ -35,11 +35,14 @@ class Snake(gc.Hero):
     def get_possible_directions(self):
         possible_directions = super().get_possible_directions()
         possible_directions.remove(gc.Direction.STOP)
+        direction = gc.Direction.STOP
         match self.last_direction:
-            case gc.Direction.LEFT: possible_directions.remove(gc.Direction.RIGHT)
-            case gc.Direction.RIGHT: possible_directions.remove(gc.Direction.LEFT)
-            case gc.Direction.UP: possible_directions.remove(gc.Direction.DOWN)
-            case gc.Direction.DOWN: possible_directions.remove(gc.Direction.UP)
+            case gc.Direction.LEFT: direction = gc.Direction.RIGHT
+            case gc.Direction.RIGHT: direction = gc.Direction.LEFT
+            case gc.Direction.UP: direction = gc.Direction.DOWN
+            case gc.Direction.DOWN:  direction = gc.Direction.UP
+        if direction in possible_directions:
+            possible_directions.remove(direction)
         return possible_directions
 
     def draw(self):
@@ -68,12 +71,11 @@ class SnakeController(gc.GameController):
         return Snake(self, x, y, gc.NORMAL_SIZE, color=color, game_drawer=self.game_drawer)
 
     def check_collisions(self):
-        '''
         heads = [snake for snake in self.game_objects['heroes']]
         for snake in self.game_objects['heroes']:
             for tail in snake.segments[1:]:
                 for head in heads:
-                    if tail.position == head.segemnts[0].position:
+                    if tail.position == head.segments[0].position:
                         heads.remove(head)
             for head in heads:
                 if snake != head:
@@ -81,5 +83,4 @@ class SnakeController(gc.GameController):
                         heads.remove(head)
                         heads.remove(snake)
         self.game_objects['heroes'] = heads
-        '''
 
