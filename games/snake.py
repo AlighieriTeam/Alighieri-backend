@@ -77,10 +77,13 @@ class SnakeController(gc.GameController):
                 for head in heads:
                     if tail.position == head.segments[0].position:
                         heads.remove(head)
+                        head.undraw()
             for head in heads:
                 if snake != head:
                     if snake.segments[0].position == head.segments[0].position:
                         heads.remove(head)
+                        head.undraw()
                         heads.remove(snake)
+                        snake.undraw()
         self.game_objects['heroes'] = heads
 
