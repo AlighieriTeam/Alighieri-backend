@@ -215,6 +215,8 @@ class GameController:
         self.game_updater = None
         self.players: list = []
         self.random_cookies = True
+
+    def init_game(self):
         if not self.random_cookies:
             self.add_all_cookies()
         self.update_json = {

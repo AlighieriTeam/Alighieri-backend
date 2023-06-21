@@ -28,12 +28,17 @@ class RemotePacman(Base.RemoteHero):
     def eat_cookie(self):
         self.score[0] += self.controller.delete_cookie(self.position)
 
+
 class PacmanController(Base.GameController):
+    def __init__(self, name, game_drawer, generateRandomMap):
+        super().__init__(name, game_drawer, generateRandomMap)
+        self.random_cookies = False
+        self.init_game()
+
     def new_hero(self, x, y, color: str, p_id, sid=None):
         if sid is not None:
             return RemotePacman(self, x, y, Base.NORMAL_SIZE, color=color, p_id=p_id, sid=sid, game_drawer=self.game_drawer, game_updater=self.game_updater)
         return Pacman(self, p_id, x, y, Base.NORMAL_SIZE, color=color, game_drawer=self.game_drawer)
-
 
 
 if __name__ == "__main__":

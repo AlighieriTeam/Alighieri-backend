@@ -67,6 +67,10 @@ class Snake(gc.Hero):
 
 
 class SnakeController(gc.GameController):
+    def __init__(self, name, game_drawer, generateRandomMap):
+        super().__init__(name, game_drawer, generateRandomMap)
+        self.init_game()
+
     def new_hero(self, x, y, color: str):
         return Snake(self, x, y, gc.NORMAL_SIZE, color=color, game_drawer=self.game_drawer)
 
