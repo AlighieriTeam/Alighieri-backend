@@ -100,3 +100,8 @@
     padding: 0;
     border: none;
 }
+
+.choose-text-field::placeholder {
+  color: var(--main-dark);
+  opacity: 0.25;
+}
