@@ -24,17 +24,13 @@
        <!--One form instead of n forms, we will recognize what game is by value parameter in button-->
        <!--IMPORTANT request.form.get() method in views.py will search by "name" parameter and take value from "value" parameter in each button-->
        <form method="POST" action="/room-owner">
-          <button type="submit" class="submit-button"  name="game" value="pac-man">
-              <img style="top: 20%;left: 7.5%;" class ="choose-image" src="{{ url_for('static', filename='images/pacman.png') }}"  alt="pacman">
+<img style="top: 20%;left: 52.5%;" class ="choose-image" src="{{ url_for('static', filename='images/snake.png') }}"  alt="snake">
           </button>
-          <button type="submit" class="submit-button"  name="game" value="pong">
-              <img style="top: 20%;left: 52.5%;" class ="choose-image" src="{{ url_for('static', filename='images/pong.png') }}"  alt="pong">
+          <button type="submit" class="submit-button"  name="game" value="">
+              <img  style="top: 60%;left: 7.5%;" class ="choose-image" src="{{ url_for('static', filename='images/coming_soon.png') }}"  alt="pacman">
           </button>
-          <button type="submit" class="submit-button"  name="game" value="pac-man">
-              <img  style="top: 60%;left: 7.5%;" class ="choose-image" src="{{ url_for('static', filename='images/pacman.png') }}"  alt="pacman">
-          </button>
-          <button type="submit" class="submit-button" name="game" value="pong" >
-              <img  style="top: 60%;left: 52.5%;" class ="choose-image" src="{{ url_for('static', filename='images/pong.png') }}"  alt="pong">
+          <button type="submit" class="submit-button" name="game" value="" >
+              <img  style="top: 60%;left: 52.5%;" class ="choose-image" src="{{ url_for('static', filename='images/coming_soon.png') }}"  alt="pong">
           </button>
        </form>
    </div>
