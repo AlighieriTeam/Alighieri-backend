@@ -84,3 +84,13 @@
     color: white !important;
     border-color: var(--main-dark-hover) !important;
 }
+
+input[type=checkbox].ls-random-map-checkbox{
+    width: 25px;
+    height: 25px;
+    accent-color: var(--accent-yep);
+}
+
+label.ls-random-map-label{
+    font-size: 25px;
+}
