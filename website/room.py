@@ -9,8 +9,8 @@ import threading
 from games.pacman import PacmanController
 
 GAME_TYPES = {
-    'pac-man': 4,
-    'pong': 2
+    'pacman': 4,
+    'snake': 4
 }
 
 

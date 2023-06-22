@@ -19,7 +19,8 @@ class Shape(Enum):
 
 
 class GameObject:
-    def __init__(self, in_renderer, x, y, in_size, in_color="background", in_shape: Shape = Shape.RECTANGLE, game_drawer=None):
+    def __init__(self, in_renderer, x, y, in_size, in_color="background", in_shape: Shape = Shape.RECTANGLE,
+                 game_drawer=None):
         self.game_drawer = game_drawer
         self.controller: GameController = in_renderer
         self.color = in_color
@@ -44,21 +45,28 @@ class GameObject:
 
     def undraw(self):
         self.game_drawer.draw_rectangle(self.position[0] + STANDARD_SIZE / 2, self.position[1] + STANDARD_SIZE / 2,
-                                         'background', STANDARD_SIZE, STANDARD_SIZE)
+                                        'background', STANDARD_SIZE, STANDARD_SIZE)
 
     def tick(self):
         pass
 
     def set_position(self, in_position):
-        temp = self.controller.board[self.position[0], self.position[1]]
-        self.controller.board[self.position[0], self.position[1]] = me.MapElements.PATH.value
         self.position = in_position
-        self.controller.board[self.position[0], self.position[1]] = temp
 
 
 class Wall(GameObject):
     def __init__(self, in_surface, x, y, in_size, in_color='wall', game_drawer=None):
         super().__init__(in_surface, x, y, in_size, in_color, game_drawer=game_drawer)
+
+
+class CookiePlace:
+    def __init__(self, game_controller, x, y):
+        self.game_controller = game_controller
+        self.x = x
+        self.y = y
+
+    def generate_cookie(self):
+        self.game_controller.add_cookie(self.x, self.y)
 
 
 class Cookie(GameObject):
@@ -133,6 +141,7 @@ class Ghost(MovableGameObject):
                 sigh[1] += direction.value[1]
         return direction
 
+
 class Hero(MovableGameObject):
     def __init__(self, in_surface, x, y, in_size, color: str, p_id, game_drawer=None):
         super().__init__(in_surface, x, y, in_size, in_color=color, game_drawer=game_drawer)
@@ -195,15 +204,21 @@ class Bot:
 class GameController:
     def __init__(self, name, game_drawer, generateRandomMap: bool = False):
         if generateRandomMap:
-            PacmanMapGenerator(width=24, height=45).generate_map()   # avail sizes in __set_size()
+            PacmanMapGenerator(width=24, height=45).generate_map()  # avail sizes in __set_size()
             name = "random"
         self.game_drawer = game_drawer
         self.game_objects = {}
         self.spawns = []
+        self.cookie_places = []
         self.board = self.import_map(name)
         self.finished = False
         self.game_updater = None
         self.players: list = []
+        self.random_cookies = True
+
+    def init_game(self):
+        if not self.random_cookies:
+            self.add_all_cookies()
         self.update_json = {
             "players_update": [],
             "eaten_cookies": [],
@@ -213,10 +228,14 @@ class GameController:
     def __set_size(self):
         # TODO: change it, maybe we should choose 3 sizes of random map in game lobby?
         # small -> 8x15, medium -> 16x30, big -> 24x45, huge -> 32x60
-        if self.board.shape[1] == 8: self.game_drawer.set_screen_size(self.board.shape[1], self.board.shape[0], 100)
-        elif self.board.shape[1] == 16: self.game_drawer.set_screen_size(self.board.shape[1], self.board.shape[0], 50)
-        elif self.board.shape[1] == 24: self.game_drawer.set_screen_size(self.board.shape[1], self.board.shape[0], 30)
-        elif self.board.shape[1] == 32: self.game_drawer.set_screen_size(self.board.shape[1], self.board.shape[0], 25)
+        if self.board.shape[1] == 8:
+            self.game_drawer.set_screen_size(self.board.shape[1], self.board.shape[0], 100)
+        elif self.board.shape[1] == 16:
+            self.game_drawer.set_screen_size(self.board.shape[1], self.board.shape[0], 50)
+        elif self.board.shape[1] == 24:
+            self.game_drawer.set_screen_size(self.board.shape[1], self.board.shape[0], 30)
+        elif self.board.shape[1] == 32:
+            self.game_drawer.set_screen_size(self.board.shape[1], self.board.shape[0], 25)
 
     def set_updater(self, game_updater):
         self.game_updater = game_updater
@@ -263,9 +282,7 @@ class GameController:
                             wall = Wall(self, x, y, NORMAL_SIZE, game_drawer=self.game_drawer)
                             walls.append(wall)
                         case me.MapElements.PATH.value:
-                            cookie = Cookie(self, x, y, game_drawer=self.game_drawer)
-                            cookies.append(cookie)
-                            mark = me.MapElements.COOKIE.value
+                            self.cookie_places.append(CookiePlace(self, x, y))
                         case me.MapElements.GHOST.value:
                             ghost = Ghost(self, x, y, NORMAL_SIZE, game_drawer=self.game_drawer)
                             ghosts.append(ghost)
@@ -307,20 +324,19 @@ class GameController:
 
         while not self.finished:
             self.__set_size()
-            #self.game_drawer.set_screen_size(self.board.shape[1], self.board.shape[0], 25)
+            if self.random_cookies:
+                self.add_random_cookie()
             self.render_all_objects()
             self.game_updater.update_scores(self.players)
             self.handle_events()
             self.is_over()
-            time.sleep(0.25)  # TODO only for developing
-            # self._finished = True  # to test popup
+            time.sleep(0.25)  # only for developing
         print("Game over")
 
-        #self.__disconnect_players_and_heroes()
+        # self.__disconnect_players_and_heroes()
         time.sleep(0.1)  # little delay to give a chance for signal delivery to update scores (left bottom corner in game)
         self.game_updater.show_popup(self.players)
         time.sleep(0.1)  # little delay to give a chance for signal delivery to every player in room before room will be deleted
-
 
     def render_all_objects(self):
         for wall in self.game_objects['walls']:
@@ -344,6 +360,19 @@ class GameController:
         self.check_connections()
         self.game_updater.update_game_state(self.update_json)
         self.__reset_updates()
+
+    def add_random_cookie(self):
+        place = random.choice(self.cookie_places)
+        self.cookie_places.remove(place)
+        self.add_cookie(place.x, place.y)
+
+    def add_all_cookies(self):
+        for place in self.cookie_places:
+            self.add_cookie(place.x, place.y)
+
+    def add_cookie(self, x, y):
+        cookie = Cookie(self, x, y, game_drawer=self.game_drawer)
+        self.game_objects['cookies'].append(cookie)
 
     def delete_cookie(self, board_position):
         cookies = [c for c in self.game_objects['cookies'] if c.position != board_position]
